@@ -25,3 +25,5 @@ It then opens full-screen from the gull icon and works offline after the first v
 1. Replace `index.html` with the new version.
 2. Open `sw.js` and bump the version, e.g. `dodgy-dublin-v1` → `dodgy-dublin-v2`.
 3. Commit. Phones pick up the new version next time the game is opened with a connection.
+   ## Licence
+   © 2026 Matheus Amud. Licensed under CC BY-NC 4.0: free to share and adapt with credit, not for commercial use. See [LICENSE](LICENSE).
