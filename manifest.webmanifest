@@ -1,7 +1,7 @@
 {
   "name": "Dodgy Dublin Redemption",
   "short_name": "Dodgy Dublin",
-  "description": "A retro side-scroller through Dublin city centre. Stomp seagulls, dodge the Luas, save your bike.",
+  "description": "By Matheus Amud. A retro side-scroller through Dublin city centre. Stomp seagulls, dodge the Luas, save your bike.",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

@@ -1,5 +1,7 @@
 # Dodgy Dublin Redemption
 
+Created by **Matheus Amud**.
+
 A retro side-scroller through Dublin city centre, from Capel St to Stephen's Green.
 Stomp seagulls, punch scumbags, wait for the green man, dodge the Luas and the Garda chases,
 save your bike from the thieves, and beat the Big Gull.
