@@ -49,6 +49,8 @@ canvas{display:block; width:100%; aspect-ratio:480/270; background:#000; border-
 .btns{display:flex; flex-direction:column; gap:8px}
 .btns button{font:inherit; font-size:11px; padding:12px; color:#1b1340; background:var(--gold); border:3px solid #fff; border-radius:6px; cursor:pointer}
 .btns button:focus-visible{outline:2px solid #fff; outline-offset:3px}
+.btns a.gear{font:inherit; font-size:10px; padding:10px; text-align:center; text-decoration:none; color:var(--gold); background:transparent; border:3px solid var(--gold); border-radius:6px; cursor:pointer}
+.btns a.gear:hover,.btns a.gear:focus-visible{background:var(--gold); color:#1b1340; outline:none}
 #pad{width:min(100%,880px); display:flex; justify-content:space-between; align-items:center; padding:16px 16px 22px; gap:12px}
 .grp{display:flex; gap:12px; align-items:center}
 .pb{font:inherit; width:76px; height:76px; border-radius:50%; border:3px solid rgba(255,255,255,.35); background:var(--bg2); color:#fff; font-size:18px; touch-action:none; display:flex; align-items:center; justify-content:center; cursor:pointer}
@@ -347,16 +349,17 @@ document.querySelectorAll('.pb').forEach(b=>{
 document.addEventListener('visibilitychange',()=>{ if(document.hidden && state==='play' && ov.hidden) showPause(); });
 
 /* ---------------- DIALOGS ---------------- */
+const MERCH={label:'Get the gear 🐦🍟',url:'https://www.redbubble.com/shop/ap/184375354'};
 function dialog(title,html,btns,cls){
   paused=true; ov.hidden=false; dtEl.textContent=title; dtEl.hidden=!title; ov.querySelector('.box').className='box'+(cls?' '+cls:''); dxEl.innerHTML=html; dbEl.innerHTML=''; sirenSet(0,0);
-  for(const b of btns){const el=document.createElement('button'); el.textContent=b.label; el.onclick=b.fn; dbEl.appendChild(el);}
+  for(const b of btns){ if(b.url){const a=document.createElement('a'); a.className='gear'; a.href=b.url; a.target='_blank'; a.rel='noopener'; a.textContent=b.label; dbEl.appendChild(a); continue;} const el=document.createElement('button'); el.textContent=b.label; el.onclick=b.fn; dbEl.appendChild(el);}
   setTimeout(()=>{const f=dbEl.querySelector('button'); f&&f.focus({preventScroll:true});},30);
 }
 function closeDialog(){ov.hidden=true; paused=false; for(const k in input) input[k]=false; document.querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));}
 function showTitle(){
   state='title';
   dialog('',`<img class="logo" src="${LOGO}" alt="Dodgy Dublin Redemption"><p class="credit">Created by Matheus Amud</p><p>You're meeting your mate in Stephen's Green. Your bike's locked up on Grafton St. You've three chicken fillet rolls and there's no going back.</p><p>Stomp seagulls. Punch scumbags. Wait for the green man. Talk to people: a euro goes a long way.</p>`,
-    [{label:'Start',fn(){auInit(); voiceUnlock(); resetRun(); state='play'; closeDialog();}}],'title');
+    [{label:'Start',fn(){auInit(); voiceUnlock(); resetRun(); state='play'; closeDialog();}},MERCH],'title');
 }
 function showPause(){ dialog('Paused',`<p>Grab a cuppa. The seagulls will wait.</p>`,[{label:'Back to it',fn(){auInit();closeDialog();}}]); }
 function gameOver(why){
@@ -370,7 +373,7 @@ function winGame(){
   const rank=total<3000?'Tourist in a leprechaun hat':total<4500?'Blow-in':total<6000?'Honorary Dub':'Absolute legend';
   dialog('You made it!',`<p>${S.bikeSaved?'You roll into the Green on your own bike.':P.bike?'You roll into the Green on a Dublin Bike. Your own one is gone. Classic.':'You walk into the Green. The bike is gone. Classic.'} Your mate's on a bench with two cans. Lovely.</p>
   <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Your bike: ${S.bikeSaved?'saved (+500)':'robbed'}</li><li>Dublin Bike: ${S.dubBike?'rescued (+250)':'nicked'}</li><li>Good deeds: ${S.kind}</li><li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
-    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}}]);
+    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},MERCH]);
 }
 
 /* ---------------- NPC TALK ---------------- */
