@@ -1,6 +1,6 @@
 // Bump this number every time you upload a new version of the game,
 // so phones that installed it pick up the update.
-const CACHE = 'dodgy-dublin-v5';
+const CACHE = 'dodgy-dublin-v6';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './favicon.ico',
   './icons/logo.png', './icons/icon-192.png', './icons/icon-512.png',

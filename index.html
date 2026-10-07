@@ -54,6 +54,13 @@ canvas{display:block; width:100%; aspect-ratio:480/270; background:#000; border-
 .btns a.pint{font:inherit; font-size:10px; padding:10px; text-align:center; text-decoration:none; color:#1b1340; background:#ffb84a; border:3px solid #1b1340; box-shadow:0 0 0 2px #ffb84a; border-radius:6px; cursor:pointer}
 .btns a.pint:hover,.btns a.pint:focus-visible{background:#ffd84a; outline:none}
 .btns a.gear{font-size:8px; opacity:.85}
+.pick-h{text-align:center!important; color:var(--gold); margin:2px 0 8px!important}
+.pick{display:flex; gap:12px; justify-content:center; margin:0 0 14px}
+.ch{font:inherit; font-size:9px; color:#fff; background:rgba(255,255,255,.06); border:3px solid rgba(255,255,255,.25); border-radius:10px; padding:6px 10px 8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px}
+.ch canvas{width:64px; height:84px}
+.ch.on{border-color:var(--gold); background:rgba(255,216,74,.16); color:var(--gold)}
+.ch:focus-visible{outline:2px solid #fff; outline-offset:3px}
+.box img.card{display:block; width:100%; max-width:320px; margin:0 auto 12px; border-radius:8px; border:3px solid var(--gold)}
 #pad{width:min(100%,880px); display:flex; justify-content:space-between; align-items:center; padding:16px 16px 22px; gap:12px}
 .grp{display:flex; gap:12px; align-items:center}
 .pb{font:inherit; width:76px; height:76px; border-radius:50%; border:3px solid rgba(255,255,255,.35); background:var(--bg2); color:#fff; font-size:18px; touch-action:none; display:flex; align-items:center; justify-content:center; cursor:pointer}
@@ -91,7 +98,7 @@ canvas{display:block; width:100%; aspect-ratio:480/270; background:#000; border-
 
 <script>
 (function(){
-const cv=document.getElementById('game'), ctx=cv.getContext('2d');
+const cv=document.getElementById('game'); let ctx=cv.getContext('2d');
 const VW=480, VH=270, GROUND=222, GRAV=1500, END=7520, ARENA=6880;
 const S1_BRIDGES=[{x0:2440,x1:2960,h:44,k:'hap'}];
 let BRIDGES=S1_BRIDGES, BRIDGE=S1_BRIDGES[0], STAGE=1;
@@ -147,19 +154,35 @@ function sirenSet(vol,t){
 }
 
 /* ---------------- VOICES (speech bubbles talk out loud) ---------------- */
-const VOICE={ok:typeof window!=='undefined'&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined',v:null};
-function pickVoice(){ if(!VOICE.ok) return; const vs=speechSynthesis.getVoices(); VOICE.v=vs.find(v=>/en[-_]IE/i.test(v.lang))||vs.find(v=>/moira/i.test(v.name))||vs.find(v=>/en[-_]GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null; }
+const VOICE={ok:typeof window!=='undefined'&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined',m:null,f:null,any:null,clips:new Set(),audio:null};
+const FEM=/female|moira|emily|orla|niamh|sonia|libby|maisie|serena|kate|fiona|karen|samantha|victoria|hazel|susan|martha|tessa|zira|aria|jenny|catherine|natasha|clara|abbi|bella|hollie|olivia|amy|emma|ava|allison|nicky|zoe|siobhan/i;
+const MAL=/\bmale\b|connor|daniel|ryan|thomas|george|oliver|arthur|rishi|fred|alex|aaron|reed|rocko|david|mark|guy|james|brian|noah|alfie|elliot|ethan|harry|jack|lewis|william|liam|nathan|evan|sean|conor/i;
+function vScore(v){ const l=(v.lang||'').replace('_','-'); let s;
+  if(/^en-IE/i.test(l)) s=100; else if(/^en-GB/i.test(l)) s=40; else if(/^en-(AU|NZ)/i.test(l)) s=20; else if(/^en/i.test(l)) s=10; else return -1;
+  if(/natural|neural|enhanced|premium|online/i.test(v.name)) s+=30; if(/google/i.test(v.name)) s+=4; return s; }
+function pickVoice(){ if(!VOICE.ok) return; const vs=speechSynthesis.getVoices().filter(v=>vScore(v)>=0); if(!vs.length) return;
+  const best=list=>list.sort((a,b)=>vScore(b)-vScore(a))[0]||null;
+  VOICE.f=best(vs.filter(v=>FEM.test(v.name))); VOICE.m=best(vs.filter(v=>!FEM.test(v.name)&&MAL.test(v.name))); VOICE.any=best(vs.slice()); }
 if(VOICE.ok){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+fetch('./voices/clips.json').then(r=>r.ok?r.json():[]).then(a=>{ for(const k of a) VOICE.clips.add(k); }).catch(()=>{});
 function voiceUnlock(){ if(!VOICE.ok) return; try{ const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);}catch(e){} }
-const VP={homeless:[.8,.95],tourist:[1.35,1.1],mate:[1,1.1],busker:[.9,1],students:[1.25,1.15],bambino:[1.1,1.1],pint:[.95,1],bewleys:[1.2,1],cans:[1.05,1.1],queue:[1.15,1.2],scum:[.7,1.2],thief:[.65,1.15],garda:[.85,1],dancers:[1.2,1.15],crew:[1,1.1],sup:[1,1.05],atlas:[1.3,1.1],locks:[.9,.95],gelato:[1.2,1.05],tourist2:[1.35,1.1]};
+// who -> [gender, pitch, rate]. Kept close to 1: big pitch shifts are what made it sound robotic.
+const VP={homeless:['m',.94,.95],tourist:['f',1.06,1],mate:['m',1,1.02],busker:['m',.96,1],students:['f',1.05,1.04],bambino:['m',1,1],pint:['m',.98,1],bewleys:['f',1.02,1],cans:['m',1,1.02],queue:['f',1.05,1.05],scum:['m',.9,1.04],thief:['m',.88,1.04],garda:['m',.9,.94],dancers:['f',1.08,1.05],crew:['m',1,1.02],sup:['m',1,1],atlas:['f',1.08,1.02],locks:['m',.95,.95],gelato:['m',1.02,1],tourist2:['f',1.05,1],swan:['f',.85,1.1]};
+function clipKey(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60); }
 function speak(text,who,force){
-  if(!VOICE.ok||!AU.on||!text) return;
+  if(!AU.on||!text) return;
   let t=text.replace(/[♪♥*]/g,'').replace(/€(\d+)/g,'$1 euro').replace(/Pražský/g,'Prashkee').trim(); if(!t) return;
   if(t===t.toUpperCase()) t=t.charAt(0)+t.slice(1).toLowerCase();
+  const key=(who==='player'?CHAR+'-':'')+clipKey(t);
+  if(VOICE.clips.has(key)){ try{ if(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused){ if(!force) return; VOICE.audio.pause(); } if(VOICE.ok) speechSynthesis.cancel(); const a=new Audio('./voices/'+key+'.mp3'); a.volume=0.95; a.play().catch(()=>{}); VOICE.audio=a; return; }catch(e){} }
+  if(!VOICE.ok) return;
   try{
     if(speechSynthesis.speaking||speechSynthesis.pending){ if(!force) return; speechSynthesis.cancel(); }
-    const u=new SpeechSynthesisUtterance(t); if(VOICE.v){u.voice=VOICE.v;u.lang=VOICE.v.lang;} else u.lang='en-IE';
-    const pr=VP[who]||[1,1.05]; u.pitch=pr[0]; u.rate=pr[1]; u.volume=0.95; speechSynthesis.speak(u);
+    const pr=who==='player'?[CHARS[CHAR].g,1,1.02]:(VP[who]||['m',1,1]);
+    const g=pr[0], v=(g==='f'?VOICE.f:VOICE.m)||VOICE.any;
+    const u=new SpeechSynthesisUtterance(t); if(v){u.voice=v;u.lang=v.lang;} else u.lang='en-IE';
+    let pitch=pr[1]; if(v && v===VOICE.any && !(g==='f'?FEM:MAL).test(v.name)) pitch*=g==='f'?1.12:0.86;
+    u.pitch=pitch; u.rate=pr[2]; u.volume=0.95; speechSynthesis.speak(u);
   }catch(e){}
 }
 
@@ -328,6 +351,7 @@ function build(fromX){
   }
 }
 function resetRun(){
+  CARD.back=null; CARD.r=null;
   Object.assign(S,{money:0,craic:5,rolls:3,score:0,gulls:0,scums:0,bikeSaved:false,dubBike:false,cans:false,bossBeaten:false,lock:false,kind:0,swans:false,brolly:false,fined:false,dodges:0,canT:0,rainT:0});
   cp={x:40,money:0,craic:5,bike:false,bikeKind:'own',score:0,brolly:false,swans:false};
   spawnAt(cp);
@@ -364,24 +388,35 @@ document.querySelectorAll('.pb').forEach(b=>{
 document.addEventListener('visibilitychange',()=>{ if(document.hidden && state==='play' && ov.hidden) showPause(); });
 
 /* ---------------- DIALOGS ---------------- */
+const CHARS={paddy:{name:'Paddy',g:'m',skin:'#e8b58e',hair:'#2a1a10',hs:'short',top:'#1fa35a',legs:'#2d4a8c',zip:true},
+ aoife:{name:'Aoife',g:'f',skin:'#f2cfb0',hair:'#f2d06a',hs:'long',top:'#d8336a',legs:'#2a2a40',zip:true}};
+let CHAR='paddy'; try{ const c=localStorage.getItem('ddr-char'); if(CHARS[c]) CHAR=c; }catch(e){}
+function charLook(id){ const c=CHARS[id]; return {skin:c.skin,hair:c.hair,hs:c.hs,top:c.top,legs:c.legs,shoes:'#f5f5f5',zip:c.zip,happy:true}; }
+function withCtx(c2,fn){ const old=ctx; ctx=c2; try{ fn(); } finally { ctx=old; } }
+function drawPortrait(cnv,id){ const c2=cnv.getContext('2d'); c2.setTransform(1,0,0,1,0,0); c2.clearRect(0,0,cnv.width,cnv.height); c2.setTransform(2.2,0,0,2.2,0,0); withCtx(c2,()=>{ human(22,56,{...charLook(id),f:1}); }); }
+function wirePicker(){ document.querySelectorAll('.ch').forEach(b=>{ const id=b.dataset.c; drawPortrait(b.querySelector('canvas'),id); b.classList.toggle('on',id===CHAR); b.setAttribute('aria-pressed',id===CHAR);
+  b.onclick=()=>{ CHAR=id; try{ localStorage.setItem('ddr-char',id);}catch(e){} wirePicker(); sfx.talk&&sfx.talk(); }; }); }
+const PICKER=`<p class="pick-h">Who are you playing?</p><div class="pick">${Object.keys(CHARS).map(k=>`<button type="button" class="ch" data-c="${k}"><canvas width="96" height="126"></canvas><span>${CHARS[k].name}</span></button>`).join('')}</div>`;
 const PINT_URL='https://buymeacoffee.com/matheusamud';
 const PINT={label:'Buy me a pint 🍺',url:PINT_URL,cls:'pint'}, PINT_END={label:'Survived? Buy me a pint 🍺',url:PINT_URL,cls:'pint'};
 const MERCH={label:'Get the gear 🐦🍟',url:'https://www.redbubble.com/shop/ap/184375354'};
 function dialog(title,html,btns,cls){
   paused=true; ov.hidden=false; dtEl.textContent=title; dtEl.hidden=!title; ov.querySelector('.box').className='box'+(cls?' '+cls:''); dxEl.innerHTML=html; dbEl.innerHTML=''; sirenSet(0,0);
-  for(const b of btns){ if(b.url){const a=document.createElement('a'); a.className=b.cls||'gear'; a.href=b.url; a.target='_blank'; a.rel='noopener'; a.textContent=b.label; dbEl.appendChild(a); continue;} const el=document.createElement('button'); el.textContent=b.label; el.onclick=b.fn; dbEl.appendChild(el);}
+  for(const b of btns){ if(b.url){const a=document.createElement('a'); a.className=b.cls||'gear'; a.href=b.url; if(b.download){a.download=b.download;} else {a.target='_blank'; a.rel='noopener';} a.textContent=b.label; dbEl.appendChild(a); continue;} const el=document.createElement('button'); el.textContent=b.label; el.onclick=b.fn; dbEl.appendChild(el);}
   setTimeout(()=>{const f=dbEl.querySelector('button'); f&&f.focus({preventScroll:true});},30);
 }
 function closeDialog(){ov.hidden=true; paused=false; for(const k in input) input[k]=false; document.querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));}
 function showTitle(){
   state='title';
-  dialog('',`<img class="logo" src="${LOGO}" alt="Dodgy Dublin Redemption"><p class="credit">Created by Matheus Amud</p><p>You're meeting your mate in Stephen's Green. Your bike's locked up on Grafton St. You've three chicken fillet rolls and there's no going back.</p><p>Stomp seagulls. Punch scumbags. Wait for the green man. Talk to people: a euro goes a long way.</p>`,
+  dialog('',`<img class="logo" src="${LOGO}" alt="Dodgy Dublin Redemption"><p class="credit">Created by Matheus Amud</p><p>You're meeting your mate in Stephen's Green. Your bike's locked up on Grafton St. You've three chicken fillet rolls and there's no going back.</p><p>Stomp seagulls. Punch scumbags. Wait for the green man. Talk to people: a euro goes a long way.</p>${PICKER}`,
     [{label:'Start',fn(){startStage(1);}},{label:'Stage 2: the canal (new!)',fn(){showStageIntro(2);}},PINT,MERCH],'title');
+  wirePicker();
 }
 function startStage(n){ setStage(n); auInit(); voiceUnlock(); resetRun(); state='play'; closeDialog(); MUS.track=null; }
 function showStageIntro(n){
   state='title';
-  dialog('Stage 2: The canal',`<p>Sunny Saturday on the Grand Canal. Your mate's watching the match in Dolphin's Barn and he's saved you a seat.</p><p>Walk the canal from the Docks. Help the swans, dodge the cyclists, mind the guards at the Barge. And yes, it'll rain at some point.</p>`,[{label:"Let's go",fn(){startStage(2);}},PINT,MERCH]);
+  dialog('Stage 2: The canal',`<p>Sunny Saturday on the Grand Canal. Your mate's watching the match in Dolphin's Barn and he's saved you a seat.</p><p>Walk the canal from the Docks. Help the swans, dodge the cyclists, mind the guards at the Barge. And yes, it'll rain at some point.</p>${PICKER}`,[{label:"Let's go",fn(){startStage(2);}},PINT,MERCH]);
+  wirePicker();
 }
 function showPause(){ dialog('Paused',`<p>Grab a cuppa. The seagulls will wait.</p>`,[{label:'Back to it',fn(){auInit();closeDialog();}}]); }
 function gameOver(why){
@@ -389,21 +424,63 @@ function gameOver(why){
   dialog('Hangry!',`<p>${why}</p><p>Out of chicken fillet rolls. Back to the start of ${sectionAt(cp.x).name} with three fresh ones.</p>`,
     [{label:'Try again',fn(){spawnAt(cp); state='play'; closeDialog();}}]);
 }
+const GAME_URL='https://matheusamud.github.io/Dodgy-Dublin-Redemption/';
+const CARD={file:null,url:null,r:null,back:null};
+function wrapLines(c,t,maxW){ const out=[]; let line=''; for(const w of t.split(' ')){ const tr=line?line+' '+w:w; if(c.measureText(tr).width>maxW&&line){ out.push(line); line=w; } else line=tr; } if(line) out.push(line); return out; }
+async function buildCard(r){
+  CARD.file=null; CARD.r=r; if(CARD.url){ URL.revokeObjectURL(CARD.url); CARD.url=null; }
+  const W=1080,H=1350, cnv=document.createElement('canvas'); cnv.width=W; cnv.height=H; const c=cnv.getContext('2d');
+  const PX="'Press Start 2P', monospace"; try{ await document.fonts.load("40px 'Press Start 2P'"); }catch(e){}
+  const g=c.createLinearGradient(0,0,0,H); g.addColorStop(0,'#2a1a4a'); g.addColorStop(1,'#1c1238'); c.fillStyle=g; c.fillRect(0,0,W,H);
+  c.fillStyle='rgba(255,255,255,.035)'; for(let x=0;x<W;x+=40) c.fillRect(x,0,2,H); for(let y=0;y<H;y+=40) c.fillRect(0,y,W,2);
+  const T=(t,x,y,size,col,al)=>{ c.font=size+'px '+PX; c.textAlign=al||'center'; c.textBaseline='middle'; c.fillStyle='#0c0820'; c.fillText(t,x+4,y+4); c.fillStyle=col; c.fillText(t,x,y); };
+  await new Promise(res=>{ const im=new Image(); im.onload=()=>{ c.save(); c.beginPath(); c.arc(W/2,198,139,0,Math.PI*2); c.clip(); c.drawImage(im,W/2-150,48,300,300); c.restore(); res(); }; im.onerror=res; im.src=LOGO; });
+  T('I SURVIVED',W/2,410,46,'#fff'); T(r.place,W/2,478,46,'#ffd84a');
+  c.fillStyle='rgba(255,216,74,.12)'; c.strokeStyle='#ffd84a'; c.lineWidth=6; c.beginPath(); c.roundRect?c.roundRect(60,540,W-120,520,28):c.rect(60,540,W-120,520); c.fill(); c.stroke();
+  c.save(); c.translate(250,1000); c.scale(6.2,6.2); withCtx(c,()=>{ human(0,0,{...charLook(CHAR),f:1}); }); c.restore();
+  c.save(); c.translate(130,640); c.scale(3,3); withCtx(c,()=>{ gull(0,0,1,1,1,true); drawRoll(16,10,0.9); }); c.restore();
+  T(CHARS[CHAR].name.toUpperCase(),250,1032,22,'#fff');
+  T(String(r.total),720,640,70,'#ffd84a'); T('POINTS',720,712,22,'#fff');
+  c.font='26px '+PX; const rk=wrapLines(c,r.rank.toUpperCase(),520); rk.forEach((l,i)=>T(l,720,790+i*40,26,'#3fcf6a'));
+  let y=820+rk.length*40; c.font="34px 'Trebuchet MS', 'DejaVu Sans', sans-serif"; c.textAlign='left';
+  for(const l of r.lines){ c.fillStyle='#0c0820'; c.fillText(l,462,y+3); c.fillStyle='#f4f0ff'; c.fillText(l,460,y); y+=50; }
+  T(r.stage,W/2,1110,22,'#c8b8f0'); T('CAN YOU BEAT ME?',W/2,1175,40,'#ffd84a'); T(GAME_URL.replace('https://','').replace(/\/$/,''),W/2,1250,17,'#fff');
+  let blob=null; try{ blob=await new Promise(res=>cnv.toBlob(res,'image/png')); }catch(e){} if(!blob) return;
+  CARD.file=new File([blob],'dodgy-dublin-score.png',{type:'image/png'}); CARD.url=URL.createObjectURL(blob);
+}
+function shareCard(){
+  const r=CARD.r; if(!r) return; const text=`I scored ${r.total} on Dodgy Dublin Redemption as ${CHARS[CHAR].name}. Rank: ${r.rank} 🐦🍟 Can you beat me? ${GAME_URL}`;
+  if(CARD.file && navigator.canShare && navigator.canShare({files:[CARD.file]})){ navigator.share({files:[CARD.file],text}).catch(()=>{}); return; }
+  if(!CARD.url){ pop(P.x,P.y-60,'ONE SEC...','#fff'); return; }
+  dialog('Your score card',`<img class="card" src="${CARD.url}" alt="Score card: ${r.total} points, ${r.rank}"><p>Save the picture and post it. Tag a mate who wouldn't last five minutes in town.</p>`,
+    [{label:'Save picture',url:CARD.url,cls:'pint',download:'dodgy-dublin-score.png'},{label:'Back',fn(){ CARD.back&&CARD.back(); }}]);
+}
+const SHARE={label:'Share my score \u{1F4F8}',fn(){shareCard();}};
 function winGame(){
   state='win';
   if(STAGE===2) return winGame2();
   const total=Math.round(S.score + S.money*10 + S.craic*50 + S.rolls*100 + (S.bikeSaved?500:0) + (S.dubBike?250:0));
   const rank=total<3000?'Tourist in a leprechaun hat':total<4500?'Blow-in':total<6000?'Honorary Dub':'Absolute legend';
+  if(!CARD.back||CARD.r?.total!==total||CARD.r?.stageN!==1) buildCard({stageN:1,total,rank,place:"STEPHEN'S GREEN",stage:'STAGE 1: THE CITY CENTRE',lines:[`€${S.money} left in the pocket`,`${S.rolls} chicken fillet rolls`,S.bikeSaved?'Bike: saved':'Bike: robbed. Classic.',`Craic: ${S.craic}/10`]});
+  CARD.back=()=>{ state='win'; showWin1(total,rank); };
+  showWin1(total,rank);
+}
+function showWin1(total,rank){
   dialog('You made it!',`<p>${S.bikeSaved?'You roll into the Green on your own bike.':P.bike?'You roll into the Green on a Dublin Bike. Your own one is gone. Classic.':'You walk into the Green. The bike is gone. Classic.'} Your mate's on a bench with two cans. Lovely.</p>
   <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Your bike: ${S.bikeSaved?'saved (+500)':'robbed'}</li><li>Dublin Bike: ${S.dubBike?'rescued (+250)':'nicked'}</li><li>Good deeds: ${S.kind}</li><li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
-    [{label:'Next: the canal',fn(){showStageIntro(2);}},{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},PINT_END,MERCH]);
+    [{label:'Next: the canal',fn(){showStageIntro(2);}},SHARE,{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},PINT_END,MERCH]);
 }
 function winGame2(){
   const total=Math.round(S.score + S.money*10 + S.craic*50 + S.rolls*100 + (S.swans?400:0) + (S.fined?0:200));
   const rank=total<3000?'Lost tourist':total<4500?'Day-tripper':total<6000?'Canal regular':'Portobello royalty';
+  if(!CARD.back||CARD.r?.total!==total||CARD.r?.stageN!==2) buildCard({stageN:2,total,rank,place:"DOLPHIN'S BARN",stage:'STAGE 2: THE CANAL',lines:[`€${S.money} left in the pocket`,S.swans?'Swans: safe':'Swans: on their own',S.fined?'Garda fine: paid. Ouch.':'Garda fine: dodged',`Cyclists dodged: ${S.dodges}`]});
+  CARD.back=()=>{ state='win'; showWin2(total,rank); };
+  showWin2(total,rank);
+}
+function showWin2(total,rank){
   dialog("Dolphin's Barn!",`<p>Your mate's on the bench with the match on his phone and a can with your name on it. Sound.</p>
   <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Swans: ${S.swans?'safe (+400)':'on their own'}</li><li>Garda fine: ${S.fined?'paid. Ouch.':'dodged (+200)'}</li><li>Cyclists dodged: ${S.dodges}</li><li>Good deeds: ${S.kind}</li><li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
-    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},{label:'Back to stage 1',fn(){startStage(1);}},PINT_END,MERCH]);
+    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Back to stage 1',fn(){startStage(1);}},PINT_END,MERCH]);
 }
 
 /* ---------------- NPC TALK ---------------- */
@@ -441,6 +518,7 @@ function hurt(msg,fromX){
   if(P.inv>0||state!=='play')return;
   S.rolls--; P.inv=1.6; P.vy=-330; P.onG=false; P.knock=(P.x<(fromX??P.x+1)?-1:1)*200; shake=0.25; sfx.hurt();
   pop(P.x,P.y-60,msg||'-1 ROLL','#ff6b6b');
+  speak(['Ah here!','Jaysus!','Ah stop!','Feck sake!','Ah no, me roll!'][Math.floor(Math.random()*5)],'player',false);
   if(S.rolls<=0) gameOver(msg==='NICKED YER ROLL!'?'A seagull had the last one.':'That last hit cost you your final roll.');
 }
 function stomped(eb){ return P.vy>0 && P.prevB<=eb.t+10; }
@@ -494,7 +572,7 @@ function update(dt){
     else if(t.t==='scooter' && camX+VW>=t.x){ const sc={type:'scooter',x:camX+VW+40,y:GROUND,vx:-290,state:'ride',t:0}; const gd={type:'garda',x:sc.x+190,y:GROUND,vx:-290,state:'chase',t:0,link:sc}; sc.link=gd; enemies.push(sc,gd); banner('GARDA CHASE! JUMP!'); trigs.splice(i,1); }
     else if(t.t==='boss' && P.x>=t.x){ S.lock=true; const hp=STAGE===2?4:3; boss={x:ARENA+300,y:-50,hp,max:hp,state:'enter',t:0,vx:0,vy:0,inv:0,f:0}; banner(STAGE===2?'BIG GULL: THE SEQUEL':'THE BIG GULL'); trigs.splice(i,1); }
     else if(t.t==='cyc' && camX+VW>=t.x){ enemies.push({type:'cyclist',x:camX+VW+40,y:GROUND,vx:-(220+Math.random()*50),state:'ride',ph:0,col:['#e8423a','#ffd84a','#3a8ae0','#2e9e4f','#c83a8a'][Math.floor(Math.random()*5)],say:'BING BING!',sayT:1.6,flash:0}); sfx.bell(); trigs.splice(i,1); }
-    else if(t.t==='rain' && P.x>=t.x){ S.rainT=17; banner("OMG IT'S RAINING AGAIN"); speak("Oh my god, it's raining again",'tourist',true); if(S.brolly) pop(P.x,P.y-70,'BROLLY UP!','#3fcf6a'); else { craic(-1); pop(P.x,P.y-70,'SOAKED! -1 CRAIC','#6bd6ff'); } trigs.splice(i,1); }
+    else if(t.t==='rain' && P.x>=t.x){ S.rainT=17; banner("OMG IT'S RAINING AGAIN"); speak("Oh my god, it's raining again",'player',true); if(S.brolly) pop(P.x,P.y-70,'BROLLY UP!','#3fcf6a'); else { craic(-1); pop(P.x,P.y-70,'SOAKED! -1 CRAIC','#6bd6ff'); } trigs.splice(i,1); }
   }
 
   const pb=pBox();
@@ -1089,7 +1167,7 @@ function drawPlayer(){
   if(P.inv>0 && Math.floor(time*14)%2) return;
   const sx=Math.round(P.x-camX), sy=Math.round(P.y);
   ell(sx,sy,10,2.5,'rgba(0,0,0,.25)',true);
-  const o={f:P.face,skin:'#e8b58e',hair:'#2a1a10',hs:'short',top:'#1fa35a',legs:'#2d4a8c',shoes:'#f5f5f5',zip:true,punch:P.punchT>0,ph:P.anim*12,happy:true};
+  const o={...charLook(CHAR),f:P.face,punch:P.punchT>0,ph:P.anim*12};
   if(P.bike){ bike(sx,sy,P.bikeKind==='dub'?'#5ab0e0':'#1f5fbf',P.anim); o.pose='ride'; o.ph=P.anim*14; if(!o.punch) o.armFwd=true; human(sx-2,sy-14,o); }
   else { o.pose=!P.onG?'jump':(P.vx?'walk':'stand'); human(sx,sy,o); }
   if(STAGE===2&&S.brolly&&rainA>0.05) drawBrolly(sx+(P.face>0?-2:2),sy-(P.bike?78:66));
@@ -1248,7 +1326,7 @@ function levelDef2(){
 /* ---- stage 2 update ---- */
 function stage2Update(dt){
   if(S.canT>0){ S.canT-=dt; if(S.canT<=0){ S.canT=0; craic(1); pts(50); pop(P.x,P.y-64,'GLUG. CAN DONE','#3fcf6a'); } }
-  if(S.rainT>0){ S.rainT-=dt; if(S.rainT<=0){ S.rainT=0; banner("AND IT'S SUNNY AGAIN"); speak("And it's sunny again",'tourist',false); } }
+  if(S.rainT>0){ S.rainT-=dt; if(S.rainT<=0){ S.rainT=0; banner("AND IT'S SUNNY AGAIN"); speak("And it's sunny again",'player',false); } }
   rainA+=((S.rainT>0?1:0)-rainA)*Math.min(1,dt*2);
   for(const b of boats){ b.x+=b.vx*dt; if(Math.abs(b.x-b.x0)>b.r){ b.x=b.x0+Math.sign(b.x-b.x0)*b.r; b.vx=-b.vx; } }
   for(const n of npcs){
@@ -1280,7 +1358,7 @@ function updSwans(dt){
   }
   if(ev.state==='follow'){
     ev.birds.forEach((b,i)=>{ const tgt=P.x-30-i*20, dx=tgt-b.x; if(dx>2){ b.x+=Math.min(dx,72*dt); b.ph+=dt*10; } });
-    if(P.x-ev.birds[0].x>180 && ev.sayT<=0){ ev.say='HISSS! SLOW DOWN!'; ev.sayT=2.2; speak('Hiss! Slow down!','scum',false); }
+    if(P.x-ev.birds[0].x>180 && ev.sayT<=0){ ev.say='HISSS! SLOW DOWN!'; ev.sayT=2.2; speak('Hiss! Slow down!','swan',false); }
     const last=ev.birds[ev.birds.length-1];
     if(last.x>xg.x+xg.w+14){
       ev.state='fly'; ev.t=0; xg.hold=false; xg.t=1.2;
@@ -1651,7 +1729,7 @@ function loop(ts){
   requestAnimationFrame(loop);
 }
 resetRun();
-if(location.hash==='#debug') window.__ddr={P,S,winGame,showStageIntro,setStage,startStage,resetRun,spawnAt,get camX(){return camX;},get enemies(){return enemies;},get npcs(){return npcs;},get swanEv(){return swanEv;},get state(){return state;}};
+if(location.hash==='#debug') window.__ddr={P,S,CARD,get CHAR(){return CHAR;},VOICE,winGame,showStageIntro,setStage,startStage,resetRun,spawnAt,get camX(){return camX;},get enemies(){return enemies;},get npcs(){return npcs;},get swanEv(){return swanEv;},get state(){return state;}};
 let started=false;
 function init(){ if(started)return; started=true; showTitle(); requestAnimationFrame(loop); }
 if(document.fonts&&document.fonts.load){ document.fonts.load('8px '+FONTF).then(init,init); setTimeout(init,1800); } else init();
