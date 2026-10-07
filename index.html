@@ -164,7 +164,7 @@ function pickVoice(){ if(!VOICE.ok) return; const vs=speechSynthesis.getVoices()
   const best=list=>list.sort((a,b)=>vScore(b)-vScore(a))[0]||null;
   VOICE.f=best(vs.filter(v=>FEM.test(v.name))); VOICE.m=best(vs.filter(v=>!FEM.test(v.name)&&MAL.test(v.name))); VOICE.any=best(vs.slice()); }
 if(VOICE.ok){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
-fetch('./voices/clips.json').then(r=>r.ok?r.json():[]).then(a=>{ for(const k of a) VOICE.clips.add(k); }).catch(()=>{});
+fetch('./voices/clips.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(a=>{ for(const k of a) VOICE.clips.add(k); }).catch(()=>{});
 function voiceUnlock(){ if(!VOICE.ok) return; try{ const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);}catch(e){} }
 // who -> [gender, pitch, rate]. Kept close to 1: big pitch shifts are what made it sound robotic.
 const VP={homeless:['m',.94,.95],tourist:['f',1.06,1],mate:['m',1,1.02],busker:['m',.96,1],students:['f',1.05,1.04],bambino:['m',1,1],pint:['m',.98,1],bewleys:['f',1.02,1],cans:['m',1,1.02],queue:['f',1.05,1.05],scum:['m',.9,1.04],thief:['m',.88,1.04],garda:['m',.9,.94],dancers:['f',1.08,1.05],crew:['m',1,1.02],sup:['m',1,1],atlas:['f',1.08,1.02],locks:['m',.95,.95],gelato:['m',1.02,1],tourist2:['f',1.05,1],swan:['f',.85,1.1]};
@@ -174,7 +174,13 @@ function speak(text,who,force){
   let t=text.replace(/[♪♥*]/g,'').replace(/€(\d+)/g,'$1 euro').replace(/Pražský/g,'Prashkee').trim(); if(!t) return;
   if(t===t.toUpperCase()) t=t.charAt(0)+t.slice(1).toLowerCase();
   const key=(who==='player'?CHAR+'-':'')+clipKey(t);
-  if(VOICE.clips.has(key)){ try{ if(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused){ if(!force) return; VOICE.audio.pause(); } if(VOICE.ok) speechSynthesis.cancel(); const a=new Audio('./voices/'+key+'.mp3'); a.volume=0.95; a.play().catch(()=>{}); VOICE.audio=a; return; }catch(e){} }
+  if(VOICE.clips.has(key)){ try{ if(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused){ if(!force) return; VOICE.audio.pause(); } if(VOICE.ok) speechSynthesis.cancel();
+      const a=new Audio('./voices/'+key+'.mp3'); a.volume=0.95; VOICE.audio=a;
+      const fallback=()=>{ if(VOICE.clips.delete(key)) speakTTS(t,who,true); };
+      a.onerror=fallback; a.play().catch(e=>{ if(e&&e.name!=='NotAllowedError') fallback(); }); return; }catch(e){} }
+  speakTTS(t,who,force);
+}
+function speakTTS(t,who,force){
   if(!VOICE.ok) return;
   try{
     if(speechSynthesis.speaking||speechSynthesis.pending){ if(!force) return; speechSynthesis.cancel(); }
@@ -1729,7 +1735,7 @@ function loop(ts){
   requestAnimationFrame(loop);
 }
 resetRun();
-if(location.hash==='#debug') window.__ddr={P,S,CARD,get CHAR(){return CHAR;},VOICE,winGame,showStageIntro,setStage,startStage,resetRun,spawnAt,get camX(){return camX;},get enemies(){return enemies;},get npcs(){return npcs;},get swanEv(){return swanEv;},get state(){return state;}};
+if(location.hash==='#debug') window.__ddr={P,S,CARD,speak,get CHAR(){return CHAR;},VOICE,winGame,showStageIntro,setStage,startStage,resetRun,spawnAt,get camX(){return camX;},get enemies(){return enemies;},get npcs(){return npcs;},get swanEv(){return swanEv;},get state(){return state;}};
 let started=false;
 function init(){ if(started)return; started=true; showTitle(); requestAnimationFrame(loop); }
 if(document.fonts&&document.fonts.load){ document.fonts.load('8px '+FONTF).then(init,init); setTimeout(init,1800); } else init();

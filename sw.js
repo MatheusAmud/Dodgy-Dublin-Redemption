@@ -1,6 +1,6 @@
 // Bump this number every time you upload a new version of the game,
 // so phones that installed it pick up the update.
-const CACHE = 'dodgy-dublin-v6';
+const CACHE = 'dodgy-dublin-v7';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './favicon.ico',
   './icons/logo.png', './icons/icon-192.png', './icons/icon-512.png',
@@ -21,8 +21,15 @@ self.addEventListener('fetch', e => {
       .catch(() => caches.match('./index.html')));
     return;
   }
-  // Everything else (icons, font): saved copy first, then network, saving what comes back.
+  // The voice list changes when new recordings are added: always ask the network first.
+  if (req.url.includes('/voices/clips.json')) {
+    e.respondWith(fetch(req).catch(() => caches.match(req)));
+    return;
+  }
+  // Everything else (icons, font, voice clips): saved copy first, then network.
+  // Only good responses are saved, so a missing file is never remembered as missing.
   e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
-    const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res;
+    if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
+    return res;
   })));
 });
