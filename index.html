@@ -664,7 +664,7 @@ function updEnemy(e,dt,pb,fist){
   const dx=P.x-e.x;
   e.t-=dt; if(e.sayT>0) e.sayT-=dt;
   if(e.type==='scum'){
-    if(e.state==='idle'){ e.state='walk'; e.say=['Howya bud','Give us a euro','Nice runners','What are you lookin at?','Story bud?'][hash(e.x|0,3)%5]; e.sayT=2.2; speak(e.say,'scum',false); }
+    if(e.state==='idle'){ e.state='walk'; e.say=['Howya buddy','Give us a euro','Nice runners','What are you lookin at?','Story bud?'][hash(e.x|0,3)%5]; e.sayT=2.2; speak(e.say,'scum',false); }
     if(e.state==='walk'){ e.face=Math.sign(dx)||-1; e.vx=e.face*55; if(Math.abs(dx)<72){e.state='wind';e.t=0.45;e.vx=0;} }
     else if(e.state==='wind'){ e.vx=0; if(e.t<=0){e.state='lunge';e.t=0.32;e.vx=e.face*250;} }
     else if(e.state==='lunge'){ if(e.t<=0){e.state='recover';e.t=0.7;} }
