@@ -1,6 +1,6 @@
 // Bump this number every time you upload a new version of the game,
 // so phones that installed it pick up the update.
-const CACHE = 'dodgy-dublin-v13';
+const CACHE = 'dodgy-dublin-v14';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './favicon.ico',
   './icons/logo.png', './icons/icon-192.png', './icons/icon-512.png',
@@ -15,6 +15,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
+  // The test copy in /beta/ is never cached, so it can't mix with the live game.
+  if (req.url.includes('/beta/')) return;
   if (req.mode === 'navigate') {
     // Game page: try the network first so updates arrive, fall back to the saved copy offline.
     e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return res; })
