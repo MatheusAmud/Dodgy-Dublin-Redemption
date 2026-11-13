@@ -17,7 +17,7 @@
 <meta property="og:title" content="Dodgy Dublin Redemption">
 <meta property="og:description" content="Stomp seagulls, dodge the Luas, save your bike. A game by Matheus Amud.">
 <meta property="og:image" content="./icons/icon-512.png">
-<title>Dodgy Dublin Redemption (TEST)</title>
+<title>Dodgy Dublin Redemption</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -239,7 +239,10 @@ function speak(text,who,force){
   if(!AU.on||!text) return;
   let t=text.replace(/[♪♥*]/g,'').replace(/€(\d+)/g,'$1 euro').replace(/Pražský/g,'Prashkee').trim(); if(!t) return;
   if(t===t.toUpperCase()) t=t.charAt(0)+t.slice(1).toLowerCase();
-  const key=(who==='player'?CHAR+'-':'')+clipKey(t);
+  let key=(who==='player'?CHAR+'-':'')+clipKey(t);
+  if(!VOICE.clips.has(key)){ const k2=key.replace(/-buddy(?=-|$)/g,'-buddy'); if(VOICE.clips.has(k2)) key=k2; }
+  if(VOICE.clips.has(key)&&AU.c&&window.fetch){ if(!force&&voiceBusy()) return; voiceStop(); const t0=performance.now();
+    voiceBuf(key).then(b=>{ if(performance.now()-t0>650) return; voicePlay(b); }).catch(()=>{ VOICE.clips.delete(key); speakTTS(t,who,true); }); return; }
   if(VOICE.clips.has(key)){ try{ if(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused){ if(!force) return; VOICE.audio.pause(); } if(VOICE.ok) speechSynthesis.cancel();
       const a=new Audio('./voices/'+key+'.mp3'); a.volume=0.95; VOICE.audio=a;
       const fallback=()=>{ if(VOICE.clips.delete(key)) speakTTS(t,who,true); };
@@ -318,7 +321,7 @@ function musTick(){
 }
 
 const muteBtn=document.getElementById('mute');
-function toggleMute(){ AU.on=!AU.on; muteBtn.textContent=AU.on?'SOUND ON':'SOUND OFF'; if(AU.m) AU.m.gain.value=AU.on?0.35:0; if(!AU.on){ sirenSet(0,0); if(VOICE.ok) speechSynthesis.cancel(); } else auInit(); }
+function toggleMute(){ AU.on=!AU.on; muteBtn.textContent=AU.on?'SOUND ON':'SOUND OFF'; if(AU.m) AU.m.gain.value=AU.on?0.35:0; if(!AU.on){ sirenSet(0,0); if(VOICE.ok) speechSynthesis.cancel(); try{ voiceStop(); }catch(e){} } else auInit(); }
 muteBtn.onclick=toggleMute;
 
 /* ---------------- LEVEL ---------------- */
@@ -428,7 +431,7 @@ function build(fromX){
 }
 function resetRun(){
   CARD.back=null; CARD.r=null;
-  Object.assign(S,{money:0,craic:5,rolls:3,score:0,gulls:0,scums:0,bikeSaved:false,dubBike:false,cans:false,bossBeaten:false,lock:false,kind:0,swans:false,brolly:false,fined:false,dodges:0,canT:0,rainT:0,sweets:0,glowT:0,ghostT:0,done:{},sparkT:0,tattoo:false,flashT:0,turnips:0,pumps:0,kidsHappy:0,inCoppers:false,smelt:0,fogged:0,in1:false,in2:false,round:0,roundDone:false,chips:false,taxi:false,freeze:0,hideP:false});
+  Object.assign(S,{money:0,craic:5,rolls:3,score:0,gulls:0,scums:0,bikeSaved:false,dubBike:false,cans:false,bossBeaten:false,lock:false,kind:0,swans:false,brolly:false,fined:false,dodges:0,canT:0,rainT:0,sweets:0,glowT:0,ghostT:0,done:{},sparkT:0,tattoo:false,flashT:0,turnips:0,pumps:0,kidsHappy:0,inCoppers:false,smelt:0,fogged:0,in1:false,in2:false,round:0,roundDone:false,chips:false,taxi:false,freeze:0,hideP:false,pints:0,dance:0,goalT:0,allTaxis:false});
   HINT.seen.clear(); HINT.q=[]; HINT.cur=null; tray4=false; cp={x:40,money:STAGE===4?20:0,craic:5,bike:false,bikeKind:'own',score:0,brolly:false,swans:false};
   spawnAt(cp);
 }
@@ -567,12 +570,12 @@ function showWin2(total,rank){
 }
 
 /* ---------------- NPC TALK ---------------- */
-const GREET={homeless:'Spare the change?',tourist:"Where's the Temple Bar?",mate:"Howya! C'mere!",busker:'Any requests?',students:'Wanna can, bud?',cans:'Pražský 4-pack? €4',bambino:'Slice? €5',pint:'Pint? €11',bewleys:'Sticky bun? €4',dancers:'Join in!',crew:'Can, bud? Sit down!',sup:'Howya! Lovely day!',atlas:'Oi! Tudo bem?',locks:'Tasting menu? €145',gelato:'Gelato? €4',tourist2:'Is this... Venice?'};
+const GREET={homeless:'Spare the change?',tourist:"Where's the Temple Bar?",mate:"Howya! C'mere!",busker:'Any requests?',students:'Wanna can, buddy?',cans:'Pražský 4-pack? €4',bambino:'Slice? €5',pint:'Pint? €11',bewleys:'Sticky bun? €4',dancers:'Join in!',crew:'Can, buddy? Sit down!',sup:'Howya! Lovely day!',atlas:'Oi! Tudo bem?',locks:'Tasting menu? €145',gelato:'Gelato? €4',tourist2:'Is this... Venice?'};
 const PROMPT={homeless:'GIVE €1',tourist:'TALK',mate:'HIGH FIVE',busker:'TIP €1',students:'TALK',cans:'BUY €4',bambino:'BUY €5',pint:'BUY €11',bewleys:'BUY €4',dancers:'DANCE',crew:'TAKE CAN',sup:'WAVE',atlas:'TALK',locks:'BUY €145',gelato:'BUY €4',tourist2:'TALK'};
 function talk(n){ if(!((STAGE===3&&talk3(n))||(STAGE===4&&talk4(n))||talkCoach(n))) talkInner(n); if(n.say) speak(n.say,n.k,true); markDone(n); }
 function talkInner(n){
   sfx.talk(); n.sayT=2.8;
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; return false;} S.money-=c; return true; };
   switch(n.k){
     case 'homeless': if(S.money<1){n.say='Ah no bother';return;} S.money-=1; n.used=true; n.say='God bless ya!'; craic(2); pts(100); S.kind++; pop(n.x,GROUND-80,'+2 CRAIC','#3fcf6a'); break;
     case 'tourist': n.used=true; n.say='Follow the stag parties!'; craic(1); pts(50); pop(n.x,GROUND-80,'+1 CRAIC','#3fcf6a'); break;
@@ -648,6 +651,7 @@ function update(dt){
 
   if(S.lock) camX+=(ARENA-camX)*Math.min(1,dt*4);
   else camX=Math.max(camX,Math.min(P.x-170,END-VW));
+  if(STAGE===4) roomCam4();
 
   for(let i=trigs.length-1;i>=0;i--){ const t=trigs[i];
     if(t.t==='gull' && camX+VW>=t.x){ mhint('SEAGULLS SWOOP LOW: JUMP ON THEM OR PUNCH THEM','gull'); enemies.push({type:'gull',x:camX+VW+20,y:46+Math.random()*40,vx:-110,vy:0,state:'enter',f:Math.random()*6}); trigs.splice(i,1); }
@@ -737,7 +741,7 @@ function updEnemy(e,dt,pb,fist){
   }
   if(e.type==='garda'){
     if(e.state==='chase'||e.state==='leave'){ e.x+=e.vx*dt; }
-    else if(e.state==='brake'){ e.vx*=Math.pow(0.05,dt); e.x+=e.vx*dt; if(Math.abs(e.vx)<15){ e.state='arrest'; e.vx=0; e.t=2.2; e.say='NICE ONE, BUD!'; e.sayT=2.2; speak(e.say,'garda',true); pts(200); craic(1); } }
+    else if(e.state==='brake'){ e.vx*=Math.pow(0.05,dt); e.x+=e.vx*dt; if(Math.abs(e.vx)<15){ e.state='arrest'; e.vx=0; e.t=2.2; e.say='NICE ONE, BUDDY!'; e.sayT=2.2; speak(e.say,'garda',true); pts(200); craic(1); } }
     else if(e.state==='arrest'){ e.t-=dt; if(e.sayT>0)e.sayT-=dt; if(e.t<=0){ e.state='leave'; e.vx=-260; } }
     const eb={l:e.x-46,r:e.x+46,t:GROUND-42,b:GROUND};
     if(ov_(pb,eb)){ if(stomped(eb)){ bounce(); P.vy=-520; pop(e.x,GROUND-70,'MIND THE CAR!','#fff'); } else if(Math.abs(e.vx)>60) hurt('GARDA!',e.x); }
@@ -748,7 +752,7 @@ function updEnemy(e,dt,pb,fist){
   const dx=P.x-e.x;
   e.t-=dt; if(e.sayT>0) e.sayT-=dt;
   if(e.type==='scum'){
-    if(e.state==='idle'){ e.state='walk'; e.say=['Howya buddy','Give us a euro','Nice runners','What are you lookin at?','Story bud?'][hash(e.x|0,3)%5]; e.sayT=2.2; speak(e.say,'scum',false); }
+    if(e.state==='idle'){ e.state='walk'; e.say=['Howya buddy','Give us a euro','Nice runners','What are you lookin at?','Story buddy?'][hash(e.x|0,3)%5]; e.sayT=2.2; speak(e.say,'scum',false); }
     if(e.state==='walk'){ e.face=Math.sign(dx)||-1; e.vx=e.face*55; if(Math.abs(dx)<72){e.state='wind';e.t=0.45;e.vx=0;} }
     else if(e.state==='wind'){ e.vx=0; if(e.t<=0){e.state='lunge';e.t=0.32;e.vx=e.face*250;} }
     else if(e.state==='lunge'){ if(e.t<=0){e.state='recover';e.t=0.7;} }
@@ -1295,7 +1299,7 @@ function drawHUD(){
 /* ---------------- FRAME ---------------- */
 function draw(){
   BUBQ=[];
-  if(state==='cut'){ drawCoppers3(); flushBubbles(); return; }
+  if(state==='cut'){ if(STAGE===4) drawHome4(); else drawCoppers3(); flushBubbles(); return; }
   ctx.setTransform(2,0,0,2,0,0);
   const ox=shake>0?(Math.random()-.5)*5:0;
   ctx.save(); ctx.translate(ox,0);
@@ -2222,11 +2226,11 @@ function lightPass3(){
 function hexA(hex,a){ const n=parseInt(hex.slice(1),16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
 
 /* ---- stage 3 NPCs ---- */
-Object.assign(GREET,{jarvey:'Out of the road, bud!',kids:'Help the Halloween party!',lads:"Let's go to Coppers!",gtour:'Is this where they make the Guinness?',security:"Sorry, we're not open yet.",barista:'Tea? €3',chipper:'Fish supper? €8',viking:'Skål! Mind the bangers!'});
+Object.assign(GREET,{jarvey:'Out of the road, buddy!',kids:'Help the Halloween party!',lads:"Let's go to Coppers!",gtour:'Is this where they make the Guinness?',security:"Sorry, we're not open yet.",barista:'Tea? €3',chipper:'Fish supper? €8',viking:'Skål! Mind the bangers!'});
 Object.assign(PROMPT,{jarvey:'TIP €2',kids:'GIVE SWEETS',lads:'HIGH FIVE',gtour:'TALK',security:'TALK',barista:'BUY €3',chipper:'BUY €8',viking:'TALK'});
 Object.assign(VP,{jarvey:['m',0.9,0.95],kids:['f',1.3,1.1],lads:['m',1,1.05],gtour:['f',1.05,1],security:['m',0.9,0.95],barista:['f',1.05,1],chipper:['m',0.95,1],viking:['m',0.8,0.92],teen:['m',1.05,1.1],antho:['m',1.05,1.1],mam:['f',0.95,1.05],bouncer:['m',0.75,0.92]});
 function talk3(n){
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; return false;} S.money-=c; return true; };
   sfx.talk(); n.sayT=2.8;
   if(talk3b(n)) return true;
   switch(n.k){
@@ -2306,7 +2310,7 @@ function update3(dt,pb,fist){
     const dx=P.x-t.x; t.face=dx<0?-1:1; const onScreen=t.x-camX<VW+10&&t.x-camX>-10;
     if(onScreen&&Math.abs(dx)<330&&!S.lock){ t.t-=dt; if(t.t<=0){
       if(S.ghostT>0){ t.t=1.2; if(!t.gh){ t.gh=1; t.say="Ah, it's only a ghost."; t.sayT=2; speak(t.say,'teen',false); } }
-      else { throwBanger(t.x+t.face*8,GROUND-40,P.x+P.vx*0.4); t.t=1.7+Math.random()*0.9; if(!t.said){ t.said=1; t.say=['Watch this!','Happy Halloween, bud!','Leg it!','Banger for ya!'][hash(t.x|0,7)%4]; t.sayT=2; speak(t.say,'teen',false); } } } }
+      else { throwBanger(t.x+t.face*8,GROUND-40,P.x+P.vx*0.4); t.t=1.7+Math.random()*0.9; if(!t.said){ t.said=1; t.say=['Watch this!','Happy Halloween, buddy!','Leg it!','Banger for ya!'][hash(t.x|0,7)%4]; t.sayT=2; speak(t.say,'teen',false); } } } }
     const tb={l:t.x-9,r:t.x+9,t:GROUND-44,b:GROUND};
     if((fist&&ov_(fist,tb))||(ov_(pb,tb)&&stomped(tb))){ if(!fist||!ov_(fist,tb)) bounce(); t.state='ko'; t.ko=0; pts(200); craic(1); sfx.punch(); pop(t.x,GROUND-70,'+200 NO MORE BANGERS','#ffd84a'); }
   }
@@ -2364,7 +2368,7 @@ function drawScoot3(sx,e){ S_(); rb(sx-14,GROUND-7,28,4,2,'#222'); circ(sx-11,GR
 
 /* ---- Antho, the Banger King ---- */
 const PILE_X=ARENA+372;
-function startAntho(){ S.lock=true; boss={o:{},kind:'antho',x:PILE_X,y:GROUND-44,hp:3,max:3,state:'intro',t:1.6,inv:0,vx:0,volleys:0,say:'Ye want a banger, bud?',sayT:2.4,mam:0}; banner('ANTHO, THE BANGER KING'); speak(boss.say,'antho',true); setTimeout(()=>{ if(boss&&boss.kind==='antho'&&boss.hp===3) banner('JUMP ON HIS HEAD x3!'); },2600); }
+function startAntho(){ S.lock=true; boss={o:{},kind:'antho',x:PILE_X,y:GROUND-44,hp:3,max:3,state:'intro',t:1.6,inv:0,vx:0,volleys:0,say:'Ye want a banger, buddy?',sayT:2.4,mam:0}; banner('ANTHO, THE BANGER KING'); speak(boss.say,'antho',true); setTimeout(()=>{ if(boss&&boss.kind==='antho'&&boss.hp===3) banner('JUMP ON HIS HEAD x3!'); },2600); }
 function updAntho(dt,pb,fist){
   const b=boss; b.t-=dt; if(b.inv>0) b.inv-=dt; if(b.sayT>0) b.sayT-=dt;
   if(b.state==='intro'){ if(b.t<=0){ b.state='perch'; b.t=1.0; } }
@@ -2485,12 +2489,12 @@ function showWin3(total,rank){
 }
 
 /* ---- stage 3: extra interactions ---- */
-Object.assign(GREET,{gtour:'Take our picture?',smoker:'Need a light, bud?',tattoo:'Halloween tattoo? €10!',ghost2:'Psst... over here...'});
+Object.assign(GREET,{gtour:'Take our picture?',smoker:'Need a light, buddy?',tattoo:'Halloween tattoo? €10!',ghost2:'Psst... over here...'});
 Object.assign(PROMPT,{kids:'GIVE SWEETS',lads:'HIGH FIVE',gtour:'TAKE A PHOTO',security:'HAVE A CHAT',barista:'GET A TEA €3',chipper:'FISH SUPPER €8',viking:'SAY SKOL!',jarvey:'TIP THE DRIVER €2',smoker:'LIGHT THE SPARKLER',tattoo:'GET INKED €10',ghost2:'TALK TO THE GHOST'});
 Object.assign(VP,{smoker:['m',0.9,0.95],tattoo:['f',1,1],ghost2:['f',1.2,0.85],flat:['m',1,1.05]});
 let keysEv=null, batsEv=null;
 function talk3b(n){
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; return false;} S.money-=c; return true; };
   switch(n.k){
     case 'gtour': n.used=true; n.say='Sláinte! Lovely photo!'; S.flashT=0.3; tone(2200,.05,'square',.1); craic(1); pts(80); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
     case 'smoker': n.used=true; n.say='There ya go. Mind the kids!'; S.sparkT=20; pts(50); pop(P.x,P.y-70,'SPARKLER LIT! TEENS WILL LEG IT','#ffd84a'); return true;
@@ -2621,7 +2625,7 @@ function lifeBar(name,hp,max,o){ o=o||{}; const w=220, x=VW/2-w/2, y=30, f=Math.
 /* ---- choices: shown in the middle of the screen over a see-through panel ---- */
 const CHO={el:null,cb:null,open:false};
 function choice(prompt,opts,cb){ if(!CHO.el) CHO.el=document.getElementById('choice'); CHO.cb=cb; CHO.open=true; paused=true; for(const k in input) input[k]=false;
-  CHO.el.innerHTML=`<p class="cq">${prompt}</p><p class="cp">PICK ONE</p>`+opts.map((o,i)=>`<button type="button" data-i="${i}"><b>${i+1}</b><span>${o}</span></button>`).join('');
+  CHO.el.innerHTML=`<p class="cq">${prompt}</p>${opts.length>1?`<p class="cp">PICK ONE</p>`:``}`+opts.map((o,i)=>`<button type="button" data-i="${i}"><b>${i+1}</b><span>${o}</span></button>`).join('');
   CHO.el.hidden=false; CHO.el.querySelectorAll('button').forEach(b=>b.onclick=()=>pickChoice(+b.dataset.i)); }
 function pickChoice(i){ if(!CHO.open) return; CHO.open=false; CHO.el.hidden=true; paused=false; last=performance.now(); const cb=CHO.cb; CHO.cb=null; cb&&cb(i); }
 addEventListener('keydown',e=>{ if(!CHO.open) return; if(e.key==='1'||e.key==='2'||e.key==='3'){ e.preventDefault(); pickChoice(+e.key-1); } });
@@ -2680,6 +2684,18 @@ function showTitle(){
   document.getElementById('howto').onclick=showHowTo;
 }
 
+/* ---- voice clips: bytes fetched once, decoded on demand, played through Web Audio (no lag) ---- */
+const VBYTES=new Map(), VBUF=new Map(); let VSRC=null, VEND=0, VPRE=false;
+function voiceBusy(){ return (VSRC&&AU.c&&AU.c.currentTime<VEND)||(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused); }
+function voiceStop(){ if(VSRC){ try{ VSRC.stop(); }catch(e){} VSRC=null; VEND=0; } if(VOICE.audio){ try{ VOICE.audio.pause(); }catch(e){} } if(VOICE.ok) try{ speechSynthesis.cancel(); }catch(e){} }
+function voiceBytes(k){ if(VBYTES.has(k)) return VBYTES.get(k); const p=fetch('./voices/'+k+'.mp3').then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }); VBYTES.set(k,p); p.catch(()=>VBYTES.delete(k)); return p; }
+function voiceBuf(k){ if(VBUF.has(k)){ const b=VBUF.get(k); VBUF.delete(k); VBUF.set(k,b); return Promise.resolve(b); }
+  return voiceBytes(k).then(a=>new Promise((res,rej)=>AU.c.decodeAudioData(a.slice(0),res,rej))).then(b=>{ VBUF.set(k,b); while(VBUF.size>36) VBUF.delete(VBUF.keys().next().value); return b; }); }
+function voicePlay(b){ if(!AU.on||!AU.c) return; voiceStop(); if(AU.c.state==='suspended') AU.c.resume(); const s=AU.c.createBufferSource(), g=AU.c.createGain(); g.gain.value=0.95; s.buffer=b; s.connect(g); g.connect(AU.c.destination); s.start(); VSRC=s; VEND=AU.c.currentTime+b.duration; }
+// fetch every clip's bytes in the background (small mp3s, about 2MB in all), so no line waits on the network
+function voicePreload(){ if(VPRE||!VOICE.clips.size||!window.fetch) return; VPRE=true; const ks=[...VOICE.clips].sort((a,b)=>(b.startsWith(CHAR+'-')?1:0)-(a.startsWith(CHAR+'-')?1:0)); let i=0; const next=()=>{ if(i>=ks.length) return; voiceBytes(ks[i++]).catch(()=>{}).finally(next); }; for(let j=0;j<4;j++) next(); }
+setInterval(voicePreload,1500);
+
 /* ---- Stage 1: Underdog Boxing, and the coach at the door ---- */
 Object.assign(GREET,{coach:'Fancy a trial session?'}); Object.assign(PROMPT,{coach:'TRY A ROUND'}); Object.assign(INAME,{coach:'Underdog trial'}); Object.assign(VP,{coach:['m',.96,1.04]});
 function underdog(sx,w){ S_(); box(sx,GROUND-170,w,170,'#141414'); fr(sx,GROUND-170,w,6,'#2a2a2a');
@@ -2705,16 +2721,19 @@ function stageHints(){ const x=P.x;
 
 /* ================= STAGE 4: NIGHT OUT IN DUBLIN ================= */
 const S4_READY=true;
-const S4_SECTIONS=[{x:0,name:"GEORGE'S ST"},{x:900,name:'THE DODGY SEAGULL'},{x:2560,name:'CUFFE ST'},{x:3700,name:'ROYAL TEA'},{x:5280,name:'THE CHIPPER'},{x:6300,name:'TAXI RANK'}];
-const S4_CROSSINGS=[{x:3300,w:84}];
+const S4_SECTIONS=[{x:0,name:"GEORGE'S ST"},{x:960,name:'THE DODGY SEAGULL'},{x:2520,name:'CUFFE ST'},{x:3760,name:'ROYAL TEA'},{x:5190,name:'THE CHIPPER'},{x:6300,name:'TAXI RANK'}];
+const S4_CROSSINGS=[{x:3150,w:84}];
 const S4_GAPS=[];
 const S4_BRIDGES=[{x0:-9999,x1:-9998,h:0,k:'none'}];
 const S4_BACK=[];
 const IN1={x0:960,x1:2520}, IN2={x0:3760,x1:5190}, YARD={x0:4760,x1:5190};
-const GATE1=948, GATE2=3748;
+const GATE1=548, GATE2=3448;
+const ZONES4=[[0,900],[IN1.x0,IN1.x1],[IN1.x1,IN2.x0],[IN2.x0,IN2.x1],[IN2.x1,END]];
+function zone4(x){ for(const z of ZONES4) if(x>=z[0]&&x<z[1]) return z; return ZONES4[ZONES4.length-1]; }
+let fade4=null, punters4=[], dancers4=[];
 let buddy4=null, drunks4=[], trig4=[], seq4=[], talkers4=[], flash4=0, dark4=0, gull4=null, tray4=false;
 
-function reset4(){ buddy4={x:P.x-30,face:1,anim:0,say:'',sayT:0,idle:0,cool:2,onG:true}; drunks4=[]; trig4=[]; seq4=[]; talkers4=[]; flash4=0; gull4=null; }
+function reset4(){ punters4=[]; dancers4=[]; fade4=null; buddy4={x:P.x-30,face:1,anim:0,say:'',sayT:0,idle:0,cool:2,onG:true}; drunks4=[]; trig4=[]; seq4=[]; talkers4=[]; flash4=0; gull4=null; }
 function inside4(x){ return (x>=IN1.x0&&x<IN1.x1)||(x>=IN2.x0&&x<IN2.x1); }
 function say4(who,text,t,voiceKey){ who.say=text; who.sayT=t||2.4; speak(text,voiceKey||who.k||'buddy',true); }
 function bsay(text,t){ if(!buddy4) return; buddy4.say=text; buddy4.sayT=t||2.6; buddy4.idle=0; speak(text,'buddy4',true); }
@@ -2722,10 +2741,10 @@ function psay(text,t){ talkers4.push({x:()=>P.x,y:()=>P.y-96,say:text,sayT:t||2.
 function seq(steps){ let acc=0; for(const [d,fn] of steps){ acc+=d; seq4.push({t:acc,fn}); } }
 function actorSay(x,y,text,t,who){ const a={x:typeof x==='function'?x:()=>x,y:typeof y==='function'?y:()=>y,say:text,sayT:t||2.4}; talkers4.push(a); if(who) speak(text,who,true); return a; }
 
-Object.assign(GREET,{band4:'Any requests?',barman4:"What're ye having?",lads4:'Your round, bud!',stag4:'Lads, stop...',selfie4:'Smile, girls!',posh4:'Could I steal a cigarette?',chipper4:'What can I get ye?',antho4:"Leave it. Ma's waiting.",garda4:'Long night, lads?'});
-Object.assign(PROMPT,{band4:'TIP €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK'});
-Object.assign(INAME,{band4:'Trad band',barman4:'Bought the round',lads4:'The lads',stag4:'Stag party',selfie4:'Photobomb',posh4:'Posh lad',chipper4:'Chips',antho4:'Antho',garda4:'The garda'});
-Object.assign(VP,{buddy4:['m',1,1.04],bouncer:['m',.86,.96],bouncer2:['m',.9,.96],barman4:['m',.98,1],lads4:['m',1,1.04],stag4:['m',1.02,1.04],stagmates:['m',1,1.06],crowd:['m',.95,1.05],selfie4:['f',1.1,1.06],posh4:['m',1.02,.94],barman2:['m',1,.98],staff4:['f',1.04,1],chipper4:['m',.96,1],antho4:['m',1.1,1.06],garda4:['m',.9,.94],driver:['m',.9,.96],taxilad:['m',1.04,1.08],drunk4:['m',.92,.98]});
+Object.assign(GREET,{band4:'Any requests?',barman4:"What're ye having?",lads4:'Your round, buddy!',stag4:'Lads, stop...',selfie4:'Smile, girls!',posh4:'Could I steal a cigarette?',chipper4:'What can I get ye?',antho4:"Leave it. Ma's waiting.",garda4:'Long night, lads?',dance4:'Get up and dance!'});
+Object.assign(PROMPT,{band4:'TIP €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK',dance4:'DANCE'});
+Object.assign(INAME,{band4:'Trad band',barman4:'Bought the round',lads4:'The lads',stag4:'Stag party',selfie4:'Photobomb',posh4:'Posh lad',chipper4:'Chips',antho4:'Antho',garda4:'The garda',dance4:'Danced'});
+Object.assign(VP,{buddy4:['m',1,1.04],bouncer:['m',.86,.96],bouncer2:['m',.9,.96],barman4:['m',.98,1],lads4:['m',1,1.04],stag4:['m',1.02,1.04],stagmates:['m',1,1.06],crowd:['m',.95,1.05],selfie4:['f',1.1,1.06],posh4:['m',1.02,.94],barman2:['m',1,.98],staff4:['f',1.04,1],chipper4:['m',.96,1],antho4:['m',1.1,1.06],garda4:['m',.9,.94],driver:['m',.9,.96],taxilad:['m',1.04,1.08],drunk4:['m',.92,.98],punter:['m',.98,1.02],collector:['m',.94,1],dancers4:['f',1.08,1.04]});
 
 function levelDef4(){
   const L=[];
@@ -2733,14 +2752,14 @@ function levelDef4(){
   const arc=(x,y,n,gap)=>{for(let i=0;i<n;i++)L.push({t:'coin',x:x+i*(gap||24),y:y-Math.sin(i/(n-1)*Math.PI)*30});};
   const plat=(k,x,w,h,top)=>L.push({t:'plat',k,x,w,h,y:top!=null?top:GROUND-h});
   // George's St
-  row(120,GROUND-20,3); L.push({t:'e4',k:'wheel',x:250});
-  arc(420,GROUND-50,5); L.push({t:'cyc',x:520,k:'scoot'});
-  L.push({t:'drunk',x:700,r:90});
+  row(80,GROUND-20,3); L.push({t:'e4',k:'wheel',x:300});
+  arc(380,GROUND-50,4); L.push({t:'cyc',x:230,k:'scoot'});
+  L.push({t:'drunk',x:250,r:40});
   L.push({t:'e4',k:'gate1',x:GATE1});
   // The Dodgy Seagull (inside)
   L.push({t:'npc',k:'band4',x:1140});
   row(1220,GROUND-20,3);
-  L.push({t:'drunk',x:1360,r:70});
+  L.push({t:'punter',x:1300,r:120}); L.push({t:'punter',x:1880,r:110}); L.push({t:'collector',x:2200,r:160});
   plat('table',1440,40,26); L.push({t:'coin',x:1460,y:GROUND-46});
   L.push({t:'e4',k:'telly',x:1530});
   L.push({t:'npc',k:'barman4',x:1720});
@@ -2748,22 +2767,23 @@ function levelDef4(){
   L.push({t:'npc',k:'stag4',x:2070});
   plat('table',2160,40,26); row(2166,GROUND-46,2);
   L.push({t:'npc',k:'lads4',x:2350});
-  L.push({t:'e4',k:'exit1',x:2510});
+  L.push({t:'e4',k:'exit1',x:2470});
   // Cuffe St
-  L.push({t:'e4',k:'rain',x:2660});
-  row(2700,GROUND-20,4);
-  L.push({t:'e4',k:'oldgym',x:2990});
-  L.push({t:'cyc',x:3150,k:'roo'});
-  L.push({t:'drunk',x:3500,r:60});
-  arc(3460,GROUND-50,4);
+  L.push({t:'e4',k:'rain',x:2600});
+  row(2620,GROUND-20,4);
+  L.push({t:'e4',k:'oldgym',x:2800});
+  L.push({t:'cyc',x:2850,k:'roo'});
+  L.push({t:'drunk',x:3060,r:40});
+  arc(2960,GROUND-50,4);
   L.push({t:'e4',k:'gate2',x:GATE2});
   // Royal Tea (inside)
   L.push({t:'e4',k:'mocktail',x:3930});
   row(4100,GROUND-20,3);
   L.push({t:'npc',k:'selfie4',x:4330});
+  L.push({t:'npc',k:'dance4',x:4545});
   plat('sofa',4430,50,18); L.push({t:'coin',x:4455,y:GROUND-40});
   L.push({t:'npc',k:'posh4',x:4980});
-  L.push({t:'e4',k:'closing',x:5090});
+  L.push({t:'e4',k:'closing',x:5060});
   // The chipper
   row(5300,GROUND-20,3);
   L.push({t:'npc',k:'antho4',x:5545});
@@ -2781,6 +2801,7 @@ function levelDef4(){
   return L;
 }
 function build4(d,fromX){
+  if(d.t==='punter'||d.t==='collector'){ punters4.push({x:d.x,x0:d.x,r:d.r,dir:d.t==='collector'?1:-1,anim:Math.random()*3,k:d.t,bumpT:0}); return true; }
   if(d.t==='drunk'){ if(d.x>=fromX+40) drunks4.push({x:d.x,x0:d.x,r:d.r,dir:-1,anim:0,hugT:0,said:false}); return true; }
   if(d.t==='e4'){ trig4.push({k:d.k,x:d.x,done:d.x<fromX&&!/^gate/.test(d.k)}); return true; }
   if(d.t==='npc'&&d.k==='posh4'){ npcs.push({k:'posh4',x:d.x,x0:d.x,used:false,sayT:0,greeted:false}); return true; }
@@ -2789,12 +2810,14 @@ function build4(d,fromX){
 
 /* ---- talk ---- */
 function talk4(n){
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; n.sayT=2.4; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; n.sayT=2.4; return false;} S.money-=c; return true; };
   sfx.talk(); n.sayT=2.8;
   switch(n.k){
     case 'band4': if(!need(2)){ n.say='Ah go on, sing along'; return true; } n.used=true; n.say='Wild Rover it is!'; craic(2); pts(120); pop(n.x,GROUND-90,'+2 CRAIC','#3fcf6a'); return true;
-    case 'barman4': if(S.round){ n.say="You've your pints, go on!"; return true; } if(!need(20)) return true; n.used=true; S.round=1; tray4=true; n.say='Five pints, coming up!'; pts(80); pop(n.x,GROUND-90,'5 PINTS!','#ffd84a'); setTimeout(()=>{ if(STAGE===4) bsay('Bring them over to the lads!'); },1800); return true;
-    case 'lads4': if(S.round!==1){ n.say="Your round! Bar's back there!"; return true; } n.used=true; S.round=2; S.roundDone=true; tray4=false; n.say='LEGEND!'; craic(3); pts(300); pop(n.x,GROUND-90,'+3 CRAIC','#3fcf6a'); return true;
+    case 'barman4': if(S.round){ n.say="You've your pints, go on!"; return true; } if(!need(20)) return true; n.used=true; S.round=1; S.pints=5; tray4=true; n.say='Five pints, coming up!'; pts(80); pop(n.x,GROUND-90,'5 PINTS!','#ffd84a'); setTimeout(()=>{ if(STAGE===4) bsay('Bring them over to the lads!'); },1800); return true;
+    case 'lads4': if(S.round!==1){ n.say="Your round! Bar's back there!"; return true; } n.used=true; S.round=2; S.roundDone=true; tray4=false;
+      if(S.pints>=5){ n.say='LEGEND!'; craic(3); pts(300); pop(n.x,GROUND-90,'ALL 5 PINTS! +3 CRAIC','#3fcf6a'); } else { n.say="Where's the rest of them?!"; craic(1); pts(100+S.pints*40); pop(n.x,GROUND-90,S.pints+' OF 5 PINTS. +1 CRAIC','#ffd84a'); } return true;
+    case 'dance4': n.used=true; S.dance=3.2; n.say='YESSS! GO ON!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); seq([[1.4,()=>bsay('Look at the moves on that!',2.2)]]); return true;
     case 'stag4': n.used=true; n.say='Lads, stop...'; craic(2); pts(120); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); setTimeout(()=>{ if(STAGE===4) actorSay(n.x+50,GROUND-120,'HAHAHA!',1.8,'stagmates'); },900); return true;
     case 'selfie4': n.used=true; flash4=0.35; sfx.item(); n.say='OMG, who IS that?!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); return true;
     case 'posh4': n.used=true; S.freeze=6.2; n.say="I don't really smoke. I can give you some coins I have."; n.sayT=2.6;
@@ -2812,7 +2835,7 @@ function update4(dt,pb,fist){
   if(S.freeze>0) S.freeze-=dt;
   for(let i=seq4.length-1;i>=0;i--){ seq4[i].t-=dt; if(seq4[i].t<=0){ const f=seq4[i].fn; seq4.splice(i,1); try{ f(); }catch(e){ console.error(e); } } }
   for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
-  if(flash4>0) flash4-=dt; if(dark4>0) dark4-=dt;
+  if(flash4>0) flash4-=dt; if(dark4>0) dark4-=dt; if(S.goalT>0) S.goalT-=dt;
   // gates: the bouncers
   if(!S.in1) gateBlock(GATE1);
   if(!S.in2) gateBlock(GATE2);
@@ -2830,6 +2853,10 @@ function update4(dt,pb,fist){
     if(g.state==='in'){ g.x+=(g.tx-g.x)*Math.min(1,dt*3); g.y+=(GROUND-14-g.y)*Math.min(1,dt*3); if(g.t>1.2){ g.state='stare'; g.t=0; } }
     else if(g.state==='stare'){ if(g.t>2.4){ g.state='off'; g.t=0; } }
     else if(g.state==='off'){ g.x+=160*dt; g.y-=140*dt; if(g.y<-40) gull4=null; } }
+  fadeUpd4(dt);
+  if(!fade4&&!S.lock){ if(P.x>IN1.x1-28&&P.x<IN1.x1) goRoom(IN1.x1+40); else if(P.x>IN2.x1-28&&P.x<IN2.x1) goRoom(IN2.x1+40); }
+  if(S.dance>0){ S.dance-=dt; S.done.dance=1; S.freeze=Math.max(S.freeze,0.05); P.face=Math.floor(S.dance*4)%2?1:-1; const k=Math.floor(S.dance*2.5); if(P.onG&&k!==S.dk){ S.dk=k; P.vy=-200; P.onG=false; } }
+  updPunters4(dt);
   // buddy follows you, and says something if you stand still
   const b=buddy4; if(b){ const tx=P.x-28*P.face; b.face=P.x>b.x?1:-1; const dx=tx-b.x; if(Math.abs(dx)>4){ b.x+=Math.sign(dx)*Math.min(Math.abs(dx)*3,170)*dt; b.anim+=dt; } if(b.x<camX-20) b.x=camX-20;
     if(b.sayT>0) b.sayT-=dt; if(b.cool>0) b.cool-=dt;
@@ -2838,17 +2865,17 @@ function update4(dt,pb,fist){
 }
 function hint4(){ const x=P.x;
   if(!S.in1&&x<GATE1) return x<GATE1-160?"Seagull's just up there, come on!":'Go on, talk to the bouncer.';
-  if(x<IN1.x1){ if(S.round===0) return "Your round, bud. Bar's that way."; if(S.round===1) return 'Bring them over to the lads!'; return "Right, Royal Tea. Let's go!"; }
+  if(x<IN1.x1){ if(S.round===0) return "Your round, buddy. Bar's that way."; if(S.round===1) return 'Bring them over to the lads! Jump over people.'; return "Right, Royal Tea. Out the door at the end!"; }
   if(!S.in2&&x<GATE2) return "Royal Tea's just up here.";
-  if(x<IN2.x1) return x<YARD.x0?"Have a look around, it's fancy!":'Out the back for a smoke?';
+  if(x<IN2.x1) return x<YARD.x0?(S.done.dance?"Have a look around, it's fancy!":'Get on that dance floor!'):'Out the back for a smoke?';
   if(x<6300) return S.chips?'Taxi rank next. Come on.':'Chips first. Then a taxi.';
-  return 'Wait for one with its light ON.'; }
+  return 'Talk to every taxi that stops. And jump the splashes!'; }
 function fire4(t){
   switch(t.k){
-    case 'wheel': bsay("Is that... your bike? Just the wheel left, bud.",3); break;
+    case 'wheel': bsay("Is that... your bike? Just the wheel left, buddy.",3); break;
     case 'telly': S.done.telly=1; seq([[0.1,()=>actorSay(t.x-60,GROUND-122,'SIT DOWN!',1.6,'crowd')],[0.35,()=>actorSay(t.x+70,GROUND-130,'SIT DOWN!',1.4)],[1.6,()=>psay('Sorry, sorry!',1.6)]]); shake=0.12; break;
-    case 'smash': sfx.hurt&&tone(2400,.08,'square',.12); tone(1800,.12,'triangle',.1,0,.05); seq([[0.15,()=>actorSay(t.x+30,GROUND-120,'WAAAHEY!',1.8,'crowd')]]); shake=0.1; break;
-    case 'exit1': if(!S.roundDone) bsay("You never bought your round. Tight, bud.",2.6); else bsay("Right, Royal Tea. Let's go!",2.4); break;
+    case 'smash': S.goalT=1.6; sfx.hurt&&tone(2400,.08,'square',.12); tone(1800,.12,'triangle',.1,0,.05); seq([[0.15,()=>actorSay(t.x+30,GROUND-120,'WAAAHEY!',1.8,'crowd')]]); shake=0.1; break;
+    case 'exit1': if(!S.roundDone) bsay("You never bought your round. Tight, buddy.",2.6); else bsay("Right, Royal Tea. Let's go!",2.4); break;
     case 'rain': S.rainT=11; rainA=0; bsay("Oh Jaysus, it's freezing!",2.6); banner('LASHING RAIN'); craic(-1); pop(P.x,P.y-70,'SOAKED! -1 CRAIC','#6bd6ff'); break;
     case 'oldgym': bsay('Hey look, this used to be the old boxing gym.',3.2); break;
     case 'mocktail': S.done.mock=1; seq([[0.2,()=>actorSay(t.x+40,GROUND-110,'A non-alcoholic cocktail, please.',2.4,'posh4')],[2.5,()=>actorSay(t.x+100,GROUND-118,"That's sixteen euro.",2,'barman2')],[2.2,()=>actorSay(t.x+40,GROUND-110,'Lovely.',1.6,'posh4')]]); break;
@@ -2860,60 +2887,122 @@ function fire4(t){
 function bouncerAsk(t){
   speak('How many drinks have ye had?','bouncer',true);
   setTimeout(()=>{ if(STAGE!==4||state!=='play') return; bannerT=0; choice('<span style="color:#9fd8ff">BOUNCER:</span> How many drinks have ye had?',['"I had 2 drinks only"','"I was at a house party and then came here"'],i=>{
-    if(i===0){ psay('I had 2 drinks only.',1.8); S.freeze=3.6; seq([[2.0,()=>actorSay(GATE1+8,GROUND-112,'...',1.0)],[1.1,()=>{ actorSay(GATE1+8,GROUND-112,"Okay, yeah, go in, it's all right.",2.4,'bouncer'); S.in1=true; t.done=true; craic(1); pts(150); }],[0.6,()=>bsay('Nice one!',1.6)]]); }
+    if(i===0){ psay('I had 2 drinks only.',1.8); S.freeze=4.4; seq([[2.0,()=>actorSay(GATE1+8,GROUND-112,'...',1.0)],[1.1,()=>{ actorSay(GATE1+8,GROUND-112,"Okay, yeah, go in, it's all right.",2.4,'bouncer'); S.in1=true; t.done=true; craic(1); pts(150); }],[0.6,()=>bsay('Nice one!',1.6)],[1.0,()=>goRoom(IN1.x0+40)]]); }
     else { psay('I was at a house party and then came here.',2.4); S.freeze=3.2; seq([[2.6,()=>{ actorSay(GATE1+8,GROUND-112,'Not tonight, buddy.',2.2,'bouncer'); P.knock=-260; craic(-1); pop(P.x,P.y-70,'-1 CRAIC','#ff6b6b'); t.cool=3; }],[2.4,()=>bsay('Just say two drinks, ya eejit!',2.4)]]); }
   }); },900);
 }
-function doorRT(){ S.freeze=7.6; const bx=GATE2+8, by=GROUND-112;
-  seq([[0.2,()=>actorSay(bx,by,'No runners, lads.',1.8,'bouncer2')],[1.9,()=>actorSay(bx,by,'Hang on... you again?',1.8,'bouncer2')],[1.9,()=>actorSay(bx,by,'Not tonight.',1.6,'bouncer2')],[2.0,()=>actorSay(bx,by,'Ha! Ah, come on, get in.',2.4,'bouncer2')],[0.5,()=>{ S.in2=true; craic(1); pts(150); bsay('He got us!',1.6); }]]); }
+function doorRT(){ S.freeze=8.2; const bx=GATE2+8, by=GROUND-112;
+  seq([[0.2,()=>actorSay(bx,by,'No runners, lads.',1.8,'bouncer2')],[1.9,()=>actorSay(bx,by,'Hang on... you again?',1.8,'bouncer2')],[1.9,()=>actorSay(bx,by,'Not tonight.',1.6,'bouncer2')],[2.0,()=>actorSay(bx,by,'Ha! Ah, come on, get in.',2.4,'bouncer2')],[0.5,()=>{ S.in2=true; craic(1); pts(150); bsay('He got us!',1.6); }],[1.0,()=>goRoom(IN2.x0+40)]]); }
 
 /* ---- taxi rank boss: a patience bar instead of a life bar ---- */
 const STOPX=ARENA+300, PUD=[ARENA+170,ARENA+390];
-function startTaxi(){ S.lock=true; boss={kind:'taxi',t:0,step:0,pat:4,max:4,cars:[],o:{},prompt:null,inv:0}; banner('THE TAXI RANK, 3AM'); seq([[0.6,()=>bsay('Right. Just get a taxi. How hard can it be?',3)]]); }
+function startTaxi(){ S.lock=true; boss={kind:'taxi',t:0,step:0,pat:4,max:4,cars:[],o:{},prompt:null,inv:0,talked:0}; banner('THE TAXI RANK, 3AM');
+  seq([[0.6,()=>{ bannerT=0; HINT.cur=null; HINT.q=[]; choice('<span style="color:#ffd84a">THE TAXI RANK</span><br><br>💦 Taxis splash the puddles: <b>JUMP</b>!<br>💬 A taxi stops? <b>TALK TO THE DRIVER</b> (ACTION).<br>Talk to every single one. Ignore one and you lose patience.',['Got it!'],()=>{ bsay('Right. Just get a taxi. How hard can it be?',3); }); }]]); }
 function car4(kind,opts){ boss.cars.push(Object.assign({kind,x:ARENA+VW+60,vx:kind==='hired'?-430:-240,state:'drive',t:0,splashed:{},light:kind==='free'},opts||{})); }
-const TAXI_SCRIPT=[[2.5,()=>{ car4('hired'); mhint('TAXIS SPLASH THE PUDDLES. JUMP!','splash'); }],[3.5,()=>car4('siob')],[6.5,()=>{ car4('hired'); }],[1.2,()=>car4('hired')],[2.5,()=>car4('island')],[7.5,()=>car4('hired')],[2.0,()=>car4('mine')],[7.0,()=>car4('free')]];
+const TAXI_SCRIPT=[[2.0,()=>car4('hired')],[3.5,()=>car4('siob')],[8.5,()=>car4('hired')],[1.2,()=>car4('hired')],[2.5,()=>car4('island')],[9.0,()=>car4('hired')],[2.0,()=>car4('mine')],[9.0,()=>car4('hired')],[2.5,()=>car4('free')]];
+const TAXI_ASK={siob:"I'M SIOBHÁN!",island:'ISLANDBRIDGE?',mine:'ARE YOU FREE?',free:'HOME, PLEASE!'};
 function lose4(){ const b=boss; b.pat=Math.max(1,b.pat-1); pop(P.x,P.y-80,'PATIENCE -1','#ff6b6b'); shake=0.12; }
 function updTaxi(dt,pb,fist){ const b=boss; if(b.won) return; b.t+=dt;
   if(b.step<TAXI_SCRIPT.length){ b.next=(b.next==null?TAXI_SCRIPT[0][0]:b.next)-dt; if(b.next<=0){ TAXI_SCRIPT[b.step][1](); b.step++; b.next=b.step<TAXI_SCRIPT.length?TAXI_SCRIPT[b.step][0]:0; } }
   b.prompt=null;
   for(let i=b.cars.length-1;i>=0;i--){ const c=b.cars[i]; c.t+=dt;
     if(c.state==='drive'){ c.x+=c.vx*dt; if(c.kind!=='hired'&&c.x<=STOPX){ c.x=STOPX; c.state='stop'; c.t=0; stopTaxi(c); } }
-    else if(c.state==='stop'){ if(c.kind==='siob'&&!c.done) b.prompt={x:c.x,label:"I'M SIOBHÁN!"}; if(c.kind==='free'&&!c.done) b.prompt={x:c.x,label:'HAIL IT!'};
-      if(c.t>c.wait){ c.state='leave'; c.vx=-300; if(c.kind==='free'&&!c.done){ actorSay(c.x,GROUND-90,'Ah, suit yourself.',1.8,'driver'); seq([[3,()=>{ if(boss&&boss.kind==='taxi') car4('free'); }]]); } } }
+    else if(c.state==='stop'){ if(!c.done) b.prompt={x:c.x,label:TAXI_ASK[c.kind]};
+      if(c.t>c.wait&&!c.busy){ c.state='leave'; c.vx=-300; if(!c.done){ c.done=true; lose4(); actorSay(c.x,GROUND-92,'Suit yourself.',1.8,'driver'); seq([[1.6,()=>bsay('Talk to them, ya eejit!',2)]]); if(c.kind==='free') seq([[3,()=>{ if(boss&&boss.kind==='taxi') car4('free'); }]]); } } }
     else if(c.state==='leave'){ c.vx-=200*dt; c.x+=c.vx*dt; }
     if(c.kind==='hired'||c.state==='leave') for(const px of PUD){ if(!c.splashed[px]&&c.x<px+20){ c.splashed[px]=1; splash4(px); } }
     if(c.x<ARENA-120) b.cars.splice(i,1); }
   for(const s of (b.spl||[])){ s.t+=dt; if(s.t>0.15&&s.t<0.55&&!s.hit&&Math.abs(P.x-s.x)<34&&P.y>GROUND-26&&P.inv<=0){ s.hit=true; hurt('SOAKED!',s.x+40); } }
   if(b.spl) b.spl=b.spl.filter(s=>s.t<0.8);
-  if(b.prompt&&Math.abs(P.x-b.prompt.x)<70&&punchBuf>0){ punchBuf=0; const c=b.cars.find(c=>c.state==='stop'&&!c.done); if(c) actOnTaxi(c); }
 }
 function splash4(x){ const b=boss; (b.spl=b.spl||[]).push({x,t:0}); sfx.jump&&tone(180,.25,'sawtooth',.06,-120); }
-function stopTaxi(c){
-  if(c.kind==='siob'){ c.wait=5; actorSay(c.x,GROUND-90,'Siobhán?',2.2,'driver'); mhint('PRESS ACTION NEAR THE TAXI','taxiact'); }
-  else if(c.kind==='island'){ c.wait=6; S.freeze=6; seq([[0.1,()=>actorSay(c.x,GROUND-90,'Where to?',1.6,'driver')],[1.7,()=>psay('Islandbridge.',1.6)],[1.8,()=>actorSay(c.x,GROUND-90,"Ah no, that's too close, I'm not going there.",2.6,'driver')],[2.4,()=>{ c.done=true; c.t=c.wait; lose4(); bsay("He's not wrong, it's walkable. But no.",2.4); }]]); }
-  else if(c.kind==='mine'){ c.wait=3.2; c.lad={x:ARENA-20}; actorSay(()=>c.lad.x,GROUND-104,"That's MY taxi!",2,'taxilad'); seq([[2.6,()=>{ c.done=true; lose4(); bsay('Ah, come ON!',1.8); }]]); }
-  else if(c.kind==='free'){ c.wait=6; bsay("Light's ON! GO, GO, GO!",2); }
+function stopTaxi(c){ mhint('A TAXI STOPPED: GO TALK TO THE DRIVER (ACTION)','taxiact');
+  if(c.kind==='siob'){ c.wait=6; actorSay(c.x,GROUND-92,'Siobhán?',2.2,'driver'); }
+  else if(c.kind==='island'){ c.wait=6; actorSay(c.x,GROUND-92,'Where to?',1.8,'driver'); }
+  else if(c.kind==='mine'){ c.wait=5; c.lad={x:ARENA-20}; }
+  else if(c.kind==='free'){ c.wait=7; bsay("Light's ON! GO, GO, GO!",2); }
 }
-function actOnTaxi(c){
-  if(c.kind==='siob'){ c.done=true; psay("I'm Siobhán!",1.6); seq([[1.6,()=>actorSay(c.x,GROUND-90,"You're not Siobhán.",2,'driver')],[1.4,()=>{ c.t=c.wait; lose4(); }]]); }
-  else if(c.kind==='free'){ c.done=true; boss.won=true; S.taxi=true; S.freeze=9; psay('Thank God.',1.6); sfx.coin(); pts(1000); craic(2); banner('TAXI!');
-    seq([[1.4,()=>{ c.state='leave'; c.vx=-60; P.inv=0; P.x=-9999; }],[1.6,()=>{ state==='play'&&winGame(); }]]); }
+function talked4(c){ c.done=true; c.busy=true; boss.talked++; craic(1); pts(150); pop(c.x,GROUND-110,'+1 CRAIC','#3fcf6a'); }
+function actOnTaxi(c){ if(c.done) return; const D=c.x, Y=GROUND-92; S.freeze=Math.max(S.freeze,1);
+  if(c.kind==='siob'){ talked4(c); psay("I'm Siobhán!",1.6); seq([[1.7,()=>actorSay(D,Y,"You're not Siobhán.",2,'driver')],[2.0,()=>{ c.busy=false; c.t=c.wait; }]]); }
+  else if(c.kind==='island'){ talked4(c); psay('Islandbridge, please.',1.8); seq([[1.9,()=>actorSay(D,Y,"Ah no, that's too close, I'm not going there.",2.6,'driver')],[2.7,()=>{ c.busy=false; c.t=c.wait; bsay("He's not wrong, it's walkable. But no.",2.4); }]]); }
+  else if(c.kind==='mine'){ talked4(c); psay('Howya, are you free?',1.8); seq([[1.6,()=>actorSay(()=>c.lad.x,GROUND-104,"That's MY taxi!",2,'taxilad')],[2.2,()=>{ c.busy=false; c.t=c.wait; bsay('Ah, come ON!',1.8); }]]); }
+  else if(c.kind==='free'){ c.done=true; boss.won=true; S.taxi=true; S.freeze=9; psay('Home, please!',1.6); sfx.coin(); pts(1000); craic(2); banner('TAXI!');
+    if(boss.talked>=3){ S.allTaxis=true; pts(500); pop(P.x,P.y-100,'TALKED TO EVERY DRIVER! +500','#ffd84a'); }
+    seq([[1.7,()=>actorSay(D,Y,'Hop in, buddy.',1.8,'driver')],[1.6,()=>{ S.hideP=true; if(buddy4) buddy4.x=-9999; c.state='leave'; c.vx=-60; c.light=false; }],[1.8,()=>{ if(state==='play') startHome4(); }]]); }
 }
-// siobhán's taxi leaves without you if you do nothing: still costs patience
-function taxiTidy(){ const b=boss; if(!b||b.kind!=='taxi') return; for(const c of b.cars){ if(c.kind==='siob'&&c.state==='leave'&&!c.lost){ c.lost=true; if(!c.done) lose4(); } } }
+function taxiTidy(){}
 
+/* ---- the drop-off: a little scene outside the gaff ---- */
+let home4=null;
+function startHome4(){ state='cut'; home4={t:0,said:{}}; S.lock=false; }
+function cutUpdate4(dt){ const h=home4; if(!h) return; h.t+=dt; const once=(k,t,f)=>{ if(h.t>=t&&!h.said[k]){ h.said[k]=1; f(); } };
+  for(let i=seq4.length-1;i>=0;i--){ seq4.splice(i,1); }
+  for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
+  once('drv',3.6,()=>{ h.drv={say:'There you go, buddy.',t:2.4}; speak('There you go, buddy.','driver',true); });
+  once('me',6.2,()=>{ h.me={say:'Cheers!',t:1.6}; speak('Cheers!','player',true); });
+  once('buddy',7.8,()=>{ h.buddy={say:'Same time next week?',t:2.2}; speak('Same time next week?','buddy4',true); });
+  for(const k of ['drv','me','buddy']) if(h[k]) h[k].t-=dt;
+  if(h.t>11.2&&!h.done){ h.done=true; S.hideP=false; state='play'; home4=null; winGame(); }
+}
+function drawHome4(){ const h=home4; if(!h) return; ctx.setTransform(2,0,0,2,0,0); lights=[]; glowRects=[]; const cam0=camX; camX=0;
+  drawSky4();
+  terrace4(-30,170,11); terrace4(140,190,37); terrace4(330,180,59);
+  S_(); box(222,GROUND-62,30,62,'#2a6a3a'); fr(226,GROUND-58,22,24,'#ffcf7a'); glowRects.push([226,GROUND-58,22,24]); txt('4',237,GROUND-74,'#ffd84a','center',8); L3(237,GROUND-40,80,'#ffd890',1);
+  lamp4(120); lamp4(420);
+  fr(0,GROUND,VW,VH-GROUND,'#3a3e48'); fr(0,GROUND,VW,3,'#5a5e68'); fr(0,GROUND+30,VW,VH,'#22252c'); for(let x=0;x<VW;x+=40) fr(x+(h.t*0)%40,GROUND+46,22,2,'#d8d8d8');
+  const t=h.t, e=Math.min(1,t/2.6), cx=VW+70-(VW+70-300)*(1-Math.pow(1-e,3)) - (t>9?(t-9)*(t-9)*120:0);
+  const out=Math.min(1,Math.max(0,(t-2.9)/0.9)), px=280-out*44, bx=300-Math.min(1,Math.max(0,(t-3.4)/0.9))*92;
+  if(t>2.9){ human(bx,GROUND,{f:-1,pose:t>3.4&&t<4.3?'walk':'stand',ph:t*12,skin:'#d8a882',hs:'short',hair:'#1a1a1a',top:'#2a7ab8',legs:'#2a2a40',shoes:'#f4f4f4',zip:true,happy:true}); }
+  if(t>2.9){ const sp=P.x, sy=P.y, sf=P.face, si=P.inv, sv=P.vx; P.x=px; P.y=GROUND; P.face=-1; P.inv=0; P.vx=out<1?-60:0; const hp=S.hideP; S.hideP=false; try{ drawPlayer(); }catch(err){} S.hideP=hp; P.x=sp; P.y=sy; P.face=sf; P.inv=si; P.vx=sv; }
+  prius(cx,GROUND+40,{light:t>9});
+  if(h.drv&&h.drv.t>0) bubble(cx,GROUND-70,h.drv.say);
+  if(h.me&&h.me.t>0) bubble(px,GROUND-96,h.me.say);
+  if(h.buddy&&h.buddy.t>0) bubble(bx,GROUND-100,h.buddy.say);
+  lightPass3();
+  txt('HOME, 4AM',VW/2,14,'#ffd84a','center',8,OUT);
+  const f=t<0.6?1-t/0.6:t>10.4?Math.min(1,(t-10.4)/0.8):0; if(f>0){ ctx.fillStyle=`rgba(0,0,0,${f})`; ctx.fillRect(-10,-10,VW+20,VH+20); }
+  camX=cam0; }
+
+/* ---- rooms: walk through a door and you're on another screen ---- */
+function goRoom(x){ if(fade4) return; fade4={t:0,x,moved:false}; S.freeze=Math.max(S.freeze,0.8); tone(330,.1,'triangle',.07); tone(247,.14,'triangle',.07,0,.1); }
+function fadeUpd4(dt){ if(!fade4) return; fade4.t+=dt; if(!fade4.moved&&fade4.t>=0.35){ fade4.moved=true; P.x=fade4.x; P.y=GROUND; P.vy=0; P.knock=0; camX=zone4(P.x)[0]; if(buddy4) buddy4.x=P.x-30; for(const d of drunks4) d.hugT=0; } if(fade4.t>=0.8) fade4=null; }
+function roomCam4(){ if(S.lock) return; const z=zone4(P.x); camX=Math.max(z[0],Math.min(z[1]-VW,camX)); if(P.x<z[0]+10) P.x=z[0]+10; if(P.x>z[1]-10) P.x=z[1]-10; }
+function drawFade4(){ if(!fade4) return; const t=fade4.t, a=t<0.35?t/0.35:Math.max(0,1-(t-0.35)/0.45); ctx.fillStyle=`rgba(0,0,0,${a})`; ctx.fillRect(-10,-10,VW+20,VH+20); }
+
+/* ---- pub punters: people doing things, in front of you ---- */
+const PUNT_SAY=['Story, buddy?','Mind yourself!','Easy there!','Ah, me shoes!'];
+function updPunters4(dt){ for(const p of punters4){ p.anim+=dt; if(p.bumpT>0) p.bumpT-=dt; if(p.sayT>0) p.sayT-=dt;
+    if(p.k==='collector'){ p.x+=p.dir*40*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; }
+    else { p.st=(p.st||0)-dt; if(p.st<=0){ p.mode=['walk','chat','cheer','walk'][Math.floor(Math.random()*4)]; p.st=1.5+Math.random()*2; if(p.mode==='walk') p.dir=Math.random()<.5?-1:1; }
+      if(p.mode==='walk'){ p.x+=p.dir*28*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; } }
+    if(Math.abs(p.x-P.x)<13&&P.y>GROUND-22&&p.bumpT<=0&&S.freeze<=0){ p.bumpT=1.6; P.knock=(P.x<p.x?-1:1)*180;
+      if(tray4&&S.pints>0){ S.pints--; pop(P.x,P.y-80,'-1 PINT!','#ff6b6b'); tone(1800,.08,'square',.08); p.say='Ah, me shoes!'; speak(p.say,'punter',true); mhint('JUMP OVER PEOPLE, OR YOU SPILL THE PINTS','pints'); }
+      else if(p.k==='collector'){ p.say='Watch the glasses!'; speak(p.say,'collector',true); tone(2200,.06,'square',.08); }
+      else { p.say=PUNT_SAY[Math.floor(Math.random()*3)]; speak(p.say,'punter',false); }
+      p.sayT=1.8; } } }
+function drawPunters4(){ for(const p of punters4){ const sx=p.x-camX; if(sx<-30||sx>VW+30) continue; const h=hash(p.x0,5);
+    if(p.k==='collector'){ human(sx,GROUND,{f:p.dir,pose:'walk',ph:p.anim*10,skin:'#e8b58e',hs:'short',hair:'#7a4a24',top:'#111',legs:'#222',shoes:'#111',armFwd:true}); S_(); for(let k=0;k<5;k++) rb(sx+p.dir*12-3,GROUND-44-k*7,7,8,1.5,'rgba(220,240,255,.8)'); }
+    else { const walk=p.mode==='walk'; human(sx,GROUND,{f:walk?p.dir:(P.x<p.x?-1:1),pose:walk?'walk':'stand',ph:p.anim*10,skin:SKINS[h%4],hs:['short','long','cap'][h%3],cap:'#2a6fd6',hair:HAIRS[h%4],top:['#c83a3a','#e0a020','#7a3ab8','#2e9e4f'][h%4],legs:'#2a2a3a',shoes:'#fff',armUp:p.mode==='cheer'?Math.floor(p.anim*3)%2===0:p.mode==='chat',can:'#2a1a10',happy:true}); }
+    if(p.sayT>0&&p.say) bubble(sx,GROUND-96,p.say); } }
+/* the crowd at the back: grouped round high tables, swaying, cheering, darker so they read as background */
+function crowd4(x0,x1,posh){ const at=(x,f)=>{ const s=x-camX; if(s>-60&&s<VW+60) f(s); };
+  for(let xx=x0+60;xx<x1-40;xx+=110) at(xx,s=>{ if(hash(xx,7)%4===0) return; S_(); box(s-5,GROUND-62,10,4,posh?'#c8a050':'#5a3418'); fr(s-1,GROUND-58,2,26,'#2a1a10');
+    for(let k=0;k<3;k++){ const q=hash(xx,k+11), sw=Math.sin(time*(1.6+k*0.3)+q)*1.6, up=(Math.floor(time*1.2+q%7)%5===0)||(S.goalT>0);
+      human(s-26+k*26+sw,GROUND-32,{sc:.74,f:k===0?1:k===2?-1:(q%2?1:-1),skin:SKINS[q%4],hs:posh?(q%2?'long':'short'):['short','long','cap'][q%3],cap:'#1b3a8f',hair:posh&&q%2?'#f2d06a':HAIRS[q%4],top:posh?['#f4f4f4','#b08aff','#ff9ae0','#1a1a1a'][q%4]:['#8a2a2a','#2a4a8a','#2e6b3a','#6a6a6a'][q%4],legs:posh?'#d8d0c0':'#2a2a3a',shoes:'#ddd',armUp:up,can:posh?null:'#c8a050',cup:posh,happy:up}); } });
+  ctx.fillStyle='rgba(12,6,20,.42)'; const a=Math.max(x0,camX-20)-camX, b=Math.min(x1,camX+VW+20)-camX; if(b>a) ctx.fillRect(a,GROUND-104,b-a,74); }
 /* ---- win ---- */
 function winGame4(){
   const total=Math.round(S.score + S.money*10 + S.craic*50 + S.rolls*100 + (S.roundDone?400:0) + (S.in2?300:0) + (S.chips?150:0));
   const rank=total<4500?'Early night, so':total<6500?'Grand night out':total<8500?'Session legend':"King of George's St";
   saveProg(4,total,rank);
-  if(!CARD.back||CARD.r?.total!==total||CARD.r?.stageN!==4) buildCard({inter:interList(),stageN:4,total,rank,place:'HOME, 4AM',stage:'STAGE 4: NIGHT OUT IN DUBLIN',lines:[S.roundDone?'Bought your round: yes, legend':'Bought your round: no. Tight.',S.in2?'Royal Tea: in':'Royal Tea: not tonight',S.chips?'Chips: secured':'Chips: none, tragic',`Craic: ${S.craic}/10`]});
+  if(!CARD.back||CARD.r?.total!==total||CARD.r?.stageN!==4) buildCard({inter:interList(),stageN:4,total,rank,place:'HOME, 4AM',stage:'STAGE 4: NIGHT OUT IN DUBLIN',lines:[S.roundDone?'Bought your round: yes, legend':'Bought your round: no. Tight.',S.in2?'Royal Tea: in':'Royal Tea: not tonight',S.chips?'Chips: secured':'Chips: none, tragic',S.allTaxis?'Talked to every driver: yes':'Talked to every driver: no',`Craic: ${S.craic}/10`]});
   CARD.back=()=>{ state='win'; showWin4(total,rank); };
   showWin4(total,rank);
 }
 function showWin4(total,rank){
   dialog('Home at last.',`<p>The taxi drops you home. You eat the chips in the back seat. Absolute session.</p>
-  <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Your round: ${S.roundDone?'bought (+400)':'never bought'}</li><li>Royal Tea: ${S.in2?'in (+300)':'no'}</li><li>Chips: ${S.chips?'yes (+150)':'no'}</li>${interHTML()}<li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
+  <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Your round: ${S.roundDone?'bought (+400)':'never bought'}</li><li>Royal Tea: ${S.in2?'in (+300)':'no'}</li><li>Chips: ${S.chips?'yes (+150)':'no'}</li><li>Every taxi driver: ${S.allTaxis?'talked to (+500)':'no'}</li>${interHTML()}<li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
     [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Back to the start',fn(){showTitle();}},PINT_END,MERCH]);
 }
 
@@ -2949,7 +3038,7 @@ function seagullIn(x0,x1){ const a=Math.max(x0,camX-20), b=Math.min(x1,camX+VW+2
   at(1530,s=>{ box(s-34,62,68,42,'#111'); fr(s-30,66,60,34,'#2e8b3f'); fr(s-2,66,1,34,'rgba(255,255,255,.6)'); circ(s+8+Math.sin(time*2)*12,84,2,'#fff',true); for(let k=0;k<3;k++){ human(s-22+k*10+Math.sin(time*3+k)*2,88,{f:k%2?1:-1,sc:.26,skin:'#f0c8a8',hs:'short',hair:'#222',top:k%2?'#e8e8e8':'#1f6a3a',legs:'#222',shoes:'#fff'}); } glowRects.push([s-30,66,60,34]); L3(s,84,70,'#9affb0',.8); });
   at(1720,s=>{ box(s-120,GROUND-150,240,60,'#2a140c'); for(let r=0;r<3;r++) for(let k=0;k<20;k++) rb(s-114+k*12,GROUND-146+r*20,5,15,1.5,['#2e8b3f','#c8a050','#8a2a2a','#3a5aa0','#e8e8e8'][(k+r*3)%5]); fr(s-120,GROUND-36,240,36,'#5a2a12'); fr(s-120,GROUND-40,240,6,'#c8a050'); for(let k=0;k<6;k++){ box(s-100+k*34,GROUND-60,4,22,'#c8a050'); circ(s-98+k*34,GROUND-62,3,'#e8e8e8',true); } });
   at(2070,s=>{ box(s-14,46,28,30,'#6a3a1a'); ctx.save(); ctx.translate(s,64); S_(); rb(-9,-6,18,22,7,'#8a5a30'); for(const d of [-1,1]){ ctx.beginPath(); ctx.moveTo(d*6,-4); ctx.lineTo(d*18,-22); ctx.lineTo(d*14,-24); ctx.moveTo(d*14,-14); ctx.lineTo(d*22,-16); ctx.strokeStyle='#d8c090'; ctx.lineWidth=2.5; ctx.stroke(); } circ(-3,4,1.6,'#111',true); circ(3,4,1.6,'#111',true); ctx.restore(); S_(); });
-  for(let xx=IN1.x0+40;xx<IN1.x1;xx+=56) at(xx,s=>{ if(hash(xx,7)%3===0) return; human(s,GROUND-30,{f:hash(xx,2)%2?1:-1,sc:.72,skin:SKINS[hash(xx,3)%4],hs:['short','long','cap'][hash(xx,4)%3],hair:HAIRS[hash(xx,5)%4],top:['#8a2a2a','#2a4a8a','#2e6b3a','#6a6a6a','#c8a050'][hash(xx,6)%5],legs:'#2a2a3a',shoes:'#ddd',armUp:hash(xx,8)%4===0,can:'#c8a050'}); });
+  crowd4(IN1.x0,IN1.x1,false);
 }
 function greenside4(sx){ S_(); const top=GROUND-210; box(sx,top,230,210,'#1a3050'); ctx.save(); ctx.beginPath(); ctx.rect(sx,top,230,210); ctx.clip();
   for(let yy=top;yy<GROUND;yy+=14) for(let xx=sx;xx<sx+230;xx+=18){ fr(xx+1,yy+1,16,12,hash(xx-camX+999,yy)%5===0?'#ffe8b0':'#22406a'); if(hash(xx-camX+999,yy)%5===0) glowRects.push([xx+1,yy+1,16,12]); }
@@ -2966,7 +3055,7 @@ function royalIn(x0,x1){ const a=Math.max(x0,camX-20), b=Math.min(x1,camX+VW+20)
   at(3990,s=>{ box(s-110,GROUND-150,220,70,'#120818'); for(let k=0;k<14;k++){ const c=['#ff7ad8','#7affd8','#ffd84a','#b08aff'][k%4]; rb(s-104+k*15,GROUND-140,7,22,2,c); } fr(s-110,GROUND-40,220,40,'#c8a050'); fr(s-110,GROUND-44,220,6,'#f0d080'); neon('COCKTAILS',s,GROUND-74,'#7affd8',7); });
   at(4330,s=>{ box(s-60,GROUND-160,120,120,'#1e4a28'); for(let k=0;k<40;k++){ const h=hash(k,44); circ(s-54+(h%108),GROUND-154+((h>>7)%108),4,['#ff7ad8','#ffd84a','#fff','#ffb0e8'][h%4],true); } neon('#ROYALTEA',s,GROUND-150,'#ff7ad8',8); });
   at(4540,s=>{ box(s-40,GROUND-60,80,60,'#120818'); for(const d of [-1,1]){ box(s+d*60-14,GROUND-90,28,90,'#1a3a1a'); circ(s+d*60,GROUND-66,10,'#3fcf6a',true); circ(s+d*60,GROUND-66,4,'#0d2a14',true); circ(s+d*60,GROUND-30,8,'#3fcf6a',true); L3(s+d*60,GROUND-66,60,'#7aff9a',.8); } human(s,GROUND-60,{f:1,sc:.8,skin:'#e8b58e',hs:'cap',cap:'#111',top:'#111',legs:'#111',shoes:'#fff',armUp:Math.floor(time*2)%2===0}); });
-  for(let xx=IN2.x0+50;xx<YARD.x0-20;xx+=48) at(xx,s=>{ if(hash(xx,7)%3===0) return; const posh=hash(xx,9)%2; human(s,GROUND-30,{f:hash(xx,2)%2?1:-1,sc:.72,skin:SKINS[hash(xx,3)%3],hs:posh?'long':'short',hair:posh?'#f2d06a':'#5a3a20',top:['#f4f4f4','#b08aff','#ff9ae0','#1a1a1a','#c8a050'][hash(xx,6)%5],legs:'#d8d0c0',shoes:'#5a3a20',armUp:hash(xx,8)%3===0,cup:true}); });
+  crowd4(IN2.x0,4440,true); crowd4(4660,YARD.x0,true);
   // smoking area out the back
   const ya=Math.max(YARD.x0,camX-20), yb=Math.min(YARD.x1,camX+VW+20); if(yb>ya){ const s0=ya-camX; fr(s0,0,yb-ya,GROUND,'#141826'); for(let xx=Math.floor(ya/24)*24;xx<yb;xx+=24) for(let yy=60;yy<GROUND;yy+=10) fr(xx-camX+((yy/10)%2?12:0),yy,22,8,'#5a2e2a');
     for(let xx=YARD.x0;xx<YARD.x1;xx+=12) at(xx,s=>{ circ(s,58+Math.sin(xx)*3,1.6,['#ffd84a','#ff7ad8','#7affd8'][(xx/12)%3|0],true); L3(s,58,16,'#ffe0a0',.5); });
@@ -2984,16 +3073,18 @@ function rank4(sx){ S_(); box(sx-2,GROUND-120,4,120,'#444'); box(sx-22,GROUND-14
 function shutters4(sx,w,x){ terrace4(sx,w,x); for(let k=0;k<Math.floor(w/70);k++){ box(sx+8+k*70,GROUND-70,60,70,'#5a5e66'); for(let y=GROUND-68;y<GROUND;y+=5) fr(sx+8+k*70,y,60,1,'#45484e'); } }
 function drawBack4(){
   const at=(x,w,f)=>{ const sx=x-camX; if(sx>VW+40||sx+w<-40) return; f(sx); };
-  at(-40,220,s=>terrace4(s,220,-40)); at(180,140,s=>spar4(s)); at(320,200,s=>terrace4(s,200,320)); at(520,240,s=>terrace4(s,240,520));
-  at(760,200,s=>seagullFront(s));
-  at(2520,200,s=>terrace4(s,200,2520)); at(2720,170,s=>terrace4(s,170,2720)); at(2890,230,s=>greenside4(s)); at(3120,200,s=>terrace4(s,200,3120)); at(3420,140,s=>terrace4(s,140,3420));
-  at(3560,200,s=>royalFront(s));
+  const z=zone4(camX+VW/2);
+  if(z[0]===0){ at(-40,220,s=>terrace4(s,220,-40)); at(180,140,s=>spar4(s)); at(320,40,s=>terrace4(s,40,320)); at(GATE1-188,200,s=>seagullFront(s)); at(560,200,s=>terrace4(s,200,560)); at(760,200,s=>terrace4(s,200,760)); }
+  if(z[0]===IN1.x1){ at(2520,180,s=>terrace4(s,180,2520)); at(2700,230,s=>greenside4(s)); at(2930,140,s=>terrace4(s,140,2930)); at(3070,190,s=>terrace4(s,190,3070)); at(GATE2-188,200,s=>royalFront(s)); at(3460,160,s=>terrace4(s,160,3460)); at(3620,160,s=>terrace4(s,160,3620)); }
   at(5190,140,s=>terrace4(s,140,5190)); at(5330,170,s=>terrace4(s,170,5330)); at(5480,230,s=>chipperFront(s)); at(5710,170,s=>terrace4(s,170,5710)); at(5880,170,s=>kebab4(s)); at(6050,250,s=>shutters4(s,250,6050));
   at(6300,320,s=>shutters4(s,320,6300)); at(6620,300,s=>terrace4(s,300,6620)); at(6920,260,s=>rank4(s+40)); at(7180,400,s=>shutters4(s,400,7180));
-  seagullIn(IN1.x0,IN1.x1); royalIn(IN2.x0,IN2.x1);
-  for(let x=60;x<END;x+=170){ if(inside4(x)) continue; lamp4(x); }
+  if(z===ZONES4[1]){ seagullIn(IN1.x0,IN1.x1); door4(IN1.x0+20,false,'#5a3a20'); door4(IN1.x1-26,true,'#5a3a20'); }
+  if(z===ZONES4[3]){ royalIn(IN2.x0,IN2.x1); door4(IN2.x0+20,false,'#0c0810'); door4(IN2.x1-26,true,'#3a3a40'); }
+  if(!inside4(camX+VW/2)) for(let x=60;x<END;x+=170){ if(inside4(x)||Math.abs(x-GATE1+40)<60||Math.abs(x-GATE2+40)<60) continue; lamp4(x); }
   wheel4(250);
 }
+function door4(x,exit,col){ const s=x-camX; if(s<-40||s>VW+40) return; S_(); box(s-16,GROUND-74,32,74,col); fr(s-12,GROUND-70,24,66,exit?'#ffe6a0':'#2a1a10'); if(exit){ glowRects.push([s-12,GROUND-70,24,66]); L3(s,GROUND-40,70,'#ffe6a0',1);
+    const b=Math.sin(time*5)*2; rb(s-20,GROUND-98+b,40,14,4,'#3fcf6a'); txt('EXIT ▶',s,GROUND-95+b,'#0d2a14','center',7); glowRects.push([s-20,GROUND-98,40,14]); } }
 function drawFloor4(){ for(const R of [IN1,IN2]){ const a=Math.max(R.x0,camX-20), b=Math.min(R.x1,camX+VW+20); if(b<=a) continue; const s=a-camX, w=b-a, yard=R===IN2;
     fr(s,GROUND,w,VH-GROUND,R===IN1?'#5a3418':'#1a0e22'); for(let xx=Math.floor(a/24)*24;xx<b;xx+=24){ fr(xx-camX,GROUND,1,VH-GROUND,R===IN1?'#3a2010':'#2a1636'); } fr(s,GROUND,w,2,R===IN1?'#7a4a24':'#c8a050');
     if(yard){ const ya=Math.max(YARD.x0,a), yb=Math.min(YARD.x1,b); if(yb>ya) fr(ya-camX,GROUND,yb-ya,VH-GROUND,'#3a3a40'); } } }
@@ -3011,13 +3102,16 @@ function drawNPC4(n,sx){
   if(n.k==='posh4'){ human(sx,GROUND,{f:-1,skin:'#f2cfb0',hs:'short',hair:'#c8a060',top:'#f4f4f4',band:'#7ab0e8',legs:'#d8c8a0',shoes:'#7a4a24',armFwd:true,cup:true}); S_(); fr(sx-16,GROUND-40,2,8,'#ff9a50'); return true; }
   if(n.k==='chipper4'){ human(sx,GROUND-4,{f:-1,skin:'#e8b58e',hs:'hat',cap:'#fff',top:'#fff',legs:'#333',shoes:'#111',armFwd:true}); return true; }
   if(n.k==='antho4'){ human(sx,GROUND,{f:1,skin:'#f0cfb4',hs:'hood',top:'#1c3a8a',legs:'#1c3a8a',shoes:'#fff',stripes:true,shifty:true}); S_(); rb(sx-2,GROUND-34,14,10,4,'#f4f4f4'); fr(sx-4,GROUND-38,2,12,'#f4f4f4'); return true; }
+  if(n.k==='dance4'){ for(let k=0;k<6;k++){ const c=['#ff7ad8','#7affd8','#ffd84a','#b08aff'][(k+Math.floor(time*4))%4]; ctx.globalAlpha=.55; fr(sx-66+k*22,GROUND+2,20,10,c); ctx.globalAlpha=1; glowRects.push([sx-66+k*22,GROUND+2,20,10]); }
+    for(let k=0;k<3;k++){ const x=sx-46+k*46, hop=Math.abs(Math.sin(time*5+k))*4; human(x,GROUND-hop,{f:k%2?-1:1,skin:SKINS[(k+2)%4],hs:'long',hair:['#f2d06a','#2a1a10','#c86a2a'][k],top:['#ff9ae0','#7affd8','#ffd84a'][k],legs:'#1a1a1a',shoes:'#c8a050',armUp:Math.floor(time*4+k)%2===0,happy:true}); } return true; }
   if(n.k==='garda4'){ human(sx,GROUND,{f:-1,skin:'#e8b58e',hs:'peaked',top:'#1b2a4a',hiVis:true,legs:'#1b2a4a',shoes:'#111'}); return true; }
   return false;
 }
 function drawMid4(){
   for(const d of drunks4){ const sx=d.x-camX; if(sx<-30||sx>VW+30) continue; ctx.save(); ctx.translate(sx,GROUND); ctx.rotate(Math.sin(d.anim*2.2)*0.12); human(0,0,{f:d.dir,pose:d.hugT>0?'stand':'walk',ph:d.anim*8,skin:'#f0b8a0',hs:'short',hair:'#5a3a1a',top:'#6a2a5a',legs:'#2a2a3a',shoes:'#ddd',armUp:d.hugT>0,can:'#d8d8e0',happy:true}); ctx.restore(); }
   const b=buddy4; if(b&&state!=='title'){ human(b.x-camX,GROUND,{f:b.face,pose:Math.abs(b.x-(P.x-28*P.face))>5?'walk':'stand',ph:b.anim*12,skin:'#d8a882',hs:'short',hair:'#1a1a1a',top:'#2a7ab8',legs:'#2a2a40',shoes:'#f4f4f4',zip:true,happy:true}); if(tray4&&false){} }
-  if(tray4){ const sx=P.x-camX+P.face*10; S_(); fr(sx-12,P.y-50,24,3,'#c8c8c8'); for(let k=0;k<5;k++){ rb(sx-11+k*5,P.y-60,4,10,1,'#2a1a10'); fr(sx-11+k*5,P.y-60,4,2,'#f4ead0'); } }
+  drawPunters4();
+  if(tray4){ const sx=P.x-camX+P.face*10; S_(); fr(sx-12,P.y-50,24,3,'#c8c8c8'); for(let k=0;k<S.pints;k++){ rb(sx-11+k*5,P.y-60,4,10,1,'#2a1a10'); fr(sx-11+k*5,P.y-60,4,2,'#f4ead0'); } }
   for(const t of trig4){ if(/^gate/.test(t.k)){ const open=t.k==='gate1'?S.in1:S.in2; const sx=t.x+10-camX; if(sx<-30||sx>VW+30) continue; human(sx,GROUND,{f:-1,sc:1.12,skin:t.k==='gate1'?'#c68a5a':'#e8b58e',hs:'short',hair:'#111',top:'#111',legs:'#111',shoes:'#111',armFwd:!open}); S_(); fr(sx-3,GROUND-50,6,2,'#888'); if(!open){ box(sx-20,GROUND-30,4,30,'#c8a050'); fr(sx-20,GROUND-24,-14,2,'#c8281e'); } } }
   if(gull4){ gull(gull4.x-camX,gull4.y,-1,gull4.state==='stare'?0:gull4.f,2.2,true); if(gull4.state==='stare') bubble(gull4.x-camX,gull4.y-60,'...'); }
   if(boss&&boss.kind==='taxi') drawTaxiBack();
@@ -3035,13 +3129,14 @@ function drawTaxiFront(){ const b=boss;
   for(const c of b.cars){ const sx=c.x-camX; if(sx<-80||sx>VW+80) continue; prius(sx,GROUND+40,c); if(c.state==='leave'&&c.kind!=='hired') for(let k=0;k<3;k++) fr(sx+44+k*8,GROUND+30+k,6,1,'rgba(255,255,255,.5)'); if(c.kind==='hired'&&c.state==='drive') for(let k=0;k<4;k++) fr(sx+44+k*10,GROUND+20+k*4,8,1.5,'rgba(255,255,255,.7)');
     if(c.lad){ c.lad.x+=(c.x-20-c.lad.x)*0.08; human(c.lad.x-camX,GROUND,{f:1,pose:'walk',ph:time*12,skin:'#f0c8a8',hs:'cap',cap:'#c8281e',top:'#222',legs:'#2a3a6a',shoes:'#fff'}); } }
   for(const s of (b.spl||[])){ const sx=s.x-camX, h=Math.sin(Math.min(1,s.t/0.5)*Math.PI)*48; ctx.globalAlpha=Math.max(0,1-s.t/0.8); for(let k=0;k<9;k++){ const a=-Math.PI/2+(k-4)*0.25; circ(sx+Math.cos(a)*h*0.7,GROUND+10+Math.sin(a)*h,3,'#8ac0ff',true); } ctx.globalAlpha=1; }
-  for(const px of PUD){ for(const c of b.cars){ if((c.kind==='hired'||c.state==='leave')&&!c.splashed[px]&&c.x-px<260&&c.x>px&&Math.floor(time*8)%2) txt('SPLASH!',px-camX,GROUND-70,'#8ac0ff','center',7,OUT); } }
+  for(const px of PUD){ const sx=px-camX, near=b.cars.some(c=>(c.kind==='hired'||c.state==='leave')&&!c.splashed[px]&&c.x-px<300&&c.x>px), y=GROUND-58+Math.sin(time*6)*3;
+    if(near){ txt('JUMP!',sx,y-12,Math.floor(time*10)%2?'#ffd84a':'#fff','center',10,OUT); tri(sx-7,y+2,sx+7,y+2,sx,y+10,'#ffd84a'); } else { ctx.globalAlpha=.75; txt('JUMP',sx,y-6,'#8ac0ff','center',7,OUT); tri(sx-5,y+4,sx+5,y+4,sx,y+10,'#8ac0ff'); ctx.globalAlpha=1; } }
   if(b.prompt&&!b.won){ const sx=b.prompt.x-camX, near=Math.abs(P.x-b.prompt.x)<70; ctx.font='7px '+FONTF; const w=ctx.measureText(b.prompt.label).width+18, y=GROUND-118+Math.sin(time*5)*2; ctx.globalAlpha=near?1:0.6+0.3*Math.sin(time*6); S_(); rb(sx-w/2,y,w,15,5,'#3fcf6a'); tri(sx-3,y+14,sx+3,y+14,sx,y+19,'#3fcf6a'); txt(b.prompt.label,sx,y+4,'#0d2a14','center',7); ctx.globalAlpha=1; }
   lifeBar('YOUR PATIENCE',b.pat,b.max,Object.assign(b.o,{right:b.pat<=1?'LAST NERVE':''}));
 }
-function drawHUD4(){ if(tray4){ S_(); for(let k=0;k<5;k++){ rb(222+k*5,8,4,10,1,'#2a1a10'); fr(222+k*5,8,4,2,'#f4ead0'); } } }
+function drawHUD4(){ if(tray4){ S_(); for(let k=0;k<5;k++){ rb(222+k*5,8,4,10,1,k<S.pints?'#2a1a10':'rgba(255,255,255,.2)'); if(k<S.pints) fr(222+k*5,8,4,2,'#f4ead0'); } } drawFade4(); }
 function taxiLabel(){ const b=boss; if(!b||b.kind!=='taxi'||!b.prompt||b.won) return null; return Math.abs(P.x-b.prompt.x)<70?b.prompt.label:null; }
-function taxiAct(){ const b=boss; if(!b||b.kind!=='taxi') return false; const c=b.cars.find(c=>c.state==='stop'&&!c.done&&(c.kind==='siob'||c.kind==='free')); if(!c||Math.abs(P.x-c.x)>70) return false; actOnTaxi(c); return true; }
+function taxiAct(){ const b=boss; if(!b||b.kind!=='taxi') return false; const c=b.cars.find(c=>c.state==='stop'&&!c.done); if(!c||Math.abs(P.x-c.x)>70) return false; actOnTaxi(c); return true; }
 function rain4(dt){ if(S.rainT>0){ S.rainT-=dt; if(S.rainT<=0) S.rainT=0; } rainA+=((S.rainT>0&&!inside4(P.x)?1:0)-rainA)*Math.min(1,dt*2); }
 
 /* ---------------- LOOP ---------------- */
@@ -3049,7 +3144,7 @@ let last=0;
 function loop(ts){
   const dt=Math.min(0.033,(ts-last)/1000||0); last=ts; time+=dt;
   if(state==='play'&&!paused){ let d2=dt; if(TS.t>0){ TS.t-=dt; d2=dt*TS.k; } update(d2); try{ musTick(); }catch(e){} }
-  if(state==='cut'){ try{ cutUpdate3(dt); }catch(e){ console.error(e); } }
+  if(state==='cut'){ try{ if(STAGE===4) cutUpdate4(dt); else cutUpdate3(dt); }catch(e){ console.error(e); } }
   try{ draw(); }catch(err){ console.error(err); }
   requestAnimationFrame(loop);
 }
@@ -3061,7 +3156,7 @@ if(document.fonts&&document.fonts.load){ document.fonts.load('8px '+FONTF).then(
 })();
 </script>
 <script>
-if('serviceWorker' in navigator){ addEventListener('load',()=>Promise.reject('beta: no service worker').catch(()=>{})); }
+// no service worker in the test copy
 </script>
 </body>
 </html>
