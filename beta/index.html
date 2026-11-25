@@ -602,7 +602,7 @@ function talkInner(n){
     case 'bewleys': if(!need(4))return; n.used=true; n.say='Lovely bun, that'; S.rolls=Math.min(5,S.rolls+1); pts(80); pop(n.x,GROUND-80,'+1 ROLL','#3fcf6a'); break;
   }
 }
-function nearTalk(){ let best=null,bd=40; for(const n of npcs){ if(!GREET[n.k]||n.used) continue; const d=Math.abs(n.x-P.x); if(d<bd){bd=d;best=n;} } return best; }
+function nearTalk(){ let best=null,bd=70; for(const n of npcs){ if(!GREET[n.k]||n.used) continue; const d=Math.abs(n.x-P.x); if(d<bd){bd=d;best=n;} } return best; }
 
 /* ---------------- HELPERS ---------------- */
 function pBox(){const h=P.bike?50:44;return {l:P.x-8,r:P.x+8,t:P.y-h,b:P.y};}
@@ -2589,7 +2589,7 @@ function drawDiscover(){
 function npcPrompt(n,sx){
   if(!GREET[n.k]||n.used||state!=='play') return; const d=Math.abs(n.x-P.x); if(d>260) return;
   const tall=n.k==='students'||n.k==='dancers', base=GROUND-(tall?100:84)+Math.sin(time*5+n.x)*2;
-  if(d<110){ const label=PROMPT[n.k]; ctx.font='7px '+FONTF; const w=ctx.measureText(label).width+24; ctx.globalAlpha=d<40?1:0.55+0.25*Math.sin(time*6);
+  if(d<110){ const label=PROMPT[n.k]; ctx.font='7px '+FONTF; const w=ctx.measureText(label).width+24; ctx.globalAlpha=d<70?1:0.55+0.25*Math.sin(time*6);
     S_(); rb(sx-w/2,base,w,14,5,'#3fcf6a'); tri(sx-3,base+13,sx+3,base+13,sx,base+18,'#3fcf6a'); bub(sx-w/2+9,base+7,'#0d2a14','#3fcf6a'); txt(label,sx+6,base+4,'#0d2a14','center',7); ctx.globalAlpha=1; }
   else { ctx.globalAlpha=0.75; S_(1.2); const y=base-2; rb(sx-6,y,12,9,3,'#3fcf6a'); tri(sx-2,y+8,sx+2,y+8,sx,y+11,'#3fcf6a'); for(let k=-1;k<=1;k++) fr(sx+k*3-0.75,y+3.5,1.5,1.5,'#0d2a14'); ctx.globalAlpha=1; }
 }
@@ -2751,7 +2751,7 @@ function zone4(x){ for(const z of ZONES4) if(x>=z[0]&&x<z[1]) return z; return Z
 let fade4=null, punters4=[], dancers4=[];
 let buddy4=null, drunks4=[], trig4=[], seq4=[], talkers4=[], flash4=0, dark4=0, gull4=null, tray4=false;
 
-function reset4(){ punters4=[]; dancers4=[]; fade4=null; buddy4={x:P.x-30,face:1,anim:0,say:'',sayT:0,idle:0,cool:2,onG:true}; drunks4=[]; trig4=[]; seq4=[]; talkers4=[]; flash4=0; gull4=null; }
+function reset4(){ busk4={i:0,t:0}; punters4=[]; dancers4=[]; fade4=null; buddy4={x:P.x-30,face:1,anim:0,say:'',sayT:0,idle:0,cool:2,onG:true}; drunks4=[]; trig4=[]; seq4=[]; talkers4=[]; flash4=0; gull4=null; }
 function inside4(x){ return (x>=IN1.x0&&x<IN1.x1)||(x>=IN2.x0&&x<IN2.x1); }
 function say4(who,text,t,voiceKey){ who.say=text; who.sayT=t||2.4; speak(text,voiceKey||who.k||'buddy',true); }
 function bsay(text,t){ if(!buddy4) return; buddy4.say=text; buddy4.sayT=t||2.6; buddy4.idle=0; speak(text,'buddy4',true); }
@@ -2759,10 +2759,10 @@ function psay(text,t){ talkers4.push({x:()=>P.x,y:()=>P.y-96,say:text,sayT:t||2.
 function seq(steps){ let acc=0; for(const [d,fn] of steps){ acc+=d; seq4.push({t:acc,fn}); } }
 function actorSay(x,y,text,t,who){ const a={x:typeof x==='function'?x:()=>x,y:typeof y==='function'?y:()=>y,say:text,sayT:t||2.4}; talkers4.push(a); if(who) speak(text,who,true); return a; }
 
-Object.assign(GREET,{band4:'Any requests?',barman4:"What're ye having?",lads4:'Your round, buddy!',stag4:'Lads, stop...',selfie4:'Smile, girls!',posh4:'Could I steal a cigarette?',chipper4:'What can I get ye?',antho4:"Leave it. Ma's waiting.",garda4:'Long night, lads?',dance4:'Get up and dance!'});
-Object.assign(PROMPT,{band4:'REQUEST A SONG €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK',dance4:'DANCE'});
-Object.assign(INAME,{band4:'Trad band',barman4:'Bought the round',lads4:'The lads',stag4:'Stag party',selfie4:'Photobomb',posh4:'Posh lad',chipper4:'Chips',antho4:'Antho',garda4:'The garda',dance4:'Danced'});
-Object.assign(VP,{buddy4:['m',1,1.04],bouncer:['m',.86,.96],bouncer2:['m',.9,.96],barman4:['m',.98,1],lads4:['m',1,1.04],stag4:['m',1.02,1.04],stagmates:['m',1,1.06],crowd:['m',.95,1.05],selfie4:['f',1.1,1.06],posh4:['m',1.02,.94],barman2:['m',1,.98],staff4:['f',1.04,1],chipper4:['m',.96,1],antho4:['m',1.1,1.06],garda4:['m',.9,.94],driver:['m',.9,.96],taxilad:['m',1.04,1.08],drunk4:['m',.92,.98],punter:['m',.98,1.02],collector:['m',.94,1],dancers4:['f',1.08,1.04]});
+Object.assign(GREET,{busker4:'A tip for the music, my friend?',band4:'Any requests?',barman4:"What're ye having?",lads4:'Your round, buddy!',stag4:'Lads, stop...',selfie4:'Smile, girls!',posh4:'Could I steal a cigarette?',chipper4:'What can I get ye?',antho4:"Leave it. Ma's waiting.",garda4:'Long night, lads?',dance4:'Get up and dance!'});
+Object.assign(PROMPT,{busker4:'TIP €2',band4:'REQUEST A SONG €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK',dance4:'DANCE'});
+Object.assign(INAME,{busker4:'Trumpet busker',band4:'Trad band',barman4:'Bought the round',lads4:'The lads',stag4:'Stag party',selfie4:'Photobomb',posh4:'Posh lad',chipper4:'Chips',antho4:'Antho',garda4:'The garda',dance4:'Danced'});
+Object.assign(VP,{busker4:['m',1.08,1.06],buddy4:['m',1,1.04],bouncer:['m',.86,.96],bouncer2:['m',.9,.96],barman4:['m',.98,1],lads4:['m',1,1.04],stag4:['m',1.02,1.04],stagmates:['m',1,1.06],crowd:['m',.95,1.05],selfie4:['f',1.1,1.06],posh4:['m',1.02,.94],barman2:['m',1,.98],staff4:['f',1.04,1],chipper4:['m',.96,1],antho4:['m',1.1,1.06],garda4:['m',.9,.94],driver:['m',.9,.96],taxilad:['m',1.04,1.08],drunk4:['m',.92,.98],punter:['m',.98,1.02],collector:['m',.94,1],dancers4:['f',1.08,1.04]});
 
 function levelDef4(){
   const L=[];
@@ -2791,7 +2791,8 @@ function levelDef4(){
   row(2620,GROUND-20,4);
   L.push({t:'e4',k:'oldgym',x:2800});
   L.push({t:'cyc',x:2850,k:'roo'});
-  L.push({t:'drunk',x:3060,r:40});
+  L.push({t:'npc',k:'busker4',x:3010});
+  L.push({t:'drunk',x:3160,r:30});
   arc(2960,GROUND-50,4);
   L.push({t:'e4',k:'gate2',x:GATE2});
   // Royal Tea (inside)
@@ -2823,6 +2824,7 @@ function build4(d,fromX){
   if(d.t==='punter'||d.t==='collector'){ punters4.push({x:d.x,x0:d.x,r:d.r,dir:d.t==='collector'?1:-1,anim:Math.random()*3,k:d.t,bumpT:0}); return true; }
   if(d.t==='drunk'){ if(d.x>=fromX+40) drunks4.push({x:d.x,x0:d.x,r:d.r,dir:-1,anim:0,hugT:0,said:false}); return true; }
   if(d.t==='e4'){ trig4.push({k:d.k,x:d.x,done:d.x<fromX&&!/^gate/.test(d.k)}); return true; }
+  if(d.t==='npc'&&d.k==='busker4'){ npcs.push({k:'busker4',x:d.x,x0:d.x,used:false,sayT:0,greeted:true,anim:0}); return true; }
   if(d.t==='npc'&&d.k==='posh4'){ npcs.push({k:'posh4',x:d.x,x0:d.x,used:false,sayT:0,greeted:false}); return true; }
   return false;
 }
@@ -2839,6 +2841,7 @@ function talk4(n){
     case 'dance4': n.used=true; S.dance=3.2; n.say='YESSS! GO ON!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); seq([[1.4,()=>bsay('Look at the moves on that!',2.2)]]); return true;
     case 'stag4': n.used=true; n.say='Lads, stop...'; craic(2); pts(120); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); setTimeout(()=>{ if(STAGE===4) actorSay(n.x+50,GROUND-120,'HAHAHA!',1.8,'stagmates'); },900); return true;
     case 'selfie4': n.used=true; flash4=0.35; sfx.item(); n.say='OMG, who IS that?!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); return true;
+    case 'busker4': if(!need(2)){ n.say='Ah, next time, my friend.'; return true; } n.used=true; n.say='Gracias, amigo!'; S.buskT=4; craic(2); pts(120); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); seq([[2.2,()=>bsay('Fair play to him, he never stops!',2.4)]]); return true;
     case 'posh4': n.used=true; S.freeze=6.2; n.say="I don't really smoke. I can give you some coins I have."; n.sayT=2.6;
       seq([[2.8,()=>psay("It's all right mate, no need for coins.",2.4)],[3.0,()=>{ n.say='...Have you a lighter as well?'; n.sayT=2.6; speak(n.say,'posh4',true); craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); }],[2.4,()=>bsay("No drinks out here, it says. He's got a sixteen euro mocktail.",3.2)]]); return true;
     case 'chipper4': if(S.chips){ n.say='Enjoy them chips!'; return true; } if(!need(6)) return true; n.used=true; S.chips=true; S.rolls=Math.min(5,S.rolls+1); n.say='Salt and vinegar?'; craic(1); pts(100); pop(n.x,GROUND-90,'CHIPS! +1 ROLL','#3fcf6a'); return true;
@@ -2877,7 +2880,7 @@ function update4(dt,pb,fist){
   fadeUpd4(dt);
   if(!fade4&&!S.lock){ if(P.x>IN1.x1-28&&P.x<IN1.x1) goRoom(IN1.x1+40); else if(P.x>IN2.x1-28&&P.x<IN2.x1) goRoom(IN2.x1+40); }
   if(S.dance>0){ S.dance-=dt; S.done.dance=1; S.freeze=Math.max(S.freeze,0.05); P.face=Math.floor(S.dance*4)%2?1:-1; const k=Math.floor(S.dance*2.5); if(P.onG&&k!==S.dk){ S.dk=k; P.vy=-200; P.onG=false; } }
-  updPunters4(dt);
+  updPunters4(dt); updBusker4(dt);
   // buddy follows you, and says something if you stand still
   const b=buddy4; if(b){ const tx=P.x-28*P.face; b.face=P.x>b.x?1:-1; const dx=tx-b.x; if(Math.abs(dx)>4){ b.x+=Math.sign(dx)*Math.min(Math.abs(dx)*3,170)*dt; b.anim+=dt; } if(b.x<camX-20) b.x=camX-20;
     if(b.sayT>0&&!(b.sayT<0.3&&voiceSaying(b.say))) b.sayT-=dt; if(b.cool>0) b.cool-=dt;
@@ -2994,6 +2997,18 @@ function drawFade4(){ if(!fade4) return; const t=fade4.t, a=t<0.35?t/0.35:Math.m
 
 /* ---- pub punters: people doing things, in front of you ---- */
 const PUNT_SAY=['Story, buddy?','Mind yourself!','Easy there!','Ah, me shoes!'];
+/* ---- trumpet busker on Cuffe St: walks towards you playing La Cucaracha, asks for a tip ---- */
+const CUCA=[[60,.5],[60,.5],[60,.5],[65,1.5],[69,1],[0,.5],[60,.5],[60,.5],[60,.5],[65,1.5],[69,1.5],[0,.5],[65,.5],[65,.5],[64,.5],[64,.5],[62,.5],[62,.5],[60,2],[0,.5],
+  [60,.5],[60,.5],[60,.5],[64,1.5],[67,1],[0,.5],[60,.5],[60,.5],[60,.5],[64,1.5],[67,1.5],[0,.5],[72,.5],[74,.5],[72,.5],[70,.5],[69,.5],[67,.5],[65,2],[0,1]];
+let busk4={i:0,t:0};
+function updBusker4(dt){ const n=npcs.find(q=>q.k==='busker4'); if(!n) return; n.anim+=dt; if(S.buskT>0) S.buskT-=dt;
+  const d=n.x-P.x; n.walking=!n.used&&d>40&&n.x>n.x0-260; if(n.walking) n.x-=16*dt;
+  if(!n.asked&&!n.used&&Math.abs(d)<75){ n.asked=true; n.say=GREET.busker4; n.sayT=2.8; speak(n.say,'busker4',true); }
+  // the tune: only while he's in earshot, louder as you get closer
+  const far=Math.abs(n.x-P.x); if(far>320||(n.used&&S.buskT<=0&&far>120)||n.sayT>0&&!n.used) return;
+  const beat=S.buskT>0?0.13:0.19; busk4.t-=dt; if(busk4.t>0) return;
+  const [m,l]=CUCA[busk4.i%CUCA.length]; busk4.i++; busk4.t=l*beat;
+  if(m&&AU.c){ const v=0.09*Math.max(0.15,1-far/320), f=440*Math.pow(2,(m-69)/12); tone(f,l*beat*0.9,'square',v); tone(f*2,l*beat*0.6,'triangle',v*0.35); } }
 function updPunters4(dt){ for(const p of punters4){ p.anim+=dt; if(p.bumpT>0) p.bumpT-=dt; if(p.sayT>0&&!(p.sayT<0.3&&voiceSaying(p.say))) p.sayT-=dt;
     if(p.k==='collector'){ p.x+=p.dir*40*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; }
     else { p.st=(p.st||0)-dt; if(p.st<=0){ p.mode=['walk','chat','cheer','walk'][Math.floor(Math.random()*4)]; p.st=1.5+Math.random()*2; if(p.mode==='walk') p.dir=Math.random()<.5?-1:1; }
@@ -3118,6 +3133,13 @@ function drawFloor4(){ for(const R of [IN1,IN2]){ const a=Math.max(R.x0,camX-20)
     fr(s,GROUND,w,VH-GROUND,R===IN1?'#5a3418':'#1a0e22'); for(let xx=Math.floor(a/24)*24;xx<b;xx+=24){ fr(xx-camX,GROUND,1,VH-GROUND,R===IN1?'#3a2010':'#2a1636'); } fr(s,GROUND,w,2,R===IN1?'#7a4a24':'#c8a050');
     if(yard){ const ya=Math.max(YARD.x0,a), yb=Math.min(YARD.x1,b); if(yb>ya) fr(ya-camX,GROUND,yb-ya,VH-GROUND,'#3a3a40'); } } }
 function drawNPC4(n,sx){
+  if(n.k==='busker4'){ const step=Math.floor(n.anim*6)%2, lift=Math.sin(n.anim*9)*1.2, f=P.x<n.x?-1:1;
+    human(sx,GROUND,{f,sc:.9,pose:n.walking?'walk':'stand',ph:n.anim*8,skin:'#c8946a',hs:'short',hair:'#1a1a1a',top:'#b8322a',legs:'#2a2a3a',shoes:'#3a2414',beard:true});
+    S_(); const hy=GROUND-50+lift*0.3; ell(sx,hy,17,3.2,'#d8b04a'); rb(sx-7,hy-9,14,9,5,'#d8b04a'); fr(sx-7,hy-3,14,2,'#2e9e4f'); fr(sx-15,hy-1,30,1.2,'#b8322a');
+    for(let k=0;k<4;k++) fr(sx-10+k*6,GROUND-36,3,9,['#ffd84a','#2e9e4f','#2a6fd6','#fff'][k]);
+    const tx=sx+f*6, ty=GROUND-37+lift; fr(Math.min(tx,tx+f*16),ty,16,2.2,'#e8c040'); ctx.beginPath(); ctx.moveTo(tx+f*16,ty-2.5); ctx.lineTo(tx+f*22,ty-5); ctx.lineTo(tx+f*22,ty+7.5); ctx.lineTo(tx+f*16,ty+4.6); ctx.closePath(); ctx.fillStyle='#f0d050'; ctx.fill(); ctx.stroke(); fr(tx+f*7,ty-3,2,3,'#c8a030');
+    if(!n.used||S.buskT>0) for(let k=0;k<(S.buskT>0?3:2);k++) if(Math.floor(n.anim*3+k)%2) txt('♪',tx+f*(22+k*8),ty-12-((n.anim*18+k*11)%18),'#ffd84a','center',8);
+    return true; }
   if(n.k==='band4'){ const fast=S.bandT>0, sp=fast?14:6;
     S_(); box(sx-64,GROUND-8,128,8,'#4a2a14'); fr(sx-64,GROUND-8,128,2,'#7a4a24');
     box(sx-46,GROUND-150,92,26,'#1a2a1a'); fr(sx-46,GROUND-150,92,3,'#7a4a24'); txt('LIVE TRAD',sx,GROUND-146,'#fff','center',7); txt('TONIGHT',sx,GROUND-136,'#ffd84a','center',6);
