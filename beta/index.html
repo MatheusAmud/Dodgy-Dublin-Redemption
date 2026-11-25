@@ -146,6 +146,14 @@ canvas{display:block; width:100%; aspect-ratio:480/270; background:#000; border-
 .howto b{color:var(--gold); font-weight:400}
 @media (orientation:landscape) and (max-height:520px){ .box.title2{max-height:96vh} .logo2{width:min(100%,120px,26vh)} .ab{padding:6px 9px} .pk{padding:6px 0; margin-bottom:8px} }
 @media (max-width:620px) and (orientation:portrait){ .t2{flex-direction:column} .t2l{width:100%} }
+
+.box.win{max-width:min(900px,100%); display:grid; grid-template-columns:minmax(0,1fr) minmax(190px,32%); grid-template-rows:auto minmax(0,1fr); column-gap:16px; overflow:hidden; max-height:100%}
+.box.win #dt{grid-column:1; grid-row:1; margin-top:0}
+.box.win #dx{grid-column:1; grid-row:2; overflow:auto; -webkit-overflow-scrolling:touch; min-height:0; padding-right:4px}
+.box.win #db{grid-column:2; grid-row:1 / span 2; align-self:center; border-left:2px dashed rgba(255,255,255,.25); padding-left:14px}
+.box.win #db button:first-child{font-size:12px; padding:14px; box-shadow:0 0 0 3px #3fcf6a}
+.box.win #dx img.card{max-height:62vh; width:auto; max-width:100%; display:block; margin:0 auto}
+@media (max-aspect-ratio:1/1){ .box.win{display:block; overflow:auto} .box.win #db{border:0; padding:0; margin-top:10px} }
 </style>
 </head>
 <body>
@@ -479,7 +487,7 @@ const PINT_URL='https://buymeacoffee.com/matheusamud';
 const PINT={label:'Buy me a pint 🍺',url:PINT_URL,cls:'pint'}, PINT_END={label:'Survived? Buy me a pint 🍺',url:PINT_URL,cls:'pint'};
 const MERCH={label:'Get the gear 🐦🍟',url:'https://www.redbubble.com/shop/ap/184375354'};
 function dialog(title,html,btns,cls){
-  paused=true; ov.hidden=false; dtEl.textContent=title; dtEl.hidden=!title; ov.querySelector('.box').className='box'+(cls?' '+cls:''); dxEl.innerHTML=html; dbEl.innerHTML=''; sirenSet(0,0);
+  paused=true; ov.hidden=false; dtEl.textContent=title; dtEl.hidden=!title; ov.querySelector('.box').className='box'+(cls?' '+cls:'')+(state==='win'&&title?' win':''); dxEl.innerHTML=html; dbEl.innerHTML=''; sirenSet(0,0);
   for(const b of btns){ if(b.url){const a=document.createElement('a'); a.className=b.cls||'gear'; a.href=b.url; if(b.download){a.download=b.download;} else {a.target='_blank'; a.rel='noopener';} a.textContent=b.label; dbEl.appendChild(a); continue;} const el=document.createElement('button'); el.textContent=b.label; el.onclick=b.fn; dbEl.appendChild(el);}
   setTimeout(()=>{const f=dbEl.querySelector('button'); f&&f.focus({preventScroll:true});},30);
 }
