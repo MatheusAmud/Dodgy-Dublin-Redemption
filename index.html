@@ -680,7 +680,7 @@ function update(dt){
     if(STAGE===3&&item3(it)) continue;
     const r={tayto:['TAYTO! +50',()=>pts(50)],orange:['CLUB ORANGE! +50',()=>pts(50)],tea:["BARRY'S TEA +1 CRAIC",()=>{pts(30);craic(1);}],leap:['LEAP CARD! +€5',()=>{pts(30);S.money+=5;}],brolly:['BROLLY! +50',()=>{pts(50);S.brolly=true;}]}[it.k];
     r[1](); pop(it.x,it.y-14,r[0],'#ffd84a'); }}
-  for(const n of npcs){ if(n.sayT>0&&!(n.sayT<0.3&&voiceSaying(n.say)))n.sayT-=dt; if(GREET[n.k]&&!n.greeted&&!n.used&&Math.abs(n.x-P.x)<150){ n.greeted=true; n.say=GREET[n.k]; n.sayT=2.6; speak(n.say,n.k,false); } }
+  for(const n of npcs){ if(n.sayT>0&&!(n.sayT<0.3&&voiceSaying(n.say)))n.sayT-=dt; if(GREET[n.k]&&!n.greeted&&!n.used&&Math.abs(n.x-P.x)<150){ n.greeted=true; n.say=GREET[n.k]; n.sayT=2.6; speak(n.say,n.k,true); } }
   updDiscover(dt);
   for(const x of xings){
     if(x.hold){ x.phase='green'; x.t=5; }
@@ -2772,7 +2772,7 @@ function levelDef4(){
   // George's St
   row(80,GROUND-20,3); L.push({t:'e4',k:'wheel',x:300});
   arc(380,GROUND-50,4); L.push({t:'cyc',x:230,k:'scoot'});
-  L.push({t:'drunk',x:250,r:40});
+  L.push({t:'drunk',x:440,r:30});
   L.push({t:'e4',k:'gate1',x:GATE1});
   // The Dodgy Seagull (inside)
   L.push({t:'npc',k:'band4',x:1140});
@@ -2796,7 +2796,6 @@ function levelDef4(){
   L.push({t:'e4',k:'gate2',x:GATE2});
   // Royal Tea (inside)
   L.push({t:'e4',k:'mocktail',x:3930});
-  L.push({t:'e4',k:'yardsign',x:YARD.x0+60});
   row(4100,GROUND-20,3);
   L.push({t:'npc',k:'selfie4',x:4330});
   L.push({t:'npc',k:'dance4',x:4545});
@@ -2841,7 +2840,7 @@ function talk4(n){
     case 'stag4': n.used=true; n.say='Lads, stop...'; craic(2); pts(120); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); setTimeout(()=>{ if(STAGE===4) actorSay(n.x+50,GROUND-120,'HAHAHA!',1.8,'stagmates'); },900); return true;
     case 'selfie4': n.used=true; flash4=0.35; sfx.item(); n.say='OMG, who IS that?!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); return true;
     case 'posh4': n.used=true; S.freeze=6.2; n.say="I don't really smoke. I can give you some coins I have."; n.sayT=2.6;
-      seq([[2.8,()=>psay("It's all right mate, no need for coins.",2.4)],[3.0,()=>{ n.say='...Have you a lighter as well?'; n.sayT=2.6; speak(n.say,'posh4',true); craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); }]]); return true;
+      seq([[2.8,()=>psay("It's all right mate, no need for coins.",2.4)],[3.0,()=>{ n.say='...Have you a lighter as well?'; n.sayT=2.6; speak(n.say,'posh4',true); craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); }],[2.4,()=>bsay("No drinks out here, it says. He's got a sixteen euro mocktail.",3.2)]]); return true;
     case 'chipper4': if(S.chips){ n.say='Enjoy them chips!'; return true; } if(!need(6)) return true; n.used=true; S.chips=true; S.rolls=Math.min(5,S.rolls+1); n.say='Salt and vinegar?'; craic(1); pts(100); pop(n.x,GROUND-90,'CHIPS! +1 ROLL','#3fcf6a'); return true;
     case 'antho4': n.used=true; n.say="Don't. Don't even mention the bonfire."; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
     case 'garda4': n.used=true; n.say='Go home, lads. Please.'; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
@@ -2865,7 +2864,7 @@ function update4(dt,pb,fist){
     if(t.k==='gate1'&&!S.in1&&P.x>t.x-60&&!CHO.open&&!(t.cool>0)){ t.cool=99; S.freeze=0.4; bouncerAsk(t); }
     else if(t.k==='gate1'&&t.cool>0&&t.cool<99){ t.cool-=dt; }
     else if(t.k==='gate2'&&!S.in2&&P.x>t.x-60){ t.done=true; doorRT(); }
-    else if(P.x>=t.x&&!/^gate/.test(t.k)){ t.done=true; fire4(t); }
+    else if(P.x>=t.x-(t.k==='wheel'?70:0)&&!/^gate/.test(t.k)){ t.done=true; fire4(t); }
   }
   // drunk huggers: harmless, but they hold you up
   for(const d of drunks4){ d.anim+=dt; if(d.hugT>0){ d.hugT-=dt; continue; } d.x+=d.dir*22*dt; if(d.x<d.x0-d.r) d.dir=1; if(d.x>d.x0+d.r) d.dir=-1;
@@ -2889,12 +2888,12 @@ function hint4(){ const x=P.x;
   if(!S.in1&&x<GATE1) return x<GATE1-160?"Seagull's just up there, come on!":'Go on, talk to the bouncer.';
   if(x<IN1.x1){ if(S.round===0) return "Your round, buddy. Bar's that way."; if(S.round===1) return 'Bring them over to the lads! Jump over people.'; return "Right, Royal Tea. Out the door at the end!"; }
   if(!S.in2&&x<GATE2) return "Royal Tea's just up here.";
-  if(x<IN2.x1) return x<YARD.x0?(S.done.dance?"Have a look around, it's fancy!":'Get on that dance floor!'):'Out the back for a smoke?';
+  if(x<IN2.x1) return x<YARD.x0?(S.done.dance?"Have a look around, it's fancy!":'Get on that dance floor!'):(x<YARD.x0+80?'Out the back for a smoke?':'Right, chipper time. Out the gate!');
   if(x<6300) return S.chips?'Taxi rank next. Come on.':'Chips first. Then a taxi.';
   return 'Talk to every taxi that stops. And jump the splashes!'; }
 function fire4(t){
   switch(t.k){
-    case 'wheel': bsay("Is that... your bike? Just the wheel left, buddy.",3); break;
+    case 'wheel': voiceStop(); bsay("Is that... your bike? Just the wheel left, buddy.",3.4); break;
     case 'telly': S.done.telly=1; seq([[0.1,()=>actorSay(t.x-60,GROUND-122,"SIT DOWN, YOU'RE BLOCKING THE MATCH!",2.0,'crowd')],[0.35,()=>actorSay(t.x+70,GROUND-130,'SIT DOWN!',1.4)],[2.0,()=>psay('Sorry, sorry!',1.6)]]); shake=0.12; break;
     case 'smash': S.goalT=1.6; sfx.hurt&&tone(2400,.08,'square',.12); tone(1800,.12,'triangle',.1,0,.05); seq([[0.15,()=>actorSay(t.x+30,GROUND-120,'WAAAHEY!',1.8,'crowd')]]); shake=0.1; break;
     case 'exit1': if(!S.roundDone) bsay("You never bought your round. Tight, buddy.",2.6); else bsay("Right, Royal Tea. Let's go!",2.4); break;
