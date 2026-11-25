@@ -825,6 +825,7 @@ function tri(x1,y1,x2,y2,x3,y3,c){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x
 
 /* ---------------- CHARACTERS ---------------- */
 function human(x,y,o){
+  if(o.coat) o=Object.assign({},o,{inner:o.top,top:o.coat,zip:false});
   const f=o.f||1, pose=o.pose||'stand', ph=o.ph||0, sw=pose==='walk'?Math.sin(ph):0;
   ctx.save(); ctx.translate(Math.round(x),Math.round(y)); if(f<0) ctx.scale(-1,1); if(o.sc) ctx.scale(o.sc,o.sc);
   S_();
@@ -845,6 +846,7 @@ function human(x,y,o){
   if(o.stripes){ fr(-8,-30+by,2,14,'#fff'); fr(7,-30+by,1.5,14,'#fff'); }
   if(o.band) fr(-8,-26+by,16,4,o.band);
   if(o.zip) fr(0,-33+by,1.2,18,'rgba(0,0,0,.35)');
+  if(o.inner){ rb(-10,-20+by,20,9,4,o.top); fr(-3,-34+by,6,7,o.inner); fr(-0.6,-27+by,1.2,15,'rgba(0,0,0,.4)'); rb(-8,-36+by,16,4,2,shade(o.top,18)); }
   if(o.hiVis) fr(-8,-26+by,16,3,'#dfe3e6');
   if(o.bag) rb(-12,-30+by,6,12,2,o.bag);
   const hy=-42+by;
@@ -1273,6 +1275,7 @@ function drawPlayer(){
   const sx=Math.round(P.x-camX), sy=Math.round(P.y);
   ell(sx,sy,10,2.5,'rgba(0,0,0,.25)',true);
   const o={...charLook(CHAR),f:P.face,punch:P.punchT>0,ph:P.anim*12};
+  if(STAGE===4&&(state==='cut'||!inside4(P.x))) o.coat=CHAR==='aoife'?'#a8784a':'#27324a';
   if(P.bike){ bike(sx,sy,P.bikeKind==='dub'?'#5ab0e0':'#1f5fbf',P.anim); o.pose='ride'; o.ph=P.anim*14; if(!o.punch) o.armFwd=true; human(sx-2,sy-14,o); }
   else { o.pose=!P.onG?'jump':(P.vx?'walk':'stand'); human(sx,sy,o); }
   if(STAGE===3&&S.ghostT>0) ghostOver3(sx,sy);
@@ -2698,7 +2701,9 @@ setInterval(voicePreload,1500);
 
 /* ---- Stage 1: Underdog Boxing, and the coach at the door ---- */
 Object.assign(GREET,{coach:'Fancy a trial session?'}); Object.assign(PROMPT,{coach:'TRY A ROUND'}); Object.assign(INAME,{coach:'Underdog trial'}); Object.assign(VP,{coach:['m',.96,1.04]});
-function underdog(sx,w){ S_(); box(sx,GROUND-170,w,170,'#141414'); fr(sx,GROUND-170,w,6,'#2a2a2a');
+function underdog(sx,w){ S_(); box(sx,GROUND-170,w,170,'#a24a32'); fr(sx,GROUND-170,w,6,'#6a2a1a');
+  for(let r=0,y=GROUND-164;y<GROUND-2;r++,y+=7){ fr(sx+2,y,w-4,1,'#c98a6a'); for(let x=sx+(r%2?8:2);x<sx+w-4;x+=16) fr(x,y,1,7,'#c98a6a'); }
+  for(let k=0;k<5;k++) fr(sx+6+((k*37)%(w-20)),GROUND-150+((k*53)%120),12,6,'#8a3a26');
   box(sx+10,GROUND-162,w-20,34,'#0a0a0a'); txt('UNDERDOG',sx+w/2,GROUND-156,'#fff','center',10); txt('BOXING',sx+w/2,GROUND-141,'#e8423a','center',7);
   for(let k=0;k<2;k++){ const wx=sx+14+k*(w/2-6); box(wx,GROUND-120,w/2-26,64,'#2a3038'); fr(wx+3,GROUND-117,w/2-32,58,'#c8ccd2');
     for(let b=0;b<2;b++){ const bx=wx+14+b*26; fr(bx,GROUND-117,1,12,'#333'); rb(bx-6,GROUND-106,13,28,5,'#b8281e'); } }
@@ -2742,7 +2747,7 @@ function seq(steps){ let acc=0; for(const [d,fn] of steps){ acc+=d; seq4.push({t
 function actorSay(x,y,text,t,who){ const a={x:typeof x==='function'?x:()=>x,y:typeof y==='function'?y:()=>y,say:text,sayT:t||2.4}; talkers4.push(a); if(who) speak(text,who,true); return a; }
 
 Object.assign(GREET,{band4:'Any requests?',barman4:"What're ye having?",lads4:'Your round, buddy!',stag4:'Lads, stop...',selfie4:'Smile, girls!',posh4:'Could I steal a cigarette?',chipper4:'What can I get ye?',antho4:"Leave it. Ma's waiting.",garda4:'Long night, lads?',dance4:'Get up and dance!'});
-Object.assign(PROMPT,{band4:'TIP €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK',dance4:'DANCE'});
+Object.assign(PROMPT,{band4:'REQUEST A SONG €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK',dance4:'DANCE'});
 Object.assign(INAME,{band4:'Trad band',barman4:'Bought the round',lads4:'The lads',stag4:'Stag party',selfie4:'Photobomb',posh4:'Posh lad',chipper4:'Chips',antho4:'Antho',garda4:'The garda',dance4:'Danced'});
 Object.assign(VP,{buddy4:['m',1,1.04],bouncer:['m',.86,.96],bouncer2:['m',.9,.96],barman4:['m',.98,1],lads4:['m',1,1.04],stag4:['m',1.02,1.04],stagmates:['m',1,1.06],crowd:['m',.95,1.05],selfie4:['f',1.1,1.06],posh4:['m',1.02,.94],barman2:['m',1,.98],staff4:['f',1.04,1],chipper4:['m',.96,1],antho4:['m',1.1,1.06],garda4:['m',.9,.94],driver:['m',.9,.96],taxilad:['m',1.04,1.08],drunk4:['m',.92,.98],punter:['m',.98,1.02],collector:['m',.94,1],dancers4:['f',1.08,1.04]});
 
@@ -2778,6 +2783,7 @@ function levelDef4(){
   L.push({t:'e4',k:'gate2',x:GATE2});
   // Royal Tea (inside)
   L.push({t:'e4',k:'mocktail',x:3930});
+  L.push({t:'e4',k:'yardsign',x:YARD.x0+60});
   row(4100,GROUND-20,3);
   L.push({t:'npc',k:'selfie4',x:4330});
   L.push({t:'npc',k:'dance4',x:4545});
@@ -2786,6 +2792,7 @@ function levelDef4(){
   L.push({t:'e4',k:'closing',x:5060});
   // The chipper
   row(5300,GROUND-20,3);
+  L.push({t:'e4',k:'antho',x:5290});
   L.push({t:'npc',k:'antho4',x:5545});
   L.push({t:'npc',k:'chipper4',x:5650});
   L.push({t:'e4',k:'chipthief',x:5820});
@@ -2813,7 +2820,7 @@ function talk4(n){
   const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; n.sayT=2.4; return false;} S.money-=c; return true; };
   sfx.talk(); n.sayT=2.8;
   switch(n.k){
-    case 'band4': if(!need(2)){ n.say='Ah go on, sing along'; return true; } n.used=true; n.say='Wild Rover it is!'; craic(2); pts(120); pop(n.x,GROUND-90,'+2 CRAIC','#3fcf6a'); return true;
+    case 'band4': if(!need(2)){ n.say='Ah go on, sing along'; return true; } n.used=true; S.bandT=6; n.say='Wild Rover it is!'; craic(2); pts(120); pop(n.x,GROUND-90,'+2 CRAIC','#3fcf6a'); return true;
     case 'barman4': if(S.round){ n.say="You've your pints, go on!"; return true; } if(!need(20)) return true; n.used=true; S.round=1; S.pints=5; tray4=true; n.say='Five pints, coming up!'; pts(80); pop(n.x,GROUND-90,'5 PINTS!','#ffd84a'); setTimeout(()=>{ if(STAGE===4) bsay('Bring them over to the lads!'); },1800); return true;
     case 'lads4': if(S.round!==1){ n.say="Your round! Bar's back there!"; return true; } n.used=true; S.round=2; S.roundDone=true; tray4=false;
       if(S.pints>=5){ n.say='LEGEND!'; craic(3); pts(300); pop(n.x,GROUND-90,'ALL 5 PINTS! +3 CRAIC','#3fcf6a'); } else { n.say="Where's the rest of them?!"; craic(1); pts(100+S.pints*40); pop(n.x,GROUND-90,S.pints+' OF 5 PINTS. +1 CRAIC','#ffd84a'); } return true;
@@ -2823,7 +2830,7 @@ function talk4(n){
     case 'posh4': n.used=true; S.freeze=6.2; n.say="I don't really smoke. I can give you some coins I have."; n.sayT=2.6;
       seq([[2.8,()=>psay("It's all right mate, no need for coins.",2.4)],[3.0,()=>{ n.say='...Have you a lighter as well?'; n.sayT=2.6; speak(n.say,'posh4',true); craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); }]]); return true;
     case 'chipper4': if(S.chips){ n.say='Enjoy them chips!'; return true; } if(!need(6)) return true; n.used=true; S.chips=true; S.rolls=Math.min(5,S.rolls+1); n.say='Salt and vinegar?'; craic(1); pts(100); pop(n.x,GROUND-90,'CHIPS! +1 ROLL','#3fcf6a'); return true;
-    case 'antho4': n.used=true; n.say="Don't. Just don't."; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
+    case 'antho4': n.used=true; n.say="Don't. Don't even mention the bonfire."; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
     case 'garda4': n.used=true; n.say='Go home, lads. Please.'; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
   }
   return false;
@@ -2835,7 +2842,7 @@ function update4(dt,pb,fist){
   if(S.freeze>0) S.freeze-=dt;
   for(let i=seq4.length-1;i>=0;i--){ seq4[i].t-=dt; if(seq4[i].t<=0){ const f=seq4[i].fn; seq4.splice(i,1); try{ f(); }catch(e){ console.error(e); } } }
   for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
-  if(flash4>0) flash4-=dt; if(dark4>0) dark4-=dt; if(S.goalT>0) S.goalT-=dt;
+  if(flash4>0) flash4-=dt; if(dark4>0) dark4-=dt; if(S.goalT>0) S.goalT-=dt; if(S.shakeT>0) S.shakeT-=dt; if(S.bandT>0) S.bandT-=dt;
   // gates: the bouncers
   if(!S.in1) gateBlock(GATE1);
   if(!S.in2) gateBlock(GATE2);
@@ -2873,12 +2880,14 @@ function hint4(){ const x=P.x;
 function fire4(t){
   switch(t.k){
     case 'wheel': bsay("Is that... your bike? Just the wheel left, buddy.",3); break;
-    case 'telly': S.done.telly=1; seq([[0.1,()=>actorSay(t.x-60,GROUND-122,'SIT DOWN!',1.6,'crowd')],[0.35,()=>actorSay(t.x+70,GROUND-130,'SIT DOWN!',1.4)],[1.6,()=>psay('Sorry, sorry!',1.6)]]); shake=0.12; break;
+    case 'telly': S.done.telly=1; seq([[0.1,()=>actorSay(t.x-60,GROUND-122,"SIT DOWN, YOU'RE BLOCKING THE MATCH!",2.0,'crowd')],[0.35,()=>actorSay(t.x+70,GROUND-130,'SIT DOWN!',1.4)],[2.0,()=>psay('Sorry, sorry!',1.6)]]); shake=0.12; break;
     case 'smash': S.goalT=1.6; sfx.hurt&&tone(2400,.08,'square',.12); tone(1800,.12,'triangle',.1,0,.05); seq([[0.15,()=>actorSay(t.x+30,GROUND-120,'WAAAHEY!',1.8,'crowd')]]); shake=0.1; break;
     case 'exit1': if(!S.roundDone) bsay("You never bought your round. Tight, buddy.",2.6); else bsay("Right, Royal Tea. Let's go!",2.4); break;
+    case 'yardsign': bsay("No drinks out here, it says. He's got a sixteen euro mocktail.",3); break;
+    case 'antho': bsay("Hey, isn't that Antho from Halloween?",2.6); break;
     case 'rain': S.rainT=11; rainA=0; bsay("Oh Jaysus, it's freezing!",2.6); banner('LASHING RAIN'); craic(-1); pop(P.x,P.y-70,'SOAKED! -1 CRAIC','#6bd6ff'); break;
     case 'oldgym': bsay('Hey look, this used to be the old boxing gym.',3.2); break;
-    case 'mocktail': S.done.mock=1; seq([[0.2,()=>actorSay(t.x+40,GROUND-110,'A non-alcoholic cocktail, please.',2.4,'posh4')],[2.5,()=>actorSay(t.x+100,GROUND-118,"That's sixteen euro.",2,'barman2')],[2.2,()=>actorSay(t.x+40,GROUND-110,'Lovely.',1.6,'posh4')]]); break;
+    case 'mocktail': S.done.mock=1; seq([[0.2,()=>actorSay(t.x+40,GROUND-110,'A non-alcoholic cocktail, please.',2.4,'posh4')],[2.5,()=>{ S.shakeT=2.2; actorSay(4030,GROUND-118,"That's sixteen euro.",2,'barman2'); }],[2.2,()=>actorSay(t.x+40,GROUND-110,'Lovely.',1.6,'posh4')]]); break;
     case 'closing': dark4=1.8; S.done.closing=1; banner('CLOSING TIME'); seq([[1.9,()=>actorSay(t.x+40,GROUND-110,"Let's go home, folks!",2.4,'staff4')]]); break;
     case 'chipthief': if(!S.chips) break; gull4={x:P.x+180,y:40,tx:P.x+46,state:'in',t:0,f:0}; pop(P.x+60,GROUND-110,'THE CHIP THIEF!','#ffd84a'); seq([[1.6,()=>bsay("Don't even think about it.",2.4)]]); break;
     case 'rolls': bsay('Any of them three chicken fillet rolls left?',2.6); seq([[2.8,()=>psay('Ate them on Grafton Street.',2.2)]]); break;
@@ -2939,11 +2948,11 @@ function startHome4(){ state='cut'; home4={t:0,said:{}}; S.lock=false; }
 function cutUpdate4(dt){ const h=home4; if(!h) return; h.t+=dt; const once=(k,t,f)=>{ if(h.t>=t&&!h.said[k]){ h.said[k]=1; f(); } };
   for(let i=seq4.length-1;i>=0;i--){ seq4.splice(i,1); }
   for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
+  once('drop',0.9,()=>{ h.drop={say:"That's your mate dropped off. You're next.",t:2.4}; speak("That's your mate dropped off. You're next.",'driver',true); });
   once('drv',3.6,()=>{ h.drv={say:'There you go, buddy.',t:2.4}; speak('There you go, buddy.','driver',true); });
   once('me',6.2,()=>{ h.me={say:'Cheers!',t:1.6}; speak('Cheers!','player',true); });
-  once('buddy',7.8,()=>{ h.buddy={say:'Same time next week?',t:2.2}; speak('Same time next week?','buddy4',true); });
-  for(const k of ['drv','me','buddy']) if(h[k]) h[k].t-=dt;
-  if(h.t>11.2&&!h.done){ h.done=true; S.hideP=false; state='play'; home4=null; winGame(); }
+  for(const k of ['drop','drv','me']) if(h[k]) h[k].t-=dt;
+  if(h.t>9.4&&!h.done){ h.done=true; S.hideP=false; state='play'; home4=null; winGame(); }
 }
 function drawHome4(){ const h=home4; if(!h) return; ctx.setTransform(2,0,0,2,0,0); lights=[]; glowRects=[]; const cam0=camX; camX=0;
   drawSky4();
@@ -2953,15 +2962,14 @@ function drawHome4(){ const h=home4; if(!h) return; ctx.setTransform(2,0,0,2,0,0
   fr(0,GROUND,VW,VH-GROUND,'#3a3e48'); fr(0,GROUND,VW,3,'#5a5e68'); fr(0,GROUND+30,VW,VH,'#22252c'); for(let x=0;x<VW;x+=40) fr(x+(h.t*0)%40,GROUND+46,22,2,'#d8d8d8');
   const t=h.t, e=Math.min(1,t/2.6), cx=VW+70-(VW+70-300)*(1-Math.pow(1-e,3)) - (t>9?(t-9)*(t-9)*120:0);
   const out=Math.min(1,Math.max(0,(t-2.9)/0.9)), px=280-out*44, bx=300-Math.min(1,Math.max(0,(t-3.4)/0.9))*92;
-  if(t>2.9){ human(bx,GROUND,{f:-1,pose:t>3.4&&t<4.3?'walk':'stand',ph:t*12,skin:'#d8a882',hs:'short',hair:'#1a1a1a',top:'#2a7ab8',legs:'#2a2a40',shoes:'#f4f4f4',zip:true,happy:true}); }
   if(t>2.9){ const sp=P.x, sy=P.y, sf=P.face, si=P.inv, sv=P.vx; P.x=px; P.y=GROUND; P.face=-1; P.inv=0; P.vx=out<1?-60:0; const hp=S.hideP; S.hideP=false; try{ drawPlayer(); }catch(err){} S.hideP=hp; P.x=sp; P.y=sy; P.face=sf; P.inv=si; P.vx=sv; }
   prius(cx,GROUND+40,{light:t>9});
   if(h.drv&&h.drv.t>0) bubble(cx,GROUND-70,h.drv.say);
   if(h.me&&h.me.t>0) bubble(px,GROUND-96,h.me.say);
-  if(h.buddy&&h.buddy.t>0) bubble(bx,GROUND-100,h.buddy.say);
+  if(h.drop&&h.drop.t>0) bubble(Math.min(cx,VW-60),GROUND-70,h.drop.say);
   lightPass3();
   txt('HOME, 4AM',VW/2,14,'#ffd84a','center',8,OUT);
-  const f=t<0.6?1-t/0.6:t>10.4?Math.min(1,(t-10.4)/0.8):0; if(f>0){ ctx.fillStyle=`rgba(0,0,0,${f})`; ctx.fillRect(-10,-10,VW+20,VH+20); }
+  const f=t<0.6?1-t/0.6:t>8.6?Math.min(1,(t-8.6)/0.8):0; if(f>0){ ctx.fillStyle=`rgba(0,0,0,${f})`; ctx.fillRect(-10,-10,VW+20,VH+20); }
   camX=cam0; }
 
 /* ---- rooms: walk through a door and you're on another screen ---- */
@@ -3052,7 +3060,10 @@ function royalIn(x0,x1){ const a=Math.max(x0,camX-20), b=Math.min(x1,camX+VW+20)
   fr(sa,30,w,10,'#c8a050'); fr(sa,GROUND-54,w,3,'#c8a050'); glowRects.push([sa,0,w,GROUND]);
   const at=(x,f)=>{ const s=x-camX; if(s>-140&&s<VW+140) f(s); };
   for(let xx=IN2.x0+90;xx<YARD.x0;xx+=200) at(xx,s=>{ fr(s,34,1,14,'#c8a050'); for(let k=-2;k<=2;k++){ circ(s+k*6,52+Math.abs(k)*2,2.4,'#fff6d8',true); } L3(s,52,120,'#ffe6b0',1); });
-  at(3990,s=>{ box(s-110,GROUND-150,220,70,'#120818'); for(let k=0;k<14;k++){ const c=['#ff7ad8','#7affd8','#ffd84a','#b08aff'][k%4]; rb(s-104+k*15,GROUND-140,7,22,2,c); } fr(s-110,GROUND-40,220,40,'#c8a050'); fr(s-110,GROUND-44,220,6,'#f0d080'); neon('COCKTAILS',s,GROUND-74,'#7affd8',7); });
+  at(3990,s=>{ box(s-110,GROUND-150,220,70,'#120818'); for(let k=0;k<14;k++){ const c=['#ff7ad8','#7affd8','#ffd84a','#b08aff'][k%4]; rb(s-104+k*15,GROUND-140,7,22,2,c); }
+    const shk=S.shakeT>0, bx=s+40; human(bx,GROUND-40,{f:-1,skin:'#e8c09a',hs:'short',hair:'#1a1a1a',top:'#f4f4f4',legs:'#111',shoes:'#111',armUp:shk&&Math.floor(time*10)%2===0,armFwd:!shk,beard:true});
+    S_(); fr(bx-8,GROUND-72,6,17,'#3a1a2a'); fr(bx+2,GROUND-72,6,17,'#3a1a2a'); fr(bx-3,GROUND-75,6,3,'#c8281e'); fr(bx-1,GROUND-75,2,3,'#ff5a4a'); if(shk){ rb(bx-8,GROUND-100+Math.sin(time*30)*3,6,12,2,'#d8d8e0'); }
+    fr(s-110,GROUND-40,220,40,'#c8a050'); fr(s-110,GROUND-44,220,6,'#f0d080'); neon('COCKTAILS',s,GROUND-74,'#7affd8',7); });
   at(4330,s=>{ box(s-60,GROUND-160,120,120,'#1e4a28'); for(let k=0;k<40;k++){ const h=hash(k,44); circ(s-54+(h%108),GROUND-154+((h>>7)%108),4,['#ff7ad8','#ffd84a','#fff','#ffb0e8'][h%4],true); } neon('#ROYALTEA',s,GROUND-150,'#ff7ad8',8); });
   at(4540,s=>{ box(s-40,GROUND-60,80,60,'#120818'); for(const d of [-1,1]){ box(s+d*60-14,GROUND-90,28,90,'#1a3a1a'); circ(s+d*60,GROUND-66,10,'#3fcf6a',true); circ(s+d*60,GROUND-66,4,'#0d2a14',true); circ(s+d*60,GROUND-30,8,'#3fcf6a',true); L3(s+d*60,GROUND-66,60,'#7aff9a',.8); } human(s,GROUND-60,{f:1,sc:.8,skin:'#e8b58e',hs:'cap',cap:'#111',top:'#111',legs:'#111',shoes:'#fff',armUp:Math.floor(time*2)%2===0}); });
   crowd4(IN2.x0,4440,true); crowd4(4660,YARD.x0,true);
@@ -3060,7 +3071,11 @@ function royalIn(x0,x1){ const a=Math.max(x0,camX-20), b=Math.min(x1,camX+VW+20)
   const ya=Math.max(YARD.x0,camX-20), yb=Math.min(YARD.x1,camX+VW+20); if(yb>ya){ const s0=ya-camX; fr(s0,0,yb-ya,GROUND,'#141826'); for(let xx=Math.floor(ya/24)*24;xx<yb;xx+=24) for(let yy=60;yy<GROUND;yy+=10) fr(xx-camX+((yy/10)%2?12:0),yy,22,8,'#5a2e2a');
     for(let xx=YARD.x0;xx<YARD.x1;xx+=12) at(xx,s=>{ circ(s,58+Math.sin(xx)*3,1.6,['#ffd84a','#ff7ad8','#7affd8'][(xx/12)%3|0],true); L3(s,58,16,'#ffe0a0',.5); });
     for(const hx of [4840,5040]) at(hx,s=>{ box(s-2,GROUND-110,4,110,'#888'); rb(s-12,GROUND-122,24,10,3,'#aaa'); fr(s-9,GROUND-112,18,3,'#ff7a3a'); L3(s,GROUND-108,80,'#ff9a50',1); });
-    for(let xx=YARD.x0+30;xx<YARD.x1;xx+=60) at(xx,s=>{ if(hash(xx,7)%2) return; human(s,GROUND-30,{f:-1,sc:.7,skin:SKINS[hash(xx,3)%3],hs:'short',hair:'#3a2a1a',top:'#2a2a3a',legs:'#555',shoes:'#ddd',armUp:true,can:'#fff'}); }); }
+    at(YARD.x0+100,s=>{ S_(); rb(s-70,GROUND-184,140,30,4,'#f4f0e0'); fr(s-66,GROUND-180,132,22,'#1a1a1a'); txt('SMOKING AREA',s,GROUND-177,'#ffd84a','center',7); txt('LEAVE YOUR DRINK INSIDE',s,GROUND-167,'#fff','center',5); });
+    for(const tx of [YARD.x0+80,YARD.x0+330]) at(tx,s=>{ const q=hash(tx,3); for(const d of [-1,1]){ box(s+d*20-5,GROUND-18,10,18,'#2a2a30'); }
+      for(const d of [-1,1]){ const k=(q+d+2)%4; human(s+d*20,GROUND-16,{f:-d,pose:'sit',skin:SKINS[k],hs:k%2?'long':'short',hair:HAIRS[k],top:['#2a2a3a','#7a3ab8','#c8a050','#3a6a8a'][k],legs:'#333',shoes:'#ddd',armFwd:true,happy:true});
+        const cx=s+d*20-d*15, cy=GROUND-44; fr(Math.min(cx,cx-d*6),cy,6,1.6,'#fff'); fr(cx-d*6+(d<0?0:5),cy,1.4,1.6,'#ff7a3a'); ctx.globalAlpha=.35; circ(cx-d*7,cy-6-Math.sin(time*2+d)*3,2.6,'#ccc',true); ctx.globalAlpha=1; }
+      S_(); fr(s-1.5,GROUND-30,3,30,'#888'); fr(s-8,GROUND-2,16,2,'#888'); ell(s,GROUND-31,13,3,'#c8c8c8'); rb(s-3,GROUND-37,6,5,1,'#555'); }); }
   if(dark4>0){ const on=Math.floor((1.8-dark4)*3.4)%2===0; if(on){ ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(sa,0,w,GROUND); } }
 }
 function chipperFront(sx){ S_(); box(sx,GROUND-150,230,150,'#e8e8e8'); box(sx,GROUND-150,230,30,'#1b3a8f'); neon('THE CHIPPER',sx+115,GROUND-142,'#fff',10);
@@ -3089,9 +3104,17 @@ function drawFloor4(){ for(const R of [IN1,IN2]){ const a=Math.max(R.x0,camX-20)
     fr(s,GROUND,w,VH-GROUND,R===IN1?'#5a3418':'#1a0e22'); for(let xx=Math.floor(a/24)*24;xx<b;xx+=24){ fr(xx-camX,GROUND,1,VH-GROUND,R===IN1?'#3a2010':'#2a1636'); } fr(s,GROUND,w,2,R===IN1?'#7a4a24':'#c8a050');
     if(yard){ const ya=Math.max(YARD.x0,a), yb=Math.min(YARD.x1,b); if(yb>ya) fr(ya-camX,GROUND,yb-ya,VH-GROUND,'#3a3a40'); } } }
 function drawNPC4(n,sx){
-  if(n.k==='band4'){ for(let k=0;k<3;k++){ const x=sx-26+k*26; box(x-10,GROUND-20,20,20,'#5a3418'); human(x,GROUND-20,{f:k===2?-1:1,pose:'sit',skin:SKINS[k],hair:HAIRS[k+1],hs:k===1?'long':'short',top:['#2e6b3a','#8a2a2a','#2a4a8a'][k],legs:'#222',shoes:'#333',armFwd:true}); }
-    S_(); rb(sx-34,GROUND-46,16,6,2,'#a86a2a'); fr(sx-20,GROUND-45,12,1.5,'#d8c090'); ell(sx+2,GROUND-38,7,9,'#c8803a'); fr(sx+6,GROUND-58,2,18,'#5a3418');
-    if(Math.floor(time*3)%2) txt('♪',sx+10+Math.sin(time*2)*6,GROUND-80,'#ffd84a','center',8); return true; }
+  if(n.k==='band4'){ const fast=S.bandT>0, sp=fast?14:6;
+    S_(); box(sx-64,GROUND-8,128,8,'#4a2a14'); fr(sx-64,GROUND-8,128,2,'#7a4a24');
+    box(sx-46,GROUND-150,92,26,'#1a2a1a'); fr(sx-46,GROUND-150,92,3,'#7a4a24'); txt('LIVE TRAD',sx,GROUND-146,'#fff','center',7); txt('TONIGHT',sx,GROUND-136,'#ffd84a','center',6);
+    const fx=sx-42, bob=Math.abs(Math.sin(time*sp))*1.5; human(fx,GROUND-8-bob,{f:1,skin:SKINS[0],hair:HAIRS[1],hs:'short',top:'#2e6b3a',legs:'#222',shoes:'#333',beard:true});
+    S_(); ctx.save(); ctx.translate(fx+6,GROUND-44-bob); ctx.rotate(-0.5); ell(0,0,7,3.2,'#a8501e'); fr(6,-0.8,8,1.6,'#2a1a10'); ctx.restore(); S_(); const bw=Math.sin(time*sp)*5; ctx.beginPath(); ctx.moveTo(fx-2+bw,GROUND-56-bob); ctx.lineTo(fx+16+bw,GROUND-34-bob); ctx.lineWidth=1.2; ctx.strokeStyle='#e8d8b0'; ctx.stroke(); ctx.lineWidth=1.5; ctx.strokeStyle=OUT; circ(fx-2+bw,GROUND-56-bob,2.6,SKINS[0]);
+    box(sx-6,GROUND-26,12,18,'#2a1a10'); human(sx,GROUND-24,{f:1,pose:'sit',skin:SKINS[1],hair:HAIRS[2],hs:'long',top:'#8a2a2a',legs:'#222',shoes:'#333',armFwd:true});
+    S_(); ell(sx+8,GROUND-38,8,6,'#d89a4a'); circ(sx+8,GROUND-38,2,'#2a1a10'); fr(sx+14,GROUND-41,14,2.4,'#5a3418');
+    const dx=sx+44, hit=Math.floor(time*sp)%2; human(dx,GROUND-8,{f:-1,skin:SKINS[2],hair:HAIRS[3],hs:'cap',cap:'#1b3a8f',top:'#2a4a8a',legs:'#222',shoes:'#333',armUp:!!hit});
+    S_(); circ(dx-10,GROUND-38,9,'#f0e0c0'); fr(dx-19,GROUND-39,18,1,'rgba(0,0,0,.15)');
+    for(let k=0;k<(fast?3:1);k++) if(Math.floor(time*3+k)%2) txt('♪',sx-20+k*24+Math.sin(time*2+k)*6,GROUND-100-((time*20+k*13)%24),'#ffd84a','center',8);
+    glowRects.push([sx-64,GROUND-150,128,150]); return true; }
   if(n.k==='barman4'){ human(sx,GROUND-6,{f:-1,skin:'#e8b58e',hs:'short',hair:'#3a2a1a',top:'#f4f4f4',band:'#111',legs:'#222',shoes:'#111',armFwd:true,cup:n.used,beard:true}); return true; }
   if(n.k==='lads4'){ box(sx-30,GROUND-26,60,6,'#7a4a24'); box(sx-26,GROUND-20,4,20,'#5a3418'); box(sx+22,GROUND-20,4,20,'#5a3418');
     for(let k=0;k<3;k++) human(sx-30+k*30,GROUND,{f:k===0?1:-1,pose:'sit',skin:SKINS[k],hair:HAIRS[(k+2)%4],hs:k===1?'cap':'short',cap:'#1b3a8f',top:['#c83a3a','#3a8a3a','#e0a020'][k],legs:'#2a3a6a',shoes:'#fff',armUp:n.used,can:n.used?'#2a1a10':null,happy:n.used});
@@ -3108,8 +3131,8 @@ function drawNPC4(n,sx){
   return false;
 }
 function drawMid4(){
-  for(const d of drunks4){ const sx=d.x-camX; if(sx<-30||sx>VW+30) continue; ctx.save(); ctx.translate(sx,GROUND); ctx.rotate(Math.sin(d.anim*2.2)*0.12); human(0,0,{f:d.dir,pose:d.hugT>0?'stand':'walk',ph:d.anim*8,skin:'#f0b8a0',hs:'short',hair:'#5a3a1a',top:'#6a2a5a',legs:'#2a2a3a',shoes:'#ddd',armUp:d.hugT>0,can:'#d8d8e0',happy:true}); ctx.restore(); }
-  const b=buddy4; if(b&&state!=='title'){ human(b.x-camX,GROUND,{f:b.face,pose:Math.abs(b.x-(P.x-28*P.face))>5?'walk':'stand',ph:b.anim*12,skin:'#d8a882',hs:'short',hair:'#1a1a1a',top:'#2a7ab8',legs:'#2a2a40',shoes:'#f4f4f4',zip:true,happy:true}); if(tray4&&false){} }
+  for(const d of drunks4){ const sx=d.x-camX; if(sx<-30||sx>VW+30) continue; ctx.save(); ctx.translate(sx,GROUND); ctx.rotate(Math.sin(d.anim*2.2)*0.12); human(0,0,{f:d.dir,pose:d.hugT>0?'stand':'walk',ph:d.anim*8,skin:'#f0b8a0',hs:'short',hair:'#5a3a1a',top:'#6a2a5a',coat:'#3a3a4a',legs:'#2a2a3a',shoes:'#ddd',armUp:d.hugT>0,can:'#d8d8e0',happy:true}); ctx.restore(); }
+  const b=buddy4; if(b&&state!=='title'){ human(b.x-camX,GROUND,{f:b.face,pose:Math.abs(b.x-(P.x-28*P.face))>5?'walk':'stand',ph:b.anim*12,skin:'#d8a882',hs:'short',hair:'#1a1a1a',top:'#2a7ab8',coat:inside4(b.x)?null:'#4a3a2a',legs:'#2a2a40',shoes:'#f4f4f4',zip:true,happy:true}); if(tray4&&false){} }
   drawPunters4();
   if(tray4){ const sx=P.x-camX+P.face*10; S_(); fr(sx-12,P.y-50,24,3,'#c8c8c8'); for(let k=0;k<S.pints;k++){ rb(sx-11+k*5,P.y-60,4,10,1,'#2a1a10'); fr(sx-11+k*5,P.y-60,4,2,'#f4ead0'); } }
   for(const t of trig4){ if(/^gate/.test(t.k)){ const open=t.k==='gate1'?S.in1:S.in2; const sx=t.x+10-camX; if(sx<-30||sx>VW+30) continue; human(sx,GROUND,{f:-1,sc:1.12,skin:t.k==='gate1'?'#c68a5a':'#e8b58e',hs:'short',hair:'#111',top:'#111',legs:'#111',shoes:'#111',armFwd:!open}); S_(); fr(sx-3,GROUND-50,6,2,'#888'); if(!open){ box(sx-20,GROUND-30,4,30,'#c8a050'); fr(sx-20,GROUND-24,-14,2,'#c8281e'); } } }

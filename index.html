@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Dodgy Dublin Redemption by Matheus Amud: a retro side-scroller through Dublin city centre. Stomp seagulls, dodge the Luas, save your bike.">
+<meta name="description" content="Dodgy Dublin Redemption by Matheus Amud: a retro side-scroller through Dublin. Stomp seagulls, dodge the Luas, survive a night out.">
 <meta name="author" content="Matheus Amud">
 <meta name="theme-color" content="#1f2428">
 <link rel="manifest" href="./manifest.webmanifest">
@@ -84,20 +84,83 @@ canvas{display:block; width:100%; aspect-ratio:480/270; background:#000; border-
   #pad .pb{pointer-events:auto; opacity:.72; width:62px; height:62px}
   #mute{bottom:auto; top:32px}
 }
+
+#choice{position:absolute; left:50%; top:16%; transform:translateX(-50%); width:min(86%,520px); z-index:40; background:rgba(10,12,30,.62); border:3px solid var(--gold); border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; text-align:center}
+#choice[hidden]{display:none}
+#choice .cq{margin:0; font-size:10px; color:#fff; line-height:1.6}
+#choice .cp{margin:0; font-size:11px; color:var(--gold); animation:blk .8s steps(2) infinite}
+@keyframes blk{50%{opacity:.35}}
+#choice button{font:inherit; font-size:10px; text-align:left; color:#fff; background:rgba(255,216,74,.18); border:2px solid var(--gold); border-radius:10px; padding:9px 10px; display:flex; gap:10px; align-items:center; cursor:pointer; line-height:1.5}
+#choice button b{flex:none; width:24px; height:24px; border-radius:50%; background:var(--gold); color:#1b1340; display:flex; align-items:center; justify-content:center; font-weight:400}
+.pb.b{font-size:8px}
+.pb.b.fist{background:#e8423a}
+.pb.b.bump{animation:bump .45s ease-out}
+.pb.b.talk.bump{animation:bump .45s ease-out, tp 1.2s ease-in-out .45s infinite}
+@keyframes bump{0%{transform:translateY(20px) scale(1)}40%{transform:translateY(20px) scale(1.22)}100%{transform:translateY(20px) scale(1)}}
+#pad .pb.b.bump{animation:bump2 .45s ease-out}
+@keyframes bump2{0%{transform:translateY(20px) scale(1)}40%{transform:translateY(20px) scale(1.25)}100%{transform:translateY(20px) scale(1)}}
+.box.title2{max-width:820px; background:#1f2429; border-color:#ffd24a; border-radius:20px; padding:12px 14px}
+.box.title2 #dt{display:none}
+.t2{display:flex; gap:14px; align-items:stretch}
+.t2l{width:36%; flex:none; display:flex; flex-direction:column; align-items:center; gap:8px}
+.logo2{width:min(100%,150px,30vh); aspect-ratio:1; display:block}
+.credit2{margin:-2px 0 2px!important; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; font-size:11px!important; color:#9aa0aa; text-align:center}
+.ab{box-sizing:border-box; width:100%; display:flex; align-items:center; gap:9px; text-align:left; text-decoration:none; font:inherit; padding:8px 10px; border-radius:14px; cursor:pointer}
+.ab .ai{font-size:22px; flex:none; line-height:1}
+.ab b{display:block; font-weight:400; font-size:10px; line-height:1.5}
+.ab i{display:block; font-style:normal; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; font-size:14px; font-weight:600; line-height:1.25; margin-top:3px}
+.ab.pt{color:#1b1340; background:#ffb84a; border:3px solid #1b1340; box-shadow:0 0 0 2px #ffb84a}
+.ab.gr{color:#ffd84a; background:#1b2b8f; border:3px solid #ffd84a}
+.ab.gr i{color:#fff}
+.ab.ht{color:#0d2a14; background:#3fcf6a; border:3px solid #0d2a14; box-shadow:0 0 0 2px #3fcf6a}
+.t2r{flex:1; display:flex; flex-direction:column; min-width:0}
+.pk{font-size:15px; letter-spacing:1px; color:#1b1340; background:#ffd84a; border:3px solid #1b1340; box-shadow:0 0 0 2px #ffd84a; border-radius:14px; text-align:center; padding:9px 0; margin-bottom:12px}
+.gd{display:grid; grid-template-columns:1fr 1fr; gap:10px; flex:1}
+.sc{position:relative; display:flex; flex-direction:column; text-align:left; font:inherit; color:#fff; background:#1b2b8f; border:3px solid #fff; border-radius:16px; padding:7px; cursor:pointer; min-width:0}
+.sc:hover,.sc:focus-visible{border-color:#ffd84a; box-shadow:0 0 0 2px #ffd84a; outline:none}
+.sc.lk{background:#2c2f36; border-color:#6b6f78; cursor:default}
+.sc canvas{width:100%; height:auto; aspect-ratio:64/18; image-rendering:pixelated; border:2px solid #000; border-radius:10px}
+.sc .st{font-size:10px; line-height:1.5; color:#ffd84a; margin-top:6px}
+.sc .sr{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; font-size:12px; line-height:1.3; color:#e2e6ff; margin-top:2px}
+.sc .sp{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; font-size:12px; font-weight:600; color:#9fe39f; margin-top:2px}
+.sc .sp0{color:#ffb84a}
+.sc .nb{position:absolute; top:-10px; right:12px; font-size:9px; background:#ffd84a; color:#1b1340; padding:4px 8px; border:2px solid #1b1340; border-radius:999px}
+.box.brief{border-radius:18px; border-color:#ffd84a; max-width:820px}
+.bf{display:flex; gap:16px; align-items:flex-start}
+.bfl{flex:1.5; min-width:0}
+.bfr{flex:1; display:flex; flex-direction:column; align-items:stretch; gap:10px}
+.bfr .pick{margin:0}
+.bfr .go{font:inherit; font-size:14px; padding:14px; color:#1b1340; background:var(--gold); border:3px solid #fff; border-radius:14px; cursor:pointer; box-shadow:0 0 0 3px #1b1340}
+.bfr .bk{font:inherit; font-size:9px; padding:8px; color:#fff; background:transparent; border:2px solid rgba(255,255,255,.4); border-radius:10px; cursor:pointer}
+.bstory{font-size:8px!important; line-height:1.8!important}
+@media (max-width:620px) and (orientation:portrait){ .bf{flex-direction:column} }
+.box.brief #dt{display:none}
+.brief .bt{font-size:13px!important; color:var(--gold); text-align:center; margin:0 0 4px!important}
+.brief .br{text-align:center; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; font-size:13px!important; color:#cfd6ff; margin:0 0 10px!important}
+.brief .bh{color:var(--gold); margin:4px 0 6px!important}
+.brief ol{margin:0 0 6px; padding-left:22px; font-size:9px; line-height:1.9}
+.brief .bs{opacity:.75; font-size:8px!important}
+.brief .btip{color:#9fe39f; font-size:8px!important}
+.box.howto{border-radius:18px}
+.howto{list-style:none; padding:0; font-size:9px!important; line-height:1.9!important}
+.howto b{color:var(--gold); font-weight:400}
+@media (orientation:landscape) and (max-height:520px){ .box.title2{max-height:96vh} .logo2{width:min(100%,120px,26vh)} .ab{padding:6px 9px} .pk{padding:6px 0; margin-bottom:8px} }
+@media (max-width:620px) and (orientation:portrait){ .t2{flex-direction:column} .t2l{width:100%} }
 </style>
 </head>
 <body>
 <div id="stage">
   <canvas id="game" width="960" height="540" aria-label="Dodgy Dublin Redemption game screen"></canvas>
   <button id="mute" aria-label="Toggle sound">SOUND ON</button>
+  <div id="choice" hidden></div>
   <div class="ov" id="ov"><div class="box" role="dialog" aria-modal="true" aria-labelledby="dt"><h2 id="dt"></h2><div id="dx"></div><div class="btns" id="db"></div></div></div>
 </div>
 <div id="pad">
   <div class="grp"><button class="pb" data-k="l" aria-label="Left">◀</button><button class="pb" data-k="r" aria-label="Right">▶</button></div>
-  <div class="grp"><button class="pb b" data-k="p" id="actBtn">PUNCH</button><button class="pb a" data-k="j">JUMP</button></div>
+  <div class="grp"><button class="pb b" data-k="p" id="actBtn">ACTION</button><button class="pb a" data-k="j">JUMP</button></div>
 </div>
 <div id="rotate">Tip: turn your phone sideways for a bigger screen</div>
-<div id="hint">← → or A D to walk &nbsp; Space / W / ↑ to jump &nbsp; J or X to punch or talk &nbsp; M for sound</div>
+<div id="hint">← → or A D to walk &nbsp; Space / W / ↑ to jump &nbsp; J or X for ACTION (punch, talk, give) &nbsp; M for sound</div>
 
 <script>
 (function(){
@@ -119,7 +182,7 @@ const S1_BACK=[
  ['quay',2300,660],['merchants',2960,160],
  ['georgian',3120,160],['templebar',3280,240],['shop',3520,180,'SPORTS BAR'],['georgian',3700,300],
  ['cityhall',4000,300],['civic',4300,340],['georgian',4640,260],
- ['georgian',4900,200],['ciss',5100,220],['shop',5320,180,'VINTAGE'],['georgian',5500,200],
+ ['georgian',4900,200],['ciss',5100,220],['underdog',5320,180],['georgian',5500,200],
  ['georgian',5700,120],['bewleys',5820,220],['shop',6040,180,'BOOKSHOP'],['georgian',6220,480],
  ['green',6700,820]];
 let SECTIONS=S1_SECTIONS, CROSSINGS=S1_CROSSINGS, GAPS=S1_GAPS, BACK=S1_BACK;
@@ -176,7 +239,10 @@ function speak(text,who,force){
   if(!AU.on||!text) return;
   let t=text.replace(/[♪♥*]/g,'').replace(/€(\d+)/g,'$1 euro').replace(/Pražský/g,'Prashkee').trim(); if(!t) return;
   if(t===t.toUpperCase()) t=t.charAt(0)+t.slice(1).toLowerCase();
-  const key=(who==='player'?CHAR+'-':'')+clipKey(t);
+  let key=(who==='player'?CHAR+'-':'')+clipKey(t);
+  if(!VOICE.clips.has(key)){ const k2=key.replace(/-buddy(?=-|$)/g,'-buddy'); if(VOICE.clips.has(k2)) key=k2; }
+  if(VOICE.clips.has(key)&&AU.c&&window.fetch){ if(!force&&voiceBusy()) return; voiceStop(); const t0=performance.now();
+    voiceBuf(key).then(b=>{ if(performance.now()-t0>650) return; voicePlay(b); }).catch(()=>{ VOICE.clips.delete(key); speakTTS(t,who,true); }); return; }
   if(VOICE.clips.has(key)){ try{ if(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused){ if(!force) return; VOICE.audio.pause(); } if(VOICE.ok) speechSynthesis.cancel();
       const a=new Audio('./voices/'+key+'.mp3'); a.volume=0.95; VOICE.audio=a;
       const fallback=()=>{ if(VOICE.clips.delete(key)) speakTTS(t,who,true); };
@@ -255,11 +321,11 @@ function musTick(){
 }
 
 const muteBtn=document.getElementById('mute');
-function toggleMute(){ AU.on=!AU.on; muteBtn.textContent=AU.on?'SOUND ON':'SOUND OFF'; if(AU.m) AU.m.gain.value=AU.on?0.35:0; if(!AU.on){ sirenSet(0,0); if(VOICE.ok) speechSynthesis.cancel(); } else auInit(); }
+function toggleMute(){ AU.on=!AU.on; muteBtn.textContent=AU.on?'SOUND ON':'SOUND OFF'; if(AU.m) AU.m.gain.value=AU.on?0.35:0; if(!AU.on){ sirenSet(0,0); if(VOICE.ok) speechSynthesis.cancel(); try{ voiceStop(); }catch(e){} } else auInit(); }
 muteBtn.onclick=toggleMute;
 
 /* ---------------- LEVEL ---------------- */
-function levelDef(){ return STAGE===3?levelDef3():STAGE===2?levelDef2():levelDef1(); }
+function levelDef(){ return STAGE===4?levelDef4():STAGE===3?levelDef3():STAGE===2?levelDef2():levelDef1(); }
 function levelDef1(){
   const L=[];
   const row=(x,y,n,gap)=>{for(let i=0;i<n;i++)L.push({t:'coin',x:x+i*(gap||24),y});};
@@ -306,7 +372,8 @@ function levelDef1(){
   // Drury St
   L.push({t:'npc',k:'cans',x:5132});
   L.push({t:'npc',k:'students',x:5262});
-  L.push({t:'gullT',x:5380}); L.push({t:'scum',x:5440});
+  L.push({t:'npc',k:'coach',x:5420});
+  L.push({t:'gullT',x:5380}); L.push({t:'scum',x:5520});
   L.push({t:'item',k:'leap',x:5500,y:GROUND-80});
   L.push({t:'npc',k:'homeless',x:5590});
   L.push({t:'roll',x:5660,y:GROUND-70});
@@ -332,7 +399,7 @@ let camX=0, state='title', paused=true, bannerT=0, bannerText='', lastSection=nu
 
 function build(fromX){
   plats=[];coins=[];rolls=[];items=[];enemies=[];npcs=[];trigs=[];pops=[];boss=null;luas=null;S.perched=true;
-  boats=[];waves=[];jbl=null;luasOv=null;swanEv=null; if(STAGE===3) reset3();
+  boats=[];waves=[];jbl=null;luasOv=null;swanEv=null; if(STAGE===3) reset3(); if(STAGE===4) reset4();
   xings=CROSSINGS.map(c=>({...c,phase:'red',t:2+Math.random()*2,cars:[],spawn:0.6,snd:0}));
   for(const d of levelDef()){
     if(d.t==='plat'){plats.push({...d});continue;}
@@ -344,6 +411,7 @@ function build(fromX){
     if(d.t==='jbl'){ jbl={x:d.x,t:1}; continue; }
     if(d.t==='swans'){ if(!S.swans&&d.x>fromX-60) swanEv={x0:d.x,state:'wait',birds:[{x:d.x,k:'swan',ph:0},{x:d.x-24,k:'cyg',ph:1},{x:d.x-42,k:'cyg',ph:2}],say:'',sayT:0}; continue; }
     if(STAGE===3&&build3(d,fromX)) continue;
+    if(STAGE===4&&build4(d,fromX)) continue;
     if(d.x<fromX+40) continue;
     switch(d.t){
       case 'coin': coins.push({x:d.x,y:d.y}); break;
@@ -363,8 +431,8 @@ function build(fromX){
 }
 function resetRun(){
   CARD.back=null; CARD.r=null;
-  Object.assign(S,{money:0,craic:5,rolls:3,score:0,gulls:0,scums:0,bikeSaved:false,dubBike:false,cans:false,bossBeaten:false,lock:false,kind:0,swans:false,brolly:false,fined:false,dodges:0,canT:0,rainT:0,sweets:0,glowT:0,ghostT:0,done:{},sparkT:0,tattoo:false,flashT:0,turnips:0,pumps:0,kidsHappy:0,inCoppers:false,smelt:0,fogged:0});
-  cp={x:40,money:0,craic:5,bike:false,bikeKind:'own',score:0,brolly:false,swans:false};
+  Object.assign(S,{money:0,craic:5,rolls:3,score:0,gulls:0,scums:0,bikeSaved:false,dubBike:false,cans:false,bossBeaten:false,lock:false,kind:0,swans:false,brolly:false,fined:false,dodges:0,canT:0,rainT:0,sweets:0,glowT:0,ghostT:0,done:{},sparkT:0,tattoo:false,flashT:0,turnips:0,pumps:0,kidsHappy:0,inCoppers:false,smelt:0,fogged:0,in1:false,in2:false,round:0,roundDone:false,chips:false,taxi:false,freeze:0,hideP:false,pints:0,dance:0,goalT:0,allTaxis:false});
+  HINT.seen.clear(); HINT.q=[]; HINT.cur=null; tray4=false; cp={x:40,money:STAGE===4?20:0,craic:5,bike:false,bikeKind:'own',score:0,brolly:false,swans:false};
   spawnAt(cp);
 }
 function spawnAt(c){
@@ -417,14 +485,15 @@ function dialog(title,html,btns,cls){
   setTimeout(()=>{const f=dbEl.querySelector('button'); f&&f.focus({preventScroll:true});},30);
 }
 function closeDialog(){ov.hidden=true; paused=false; for(const k in input) input[k]=false; document.querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));}
-function showTitle(){
+function showTitleOld(){
   state='title';
   dialog('',`<img class="logo" src="${LOGO}" alt="Dodgy Dublin Redemption"><p class="credit">Created by Matheus Amud</p><p>You're meeting your mate in Stephen's Green. Your bike's locked up on Grafton St. You've three chicken fillet rolls and there's no going back.</p><p>Stomp seagulls. Punch scumbags. Wait for the green man. Talk to people: a euro goes a long way.</p>${PICKER}`,
     [{label:'Start',fn(){startStage(1);}},{label:'Stage 2: the canal',fn(){showStageIntro(2);}},{label:'Stage 3: Halloween 🎃 (new!)',fn(){showStageIntro(3);}},PINT,MERCH],'title');
   wirePicker();
 }
 function startStage(n){ setStage(n); auInit(); voiceUnlock(); resetRun(); state='play'; closeDialog(); MUS.track=null; }
-function showStageIntro(n){
+function showStageIntro(n){ return showBriefing(n); }
+function showStageIntroOld(n){
   state='title';
   if(n===3) dialog('Stage 3: Halloween in Dublin',`<p>It's Halloween night. Your mates are meeting at Christ Church in costume, then it's straight to Coppers.</p><p>Walk from Kilmainham through Rialto, James's Street and the Liberties. Dodge the bangers, mind the bonfires, give the kids a sweet. Find the five hidden turnips. And watch out for Antho.</p><p><b>Tip:</b> jump on Antho's head three times. He's easiest to stomp when he charges at you on his scooter, or when he crashes.</p>${PICKER}`,[{label:"Let's go",fn(){startStage(3);}},PINT,MERCH]);
   else dialog('Stage 2: The canal',`<p>Sunny Saturday on the Grand Canal. Your mate's watching the match in Dolphin's Barn and he's saved you a seat.</p><p>Walk the canal from the Docks. Help the swans, dodge the cyclists, mind the guards at the Barge. And yes, it'll rain at some point.</p>${PICKER}`,[{label:"Let's go",fn(){startStage(2);}},PINT,MERCH]);
@@ -473,9 +542,11 @@ const SHARE={label:'Share my score \u{1F4F8}',fn(){shareCard();}};
 function winGame(){
   state='win';
   if(STAGE===2) return winGame2();
+  if(STAGE===4) return winGame4();
   if(STAGE===3) return startCoppers();
   const total=Math.round(S.score + S.money*10 + S.craic*50 + S.rolls*100 + (S.bikeSaved?500:0) + (S.dubBike?250:0));
   const rank=total<3000?'Tourist in a leprechaun hat':total<4500?'Blow-in':total<6000?'Honorary Dub':'Absolute legend';
+  saveProg(1,total,rank);
   if(!CARD.back||CARD.r?.total!==total||CARD.r?.stageN!==1) buildCard({inter:interList(),stageN:1,total,rank,place:"STEPHEN'S GREEN",stage:'STAGE 1: THE CITY CENTRE',lines:[`€${S.money} left in the pocket`,`${S.rolls} chicken fillet rolls`,S.bikeSaved?'Bike: saved':'Bike: robbed. Classic.',`Craic: ${S.craic}/10`]});
   CARD.back=()=>{ state='win'; showWin1(total,rank); };
   showWin1(total,rank);
@@ -495,16 +566,16 @@ function winGame2(){
 function showWin2(total,rank){
   dialog("Dolphin's Barn!",`<p>Your mate's on the bench with the match on his phone and a can with your name on it. Sound.</p>
   <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Swans: ${S.swans?'safe (+400)':'on their own'}</li><li>Garda fine: ${S.fined?'paid. Ouch.':'dodged (+200)'}</li><li>Cyclists dodged: ${S.dodges}</li><li>Good deeds: ${S.kind}</li>${interHTML()}<li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
-    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Next: Halloween 🎃',fn(){showStageIntro(3);}},{label:'Back to stage 1',fn(){startStage(1);}},PINT_END,MERCH]);
+    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Next: Halloween 🎃',fn(){showStageIntro(3);}},{label:'Back to the start',fn(){showTitle();}},PINT_END,MERCH]);
 }
 
 /* ---------------- NPC TALK ---------------- */
-const GREET={homeless:'Spare the change?',tourist:"Where's the Temple Bar?",mate:"Howya! C'mere!",busker:'Any requests?',students:'Wanna can, bud?',cans:'Pražský 4-pack? €4',bambino:'Slice? €5',pint:'Pint? €11',bewleys:'Sticky bun? €4',dancers:'Join in!',crew:'Can, bud? Sit down!',sup:'Howya! Lovely day!',atlas:'Oi! Tudo bem?',locks:'Tasting menu? €145',gelato:'Gelato? €4',tourist2:'Is this... Venice?'};
+const GREET={homeless:'Spare the change?',tourist:"Where's the Temple Bar?",mate:"Howya! C'mere!",busker:'Any requests?',students:'Wanna can, buddy?',cans:'Pražský 4-pack? €4',bambino:'Slice? €5',pint:'Pint? €11',bewleys:'Sticky bun? €4',dancers:'Join in!',crew:'Can, buddy? Sit down!',sup:'Howya! Lovely day!',atlas:'Oi! Tudo bem?',locks:'Tasting menu? €145',gelato:'Gelato? €4',tourist2:'Is this... Venice?'};
 const PROMPT={homeless:'GIVE €1',tourist:'TALK',mate:'HIGH FIVE',busker:'TIP €1',students:'TALK',cans:'BUY €4',bambino:'BUY €5',pint:'BUY €11',bewleys:'BUY €4',dancers:'DANCE',crew:'TAKE CAN',sup:'WAVE',atlas:'TALK',locks:'BUY €145',gelato:'BUY €4',tourist2:'TALK'};
-function talk(n){ if(!(STAGE===3&&talk3(n))) talkInner(n); if(n.say) speak(n.say,n.k,true); markDone(n); }
+function talk(n){ if(!((STAGE===3&&talk3(n))||(STAGE===4&&talk4(n))||talkCoach(n))) talkInner(n); if(n.say) speak(n.say,n.k,true); markDone(n); }
 function talkInner(n){
   sfx.talk(); n.sayT=2.8;
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; return false;} S.money-=c; return true; };
   switch(n.k){
     case 'homeless': if(S.money<1){n.say='Ah no bother';return;} S.money-=1; n.used=true; n.say='God bless ya!'; craic(2); pts(100); S.kind++; pop(n.x,GROUND-80,'+2 CRAIC','#3fcf6a'); break;
     case 'tourist': n.used=true; n.say='Follow the stag parties!'; craic(1); pts(50); pop(n.x,GROUND-80,'+1 CRAIC','#3fcf6a'); break;
@@ -548,7 +619,7 @@ function update(dt){
   jumpBuf-=dt; punchBuf-=dt;
 
   const spd=(P.bike?230:150)*(S.rainT>0&&!S.brolly?0.78:1), jv=P.bike?620:580;
-  const dir=(input.r?1:0)-(input.l?1:0);
+  const dir=S.freeze>0?0:(input.r?1:0)-(input.l?1:0);
   P.vx=dir*spd; if(dir) P.face=dir;
   if(P.knock){P.vx+=P.knock; P.knock*=Math.pow(0.01,dt); if(Math.abs(P.knock)<8)P.knock=0;}
   if(jumpBuf>0 && P.onG){P.vy=-jv; P.onG=false; jumpBuf=0; sfx.jump();}
@@ -570,23 +641,25 @@ function update(dt){
   if(P.vx) P.anim+=dt;
   if(P.inv>0) P.inv-=dt;
 
-  const nt=nearTalk();
-  const want=nt?PROMPT[nt.k]:'PUNCH';
-  if(want!==lastAct){ lastAct=want; actBtn.textContent=nt?'💬 '+want:'PUNCH'; if(nt) talkTipCheck(); actBtn.classList.toggle('talk',!!nt); }
+  const nt=S.freeze>0?null:nearTalk();
+  const tl=STAGE===4?taxiLabel():null;
+  if(tl) setAct('🚕 '+tl,true); else if(nt){ setAct('💬 '+PROMPT[nt.k],true); talkTipCheck(); } else setAct(enemyNear()?'👊 PUNCH':'ACTION',false);
   if(P.cd>0) P.cd-=dt;
-  if(punchBuf>0 && P.cd<=0){ punchBuf=0; if(nt){ talk(nt); P.cd=0.4; } else { P.punchT=0.18; P.cd=0.3; punchId++; sfx.punch(); } }
+  if(punchBuf>0 && P.cd<=0 && S.freeze<=0){ punchBuf=0; if(tl&&taxiAct()){ P.cd=0.4; } else if(nt){ talk(nt); P.cd=0.4; } else { P.punchT=0.18; P.cd=0.3; punchId++; sfx.punch(); } }
   if(P.punchT>0) P.punchT-=dt;
   const fist=P.punchT>0?{l:P.face>0?P.x+4:P.x-32,r:P.face>0?P.x+32:P.x-4,t:P.y-36,b:P.y-16}:null;
 
   if(S.lock) camX+=(ARENA-camX)*Math.min(1,dt*4);
   else camX=Math.max(camX,Math.min(P.x-170,END-VW));
+  if(STAGE===4) roomCam4();
 
   for(let i=trigs.length-1;i>=0;i--){ const t=trigs[i];
-    if(t.t==='gull' && camX+VW>=t.x){ enemies.push({type:'gull',x:camX+VW+20,y:46+Math.random()*40,vx:-110,vy:0,state:'enter',f:Math.random()*6}); trigs.splice(i,1); }
+    if(t.t==='gull' && camX+VW>=t.x){ mhint('SEAGULLS SWOOP LOW: JUMP ON THEM OR PUNCH THEM','gull'); enemies.push({type:'gull',x:camX+VW+20,y:46+Math.random()*40,vx:-110,vy:0,state:'enter',f:Math.random()*6}); trigs.splice(i,1); }
     else if(t.t==='perch' && P.x>=t.x){ S.perched=false; const lx=2700, ly=groundAt(2700)-28-92; enemies.push({type:'gull',x:lx,y:ly,vx:0,vy:0,state:'enter',f:0}); pop(lx,ly-24,'SQUAWK!','#fff'); trigs.splice(i,1); }
     else if(t.t==='scooter' && camX+VW>=t.x){ const sc={type:'scooter',x:camX+VW+40,y:GROUND,vx:-290,state:'ride',t:0}; const gd={type:'garda',x:sc.x+190,y:GROUND,vx:-290,state:'chase',t:0,link:sc}; sc.link=gd; enemies.push(sc,gd); banner('GARDA CHASE! JUMP!'); trigs.splice(i,1); }
     else if(t.t==='boss' && P.x>=t.x && STAGE===3){ startAntho(); trigs.splice(i,1); }
-    else if(t.t==='boss' && P.x>=t.x){ S.lock=true; const hp=STAGE===2?4:3; boss={x:ARENA+300,y:-50,hp,max:hp,state:'enter',t:0,vx:0,vy:0,inv:0,f:0}; banner(STAGE===2?'BIG GULL: THE SEQUEL':'THE BIG GULL'); trigs.splice(i,1); }
+    else if(t.t==='boss' && P.x>=t.x && STAGE===4){ startTaxi(); trigs.splice(i,1); }
+    else if(t.t==='boss' && P.x>=t.x){ S.lock=true; const hp=STAGE===2?4:3; boss={x:ARENA+300,y:-50,hp,max:hp,state:'enter',t:0,vx:0,vy:0,inv:0,f:0,o:{}}; banner(STAGE===2?'THE CHIP THIEF: THE SEQUEL':'THE CHIP THIEF'); speak("Jaysus, he's massive!",'player',true); pop(P.x,P.y-80,"JAYSUS, HE'S MASSIVE!",'#fff'); setTimeout(()=>{ if(boss&&!boss.kind) mhint('JUMP ON ITS HEAD WHEN IT LANDS','bossgull'); },2600); trigs.splice(i,1); }
     else if(t.t==='cyc' && camX+VW>=t.x){ { const roo=t.k==='roo'; enemies.push({type:'cyclist',k:t.k,roo,x:camX+VW+40,y:GROUND,vx:-(roo?300:220+Math.random()*50),state:'ride',ph:0,col:roo?'#00ccbc':['#e8423a','#ffd84a','#3a8ae0','#2e9e4f','#c83a8a'][Math.floor(Math.random()*5)],say:roo?['ORDER FOR GARY?','MOVE, MOVE, MOVE!','4 MINS LATE, SORRY!'][Math.floor(Math.random()*3)]:'BING BING!',sayT:1.8,flash:0}); if(roo){ tone(520,.08,'square',.12); tone(390,.12,'square',.12,0,.09); } else sfx.bell(); } trigs.splice(i,1); }
     else if(t.t==='rain' && P.x>=t.x){ S.rainT=17; banner("OMG IT'S RAINING AGAIN"); speak("Oh my god, it's raining again",'player',true); if(S.brolly) pop(P.x,P.y-70,'BROLLY UP!','#3fcf6a'); else { craic(-1); pop(P.x,P.y-70,'SOAKED! -1 CRAIC','#6bd6ff'); } trigs.splice(i,1); }
   }
@@ -621,6 +694,8 @@ function update(dt){
   }
   if(STAGE===2) stage2Update(dt);
   if(STAGE===3) update3(dt,pb,fist);
+  if(STAGE===4){ update4(dt,pb,fist); rain4(dt); }
+  updHint(dt); stageHints();
   let siren=0;
   for(let i=enemies.length-1;i>=0;i--){ const e=enemies[i]; if(e.type==='garda'&&(e.state==='chase'||e.state==='brake')) siren=Math.max(siren,1-Math.min(1,Math.abs(e.x-P.x)/500)); if(updEnemy(e,dt,pb,fist)) enemies.splice(i,1); }
   sirenSet(siren,time);
@@ -640,7 +715,7 @@ function updEnemy(e,dt,pb,fist){
   }
   if(e.type==='gull'){
     e.f+=dt*12;
-    if(e.state==='enter'){ e.x+=e.vx*dt; e.y+=Math.sin(time*5+e.f)*0.4; if(e.x-P.x<130 && e.x>camX+30){ e.state='dive'; const dx=P.x-e.x, dy=(P.y-26)-e.y, d=Math.hypot(dx,dy)||1; e.vx=dx/d*270; e.vy=dy/d*270; } if(e.x<camX-40) return true; }
+    if(e.state==='enter'){ e.x+=e.vx*dt; e.y+=Math.sin(time*5+e.f)*0.4; if(e.x-P.x<130 && e.x>camX+30){ if(!HINT.seen.has('dive')){ HINT.seen.add('dive'); slowmo(0.9,0.35); pop(e.x,e.y-20,'JUMP ON IT!','#ffd84a'); } e.state='dive'; const dx=P.x-e.x, dy=(P.y-26)-e.y, d=Math.hypot(dx,dy)||1; e.vx=dx/d*270; e.vy=dy/d*270; } if(e.x<camX-40) return true; }
     else if(e.state==='dive'){ e.x+=e.vx*dt; e.y+=e.vy*dt; if(e.y>=groundAt(e.x)-18){ e.state='rise'; e.vx=-190; e.vy=-150; } if(e.x<camX-50||e.y<-50) return true; }
     else if(e.state==='rise'||e.state==='flee'){ e.x+=e.vx*dt; e.y+=e.vy*dt; if(e.y<-40||e.x<camX-50) return true; }
     else if(e.state==='dead'){ e.vy+=GRAV*dt; e.y+=e.vy*dt; e.x+=40*dt; return e.y>VH+30; }
@@ -666,7 +741,7 @@ function updEnemy(e,dt,pb,fist){
   }
   if(e.type==='garda'){
     if(e.state==='chase'||e.state==='leave'){ e.x+=e.vx*dt; }
-    else if(e.state==='brake'){ e.vx*=Math.pow(0.05,dt); e.x+=e.vx*dt; if(Math.abs(e.vx)<15){ e.state='arrest'; e.vx=0; e.t=2.2; e.say='NICE ONE, BUD!'; e.sayT=2.2; speak(e.say,'garda',true); pts(200); craic(1); } }
+    else if(e.state==='brake'){ e.vx*=Math.pow(0.05,dt); e.x+=e.vx*dt; if(Math.abs(e.vx)<15){ e.state='arrest'; e.vx=0; e.t=2.2; e.say='NICE ONE, BUDDY!'; e.sayT=2.2; speak(e.say,'garda',true); pts(200); craic(1); } }
     else if(e.state==='arrest'){ e.t-=dt; if(e.sayT>0)e.sayT-=dt; if(e.t<=0){ e.state='leave'; e.vx=-260; } }
     const eb={l:e.x-46,r:e.x+46,t:GROUND-42,b:GROUND};
     if(ov_(pb,eb)){ if(stomped(eb)){ bounce(); P.vy=-520; pop(e.x,GROUND-70,'MIND THE CAR!','#fff'); } else if(Math.abs(e.vx)>60) hurt('GARDA!',e.x); }
@@ -677,7 +752,7 @@ function updEnemy(e,dt,pb,fist){
   const dx=P.x-e.x;
   e.t-=dt; if(e.sayT>0) e.sayT-=dt;
   if(e.type==='scum'){
-    if(e.state==='idle'){ e.state='walk'; e.say=['Howya buddy','Give us a euro','Nice runners','What are you lookin at?','Story bud?'][hash(e.x|0,3)%5]; e.sayT=2.2; speak(e.say,'scum',false); }
+    if(e.state==='idle'){ e.state='walk'; e.say=['Howya buddy','Give us a euro','Nice runners','What are you lookin at?','Story buddy?'][hash(e.x|0,3)%5]; e.sayT=2.2; speak(e.say,'scum',false); }
     if(e.state==='walk'){ e.face=Math.sign(dx)||-1; e.vx=e.face*55; if(Math.abs(dx)<72){e.state='wind';e.t=0.45;e.vx=0;} }
     else if(e.state==='wind'){ e.vx=0; if(e.t<=0){e.state='lunge';e.t=0.32;e.vx=e.face*250;} }
     else if(e.state==='lunge'){ if(e.t<=0){e.state='recover';e.t=0.7;} }
@@ -709,6 +784,7 @@ function hitWalker(e,dmg){
   } else { e.state='hit'; e.t=0.35; e.vx=(e.x>P.x?1:-1)*180; }
 }
 function updBoss(dt,pb,fist){
+  if(boss.kind==='taxi'){ updTaxi(dt,pb,fist); taxiTidy(); return; }
   if(boss.kind==='antho') return updAntho(dt,pb,fist);
   const b=boss; b.f+=dt*9; b.t-=dt; if(b.inv>0) b.inv-=dt;
   const cx=ARENA+VW/2;
@@ -729,7 +805,7 @@ function updBoss(dt,pb,fist){
 }
 function hitBoss(){
   const b=boss; b.hp--; b.inv=0.8; shake=0.3; sfx.stomp();
-  if(b.hp<=0){ b.state='dead'; b.vy=-300; b.vx=90; S.lock=false; S.bossBeaten=true; S.money+=10; craic(3); pts(1000); banner('BIG GULL BEATEN!'); pop(b.x,b.y-40,'+1000 +€10','#ffd84a');
+  if(b.hp<=0){ b.state='dead'; b.vy=-300; b.vx=90; S.lock=false; S.bossBeaten=true; S.money+=10; craic(3); pts(1000); banner('CHIP THIEF BEATEN!'); pop(b.x,b.y-40,'+1000 +€10','#ffd84a');
     for(let i=0;i<3;i++) rolls.push({x:b.x-30+i*30,y:GROUND-50}); }
   else { b.state='rise'; pop(b.x,b.y-40,'SQUAWK!','#fff'); }
 }
@@ -749,6 +825,7 @@ function tri(x1,y1,x2,y2,x3,y3,c){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x
 
 /* ---------------- CHARACTERS ---------------- */
 function human(x,y,o){
+  if(o.coat) o=Object.assign({},o,{inner:o.top,top:o.coat,zip:false});
   const f=o.f||1, pose=o.pose||'stand', ph=o.ph||0, sw=pose==='walk'?Math.sin(ph):0;
   ctx.save(); ctx.translate(Math.round(x),Math.round(y)); if(f<0) ctx.scale(-1,1); if(o.sc) ctx.scale(o.sc,o.sc);
   S_();
@@ -769,6 +846,7 @@ function human(x,y,o){
   if(o.stripes){ fr(-8,-30+by,2,14,'#fff'); fr(7,-30+by,1.5,14,'#fff'); }
   if(o.band) fr(-8,-26+by,16,4,o.band);
   if(o.zip) fr(0,-33+by,1.2,18,'rgba(0,0,0,.35)');
+  if(o.inner){ rb(-10,-20+by,20,9,4,o.top); fr(-3,-34+by,6,7,o.inner); fr(-0.6,-27+by,1.2,15,'rgba(0,0,0,.4)'); rb(-8,-36+by,16,4,2,shade(o.top,18)); }
   if(o.hiVis) fr(-8,-26+by,16,3,'#dfe3e6');
   if(o.bag) rb(-12,-30+by,6,12,2,o.bag);
   const hy=-42+by;
@@ -1011,11 +1089,12 @@ function green(sx,w,wx){
 function drawBack(){
   if(STAGE===2){ drawBack2(); return; }
   if(STAGE===3){ drawBack3(); return; }
+  if(STAGE===4){ drawBack4(); return; }
   for(const [k,x,w,label] of BACK){
     const sx=x-camX; if(sx>VW+40||sx+w<-40) continue;
     if(k==='georgian') georgian(sx,w,x); else if(k==='shop') shopfront(sx,w,x,label); else if(k==='bambino') bambino(sx,w); else if(k==='gpo') gpo(sx,w);
     else if(k==='quay') quay(sx,w,x); else if(k==='merchants') merchants(sx,w); else if(k==='templebar') templebar(sx,w); else if(k==='cityhall') cityhall(sx,w);
-    else if(k==='civic') civic(sx,w); else if(k==='ciss') ciss(sx,w); else if(k==='bewleys') bewleys(sx,w); else if(k==='green') green(sx,w,x);
+    else if(k==='civic') civic(sx,w); else if(k==='underdog') underdog(sx,w); else if(k==='ciss') ciss(sx,w); else if(k==='bewleys') bewleys(sx,w); else if(k==='green') green(sx,w,x);
   }
   spire(1540-camX);
 }
@@ -1057,7 +1136,7 @@ function drawGround(){
 }
 function drawBridge(){
   if(STAGE===2){ for(const b of BRIDGES) stoneBridge(b); return; }
-  if(STAGE===3) return;
+  if(STAGE===3||STAGE===4) return;
   const x0=BRIDGE.x0-camX, x1=BRIDGE.x1-camX; if(x1<-80||x0>VW+80) return; S_();
   box(x0-20,GROUND+2,24,VH-GROUND,'#8a8478'); box(x1-4,GROUND+2,24,VH-GROUND,'#8a8478');
   const span=BRIDGE.x1-BRIDGE.x0;
@@ -1113,6 +1192,8 @@ function drawNPC(n){
   if(n.k==='sup') return;
   if(STAGE===2&&drawNPC2(n,sx)){ npcPrompt(n,sx); return; }
   if(STAGE===3&&drawNPC3(n,sx)){ npcPrompt(n,sx); return; }
+  if(STAGE===4&&drawNPC4(n,sx)){ npcPrompt(n,sx); return; }
+  if(n.k==='coach'){ drawCoach(n,sx); npcPrompt(n,sx); return; }
   if(n.k==='homeless'){ S_(); box(sx-18,GROUND-4,40,4,'#b89a6a'); rb(sx-6,GROUND-14,30,12,5,'#3a5a8a');
     human(sx-4,GROUND,{f:1,pose:'sit',skin:'#e0b48e',hair:'#6a5a4a',hs:'beanie',cap:'#2e6b3a',top:'#6b5a45',legs:'#3a5a8a',shoes:'#333',beard:true,armFwd:!n.used,cup:true,happy:n.used});
     if(n.used){ for(let k=0;k<2;k++) txt('♥',sx+10+k*12,GROUND-70-Math.sin(time*3+k)*4,'#ff5a8a','center',8); } }
@@ -1179,21 +1260,22 @@ function drawCar(x,c){
     if(c.k==='taxi'){ box(-10,-62,20,8,'#f5d020'); txt('TAXI',0,-61,'#111','center',5); } circ(-22,-26,5,'#fff6c0'); circ(22,-26,5,'#fff6c0'); box(-12,-22,24,8,'#333'); box(-10,-12,20,6,'#f4f4f4'); fr(-34,-8,12,8,'#111'); fr(22,-8,12,8,'#111'); }
   ctx.restore(); S_();
 }
-function drawBoss(){ if(boss.kind==='antho') return drawAntho(); const b=boss, sx=b.x-camX; if(b.inv>0&&Math.floor(time*20)%2) return;
+function drawBoss(){ if(boss.kind==='taxi') return; if(boss.kind==='antho') return drawAntho(); const b=boss, sx=b.x-camX; if(b.inv>0&&Math.floor(time*20)%2) return;
   const f=(b.vx<0||(b.state==='hover'&&P.x<b.x))?-1:1;
   if(b.state!=='dead') ell(sx,GROUND-1,24,4,'rgba(0,0,0,.25)',true);
   if(b.state==='dead'){ ctx.save(); ctx.translate(sx,b.y); ctx.rotate(Math.PI); gull(0,0,1,0,2.6,true); ctx.restore(); return; }
   gull(sx,b.y,f,b.state==='ground'?0:b.f,2.6,true);
   S_(); ctx.save(); ctx.translate(sx+f*22,b.y-26); ctx.beginPath(); ctx.moveTo(-9,4); ctx.lineTo(-9,-6); ctx.lineTo(-4,-1); ctx.lineTo(0,-8); ctx.lineTo(4,-1); ctx.lineTo(9,-6); ctx.lineTo(9,4); ctx.closePath(); ctx.fillStyle='#ffd84a'; ctx.fill(); ctx.stroke(); ctx.restore();
   if(b.state==='ground'&&Math.floor(time*6)%2) txt('STOMP IT!',sx,b.y-60,'#ffd84a','center',8,OUT);
-  S_(); const mx=b.max||3; for(let i=0;i<mx;i++) rb(VW/2-mx*11+4+i*22,30,16,6,2,i<b.hp?'#e8423a':'rgba(255,255,255,.3)');
+  lifeBar(STAGE===2?'THE CHIP THIEF: THE SEQUEL':'THE CHIP THIEF',b.hp,b.max||3,b.o||(b.o={}));
 }
-function bubble(x,y,t){ ctx.font='8px '+FONTF; const w=ctx.measureText(t).width+12; let bx=Math.round(x-w/2); bx=Math.max(4,Math.min(VW-w-4,bx)); S_(); rb(bx,y,w,16,5,'#fff'); tri(x-4,y+15,x+4,y+15,x,y+21,'#fff'); fr(x-3,y+13,6,3,'#fff'); txt(t,bx+w/2,y+4,'#1a1020','center',8); }
 function drawPlayer(){
+  if(S.hideP) return;
   if(P.inv>0 && Math.floor(time*14)%2) return;
   const sx=Math.round(P.x-camX), sy=Math.round(P.y);
   ell(sx,sy,10,2.5,'rgba(0,0,0,.25)',true);
   const o={...charLook(CHAR),f:P.face,punch:P.punchT>0,ph:P.anim*12};
+  if(STAGE===4&&(state==='cut'||!inside4(P.x))) o.coat=CHAR==='aoife'?'#a8784a':'#27324a';
   if(P.bike){ bike(sx,sy,P.bikeKind==='dub'?'#5ab0e0':'#1f5fbf',P.anim); o.pose='ride'; o.ph=P.anim*14; if(!o.punch) o.armFwd=true; human(sx-2,sy-14,o); }
   else { o.pose=!P.onG?'jump':(P.vx?'walk':'stand'); human(sx,sy,o); }
   if(STAGE===3&&S.ghostT>0) ghostOver3(sx,sy);
@@ -1211,21 +1293,23 @@ function drawHUD(){
   if(S.canT>0){ rb(246,8,6,10,1.5,'#d8d8e0'); txt(String(Math.ceil(S.canT)),255,10,'#d8d8e0','left',6); }
   txt(String(S.score).padStart(6,'0'),300,10,'#fff','center',8);
   if(STAGE===3) drawHUD3();
-  drawDiscover();
+  if(STAGE===4) drawHUD4();
+  drawDiscover(); drawHint();
   const px=350, pw=110, pp=Math.min(pw,P.x/goalX*pw); fr(px,12,pw,4,'rgba(255,255,255,.2)'); fr(px,12,Math.max(3,pp),4,'#3fcf6a'); circ(px+pp,14,3.5,'#1fa35a'); fr(px+pw-2,8,3,12,'#ffd84a');
   if(bannerT>0){ ctx.globalAlpha=Math.min(1,bannerT*2); S_(); rb(VW/2-120,44,240,24,8,'rgba(12,8,34,.8)'); txt(bannerText,VW/2,52,'#fff','center',10); ctx.globalAlpha=1; }
 }
 
 /* ---------------- FRAME ---------------- */
 function draw(){
-  if(state==='cut'){ drawCoppers3(); return; }
+  BUBQ=[];
+  if(state==='cut'){ if(STAGE===4) drawHome4(); else drawCoppers3(); flushBubbles(); return; }
   ctx.setTransform(2,0,0,2,0,0);
   const ox=shake>0?(Math.random()-.5)*5:0;
   ctx.save(); ctx.translate(ox,0);
   const cam0=camX; camX=Math.round(camX); lights=[]; glowRects=[];
   if(STAGE===3){ for(const z of smells) if(P.x>z.x&&P.x<z.x+z.w){ ctx.translate(Math.sin(time*2.2)*2,0); ctx.transform(1,Math.sin(time*1.7)*0.012,0,1,0,0); } }
   dusk=Math.min(1,Math.max(0,(P.x||0)/END))*(STAGE===2?0.72:1);
-  if(STAGE===3){ drawSky3(); } else {
+  if(STAGE===3){ drawSky3(); } else if(STAGE===4){ drawSky4(); } else {
   const g=ctx.createLinearGradient(0,0,0,GROUND), a=dusk<.5?dusk*2:(dusk-.5)*2;
   g.addColorStop(0,dusk<.5?lerpC('#9aa6b4','#8fb8dc',a):lerpC('#8fb8dc','#4a3a78',a)); g.addColorStop(1,dusk<.5?lerpC('#dfe3e8','#dbe8f2',a):lerpC('#dbe8f2','#ffb070',a));
   ctx.fillStyle=g; ctx.fillRect(-10,0,VW+20,VH);
@@ -1236,16 +1320,17 @@ function draw(){
   }
   drawBack();
   drawBridge();
-  drawGround();
+  drawGround(); if(STAGE===4) drawFloor4();
   for(const x of xings) for(const c of x.cars) if(c.s<0.7) drawCar(x.x-camX+x.w/2,c);
   for(const p of plats) drawPlat(p);
   for(const c of coins) drawCoin(c);
   for(const r of rolls){ const sx=r.x-camX; if(sx>-20&&sx<VW+20) drawRoll(sx,r.y+Math.sin(time*4+r.x)*2.5); }
   for(const it of items){ const sx=it.x-camX; if(sx>-30&&sx<VW+30) drawItem(it.k,sx,it.y); }
   for(const n of npcs) drawNPC(n);
-  if(STAGE===3) drawGoal3(); else { const sx=goalX-camX; if(sx<VW+80){ S_(); box(sx-26,GROUND-18,56,5,'#7a4a24'); box(sx-24,GROUND-13,4,13,'#333'); box(sx+24,GROUND-13,4,13,'#333'); human(sx+6,GROUND,{f:-1,pose:'sit',skin:'#c68a5a',hair:'#1a1a1a',hs:'short',top:'#6ab8ea',band:'#1b2a5a',legs:'#2a2a40',shoes:'#fff',armUp:true,can:'#2e8b3f',happy:true}); rb(sx-16,GROUND-26,6,9,1.5,'#2e8b3f'); if(Math.floor(time*2)%2) bubble(sx,GROUND-92,STAGE===2?'SAVED YOU A SEAT!':'OVER HERE!'); } }
+  if(STAGE===4){} else if(STAGE===3) drawGoal3(); else { const sx=goalX-camX; if(sx<VW+80){ S_(); box(sx-26,GROUND-18,56,5,'#7a4a24'); box(sx-24,GROUND-13,4,13,'#333'); box(sx+24,GROUND-13,4,13,'#333'); human(sx+6,GROUND,{f:-1,pose:'sit',skin:'#c68a5a',hair:'#1a1a1a',hs:'short',top:'#6ab8ea',band:'#1b2a5a',legs:'#2a2a40',shoes:'#fff',armUp:true,can:'#2e8b3f',happy:true}); rb(sx-16,GROUND-26,6,9,1.5,'#2e8b3f'); if(Math.floor(time*2)%2) bubble(sx,GROUND-92,STAGE===2?'SAVED YOU A SEAT!':'OVER HERE!'); } }
   for(const e of enemies) if(e.type!=='gull') drawEnemy(e);
   if(STAGE===3) drawProps3();
+  if(STAGE===4) drawMid4();
   if(STAGE===2){ drawSwans(); drawJbl(); }
   if(state!=='title') drawPlayer();
   if(STAGE===3){ drawBangers3(); for(const c of carriages) drawCarriage3(c); drawFog3(); }
@@ -1256,12 +1341,14 @@ function draw(){
   for(const x of xings) for(const c of x.cars) if(c.s>=0.7) drawCar(x.x-camX+x.w/2,c);
   if(luas&&luas.warn>0&&Math.floor(time*6)%2){ ctx.fillStyle='rgba(255,216,74,.14)'; ctx.fillRect(-10,0,VW+20,VH); }
   if(STAGE!==3&&dusk>0.55){ ctx.fillStyle=`rgba(40,20,80,${(dusk-.55)*0.35})`; ctx.fillRect(-10,0,VW+20,VH); }
-  if(STAGE===2) drawRain();
-  if(STAGE===3) lightPass3();
+  if(STAGE===2||STAGE===4) drawRain();
+  if(STAGE===4) drawFront4();
+  if(STAGE===3||STAGE===4) lightPass3();
   for(const p of pops) txt(p.text,p.x-camX,p.y,p.color,'center',8,OUT);
   if(swanEv&&swanEv.sayT>0&&swanEv.say) bubble(swanEv.birds[0].x-camX,GROUND-72,swanEv.say);
   for(const n of npcs) if(n.sayT>0&&n.say) bubble(n.x-camX,GROUND-(n.k==='students'||n.k==='dancers'?120:n.k==='queue'?92:n.k==='sup'?70:96),n.say);
   for(const e of enemies) if(e.sayT>0&&e.say&&e.state!=='ko'&&e.type!=='garda') bubble(e.x-camX,e.y-84,e.say);
+  flushBubbles();
   camX=cam0;
   ctx.restore();
   if(state!=='title') drawHUD();
@@ -1288,6 +1375,7 @@ const SKINS=['#f2c8a8','#c68a5a','#e8b890','#8a5a3a'], HAIRS=['#222','#c86a2a','
 function setStage(n){
   STAGE=n;
   if(n===2){ SECTIONS=S2_SECTIONS; CROSSINGS=S2_CROSSINGS; GAPS=S2_GAPS; BACK=S2_BACK; BRIDGES=S2_BRIDGES; }
+  else if(n===4){ SECTIONS=S4_SECTIONS; CROSSINGS=S4_CROSSINGS; GAPS=S4_GAPS; BACK=S4_BACK; BRIDGES=S4_BRIDGES; }
   else if(n===3){ SECTIONS=S3_SECTIONS; CROSSINGS=S3_CROSSINGS; GAPS=S3_GAPS; BACK=S3_BACK; BRIDGES=S3_BRIDGES; }
   else { SECTIONS=S1_SECTIONS; CROSSINGS=S1_CROSSINGS; GAPS=S1_GAPS; BACK=S1_BACK; BRIDGES=S1_BRIDGES; }
   BRIDGE=BRIDGES[0];
@@ -1295,6 +1383,7 @@ function setStage(n){
 function stageMusic(){
   if(S.lock) return 'boss';
   if(STAGE===3) return 'spook';
+  if(STAGE===4){ if(P.x>=IN1.x0&&P.x<IN1.x1) return 'tb'; if(P.x>=IN2.x0&&P.x<YARD.x0) return 'ciss'; return 'trad'; }
   if(STAGE===2){ if(P.x>150&&P.x<720) return 'ciss'; if(P.x>3360&&P.x<3640) return 'ciss'; if(P.x>3700&&P.x<4040) return 'tb'; return 'trad'; }
   return (P.x>3230&&P.x<3580)?'tb':(P.x>5080&&P.x<5410)?'ciss':'trad';
 }
@@ -1775,7 +1864,7 @@ const S3_BACK=[
 let lights=[], glowRects=[], bangers=[], teens=[], bonfires=[], fogs=[], smells=[], carriages=[], dungs=[], cut3=null;
 let lc=null, lctx=null;
 function reset3(){ keysEv=null; batsEv=null; bangers=[]; teens=[]; bonfires=[]; fogs=[]; smells=[]; carriages=[]; dungs=[]; }
-function night3(){ return Math.min(1,0.45+0.55*Math.max(0,(P.x||0)/END)); }
+function night3(){ if(STAGE===4) return 1; return Math.min(1,0.45+0.55*Math.max(0,(P.x||0)/END)); }
 function L3(x,y,r,c,a){ lights.push({x,y,r,c:c||'#ffc870',a:a==null?1:a}); }
 
 function levelDef3(){
@@ -2140,11 +2229,11 @@ function lightPass3(){
 function hexA(hex,a){ const n=parseInt(hex.slice(1),16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
 
 /* ---- stage 3 NPCs ---- */
-Object.assign(GREET,{jarvey:'Out of the road, bud!',kids:'Help the Halloween party!',lads:"Let's go to Coppers!",gtour:'Is this where they make the Guinness?',security:"Sorry, we're not open yet.",barista:'Tea? €3',chipper:'Fish supper? €8',viking:'Skål! Mind the bangers!'});
+Object.assign(GREET,{jarvey:'Out of the road, buddy!',kids:'Help the Halloween party!',lads:"Let's go to Coppers!",gtour:'Is this where they make the Guinness?',security:"Sorry, we're not open yet.",barista:'Tea? €3',chipper:'Fish supper? €8',viking:'Skål! Mind the bangers!'});
 Object.assign(PROMPT,{jarvey:'TIP €2',kids:'GIVE SWEETS',lads:'HIGH FIVE',gtour:'TALK',security:'TALK',barista:'BUY €3',chipper:'BUY €8',viking:'TALK'});
 Object.assign(VP,{jarvey:['m',0.9,0.95],kids:['f',1.3,1.1],lads:['m',1,1.05],gtour:['f',1.05,1],security:['m',0.9,0.95],barista:['f',1.05,1],chipper:['m',0.95,1],viking:['m',0.8,0.92],teen:['m',1.05,1.1],antho:['m',1.05,1.1],mam:['f',0.95,1.05],bouncer:['m',0.75,0.92]});
 function talk3(n){
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; return false;} S.money-=c; return true; };
   sfx.talk(); n.sayT=2.8;
   if(talk3b(n)) return true;
   switch(n.k){
@@ -2224,7 +2313,7 @@ function update3(dt,pb,fist){
     const dx=P.x-t.x; t.face=dx<0?-1:1; const onScreen=t.x-camX<VW+10&&t.x-camX>-10;
     if(onScreen&&Math.abs(dx)<330&&!S.lock){ t.t-=dt; if(t.t<=0){
       if(S.ghostT>0){ t.t=1.2; if(!t.gh){ t.gh=1; t.say="Ah, it's only a ghost."; t.sayT=2; speak(t.say,'teen',false); } }
-      else { throwBanger(t.x+t.face*8,GROUND-40,P.x+P.vx*0.4); t.t=1.7+Math.random()*0.9; if(!t.said){ t.said=1; t.say=['Watch this!','Happy Halloween, bud!','Leg it!','Banger for ya!'][hash(t.x|0,7)%4]; t.sayT=2; speak(t.say,'teen',false); } } } }
+      else { throwBanger(t.x+t.face*8,GROUND-40,P.x+P.vx*0.4); t.t=1.7+Math.random()*0.9; if(!t.said){ t.said=1; t.say=['Watch this!','Happy Halloween, buddy!','Leg it!','Banger for ya!'][hash(t.x|0,7)%4]; t.sayT=2; speak(t.say,'teen',false); } } } }
     const tb={l:t.x-9,r:t.x+9,t:GROUND-44,b:GROUND};
     if((fist&&ov_(fist,tb))||(ov_(pb,tb)&&stomped(tb))){ if(!fist||!ov_(fist,tb)) bounce(); t.state='ko'; t.ko=0; pts(200); craic(1); sfx.punch(); pop(t.x,GROUND-70,'+200 NO MORE BANGERS','#ffd84a'); }
   }
@@ -2282,14 +2371,14 @@ function drawScoot3(sx,e){ S_(); rb(sx-14,GROUND-7,28,4,2,'#222'); circ(sx-11,GR
 
 /* ---- Antho, the Banger King ---- */
 const PILE_X=ARENA+372;
-function startAntho(){ S.lock=true; boss={kind:'antho',x:PILE_X,y:GROUND-44,hp:3,max:3,state:'intro',t:1.6,inv:0,vx:0,volleys:0,say:'Ye want a banger, bud?',sayT:2.4,mam:0}; banner('ANTHO, THE BANGER KING'); speak(boss.say,'antho',true); setTimeout(()=>{ if(boss&&boss.kind==='antho'&&boss.hp===3) banner('JUMP ON HIS HEAD x3!'); },2600); }
+function startAntho(){ S.lock=true; boss={o:{},kind:'antho',x:PILE_X,y:GROUND-44,hp:3,max:3,state:'intro',t:1.6,inv:0,vx:0,volleys:0,say:'Ye want a banger, buddy?',sayT:2.4,mam:0}; banner('ANTHO, THE BANGER KING'); speak(boss.say,'antho',true); setTimeout(()=>{ if(boss&&boss.kind==='antho'&&boss.hp===3) banner('JUMP ON HIS HEAD x3!'); },2600); }
 function updAntho(dt,pb,fist){
   const b=boss; b.t-=dt; if(b.inv>0) b.inv-=dt; if(b.sayT>0) b.sayT-=dt;
   if(b.state==='intro'){ if(b.t<=0){ b.state='perch'; b.t=1.0; } }
   else if(b.state==='perch'){ b.x=PILE_X; b.y=GROUND-44; if(b.t<=0){ for(let k=-1;k<=1;k++) throwBanger(b.x-6,b.y-20,P.x+k*40); b.volleys++; b.t=1.5-(3-b.hp)*0.2; if(b.volleys>=2+(3-b.hp)%2){ b.volleys=0; b.state='wheel'; b.t=1.8; tone(500,1.2,'sawtooth',.06,600); } } }
   else if(b.state==='wheel'){ if(Math.hypot(P.x-PILE_X,(P.y-20)-(GROUND-40))<64&&P.inv<=0) hurt('CATHERINE WHEEL!',PILE_X); if(b.t<=0){ b.state='hop'; b.t=0.5; b.say='This is MY bonfire!'; b.sayT=1.8; speak(b.say,'antho',false); } }
   else if(b.state==='hop'){ b.y=Math.min(GROUND,b.y+200*dt); b.x-=30*dt; if(b.t<=0){ b.state='charge'; b.y=GROUND; b.vx=-(250+(3-b.hp)*40); } }
-  else if(b.state==='charge'){ b.x+=b.vx*dt; if(b.x<ARENA+36){ b.x=ARENA+36; b.state='crash'; b.t=1.8; shake=0.25; sfx.stomp(); pop(b.x,GROUND-70,'CRASH!','#fff'); } }
+  else if(b.state==='charge'){ b.x+=b.vx*dt; if(b.x<ARENA+210){ b.x=ARENA+210; b.state='crash'; b.t=3.0; shake=0.25; sfx.stomp(); pop(b.x,GROUND-70,'CRASH!','#fff'); if(!b.told){ b.told=1; slowmo(0.6,0.4); } mhint("HE'S DAZED! JUMP ON HIS HEAD NOW!",'antho'+b.hp); } }
   else if(b.state==='crash'){ if(b.t<=0){ b.state='back'; } }
   else if(b.state==='back'){ b.x+=170*dt; if(b.x>=PILE_X){ b.x=PILE_X; b.state='climb'; b.t=0.4; } }
   else if(b.state==='climb'){ b.y=Math.max(GROUND-44,b.y-140*dt); if(b.t<=0){ b.state='perch'; b.t=0.8; } }
@@ -2314,11 +2403,11 @@ function drawAntho(){ const b=boss, sx=b.x-camX;
   const onScoot=b.state==='charge'||b.state==='crash';
   if(onScoot){ S_(); rb(sx-14,GROUND-7,28,4,2,'#222'); circ(sx-11,GROUND-3,3.2,'#111'); circ(sx+11,GROUND-3,3.2,'#111'); box(sx-13,GROUND-40,3,34,'#444'); }
   const f=b.state==='back'?1:-1;
-  if(b.state==='crash'){ ctx.save(); ctx.translate(sx,b.y-6); ctx.rotate(-1.2); human(0,0,{f:-1,skin:'#f0cfb4',hs:'hood',top:'#1c3a8a',legs:'#1c3a8a',shoes:'#fff',stripes:true,shifty:true}); ctx.restore(); if(Math.floor(time*6)%2) txt('STOMP HIM!',sx,GROUND-70,'#ffd84a','center',8,OUT); }
+  if(b.state==='crash'){ ctx.save(); ctx.translate(sx,b.y-6); ctx.rotate(-1.2); human(0,0,{f:-1,skin:'#f0cfb4',hs:'hood',top:'#1c3a8a',legs:'#1c3a8a',shoes:'#fff',stripes:true,shifty:true}); ctx.restore(); for(let k=0;k<3;k++){ const a=time*5+k*2.1; txt('★',sx+Math.cos(a)*14,GROUND-46+Math.sin(a)*4,'#ffd84a','center',7); } const ay=GROUND-62+Math.sin(time*9)*4; tri(sx-7,ay,sx+7,ay,sx,ay+9,'#ffd84a'); if(Math.floor(time*6)%2) txt('STOMP HIM!',sx,GROUND-84,'#ffd84a','center',10,OUT); }
   else { human(sx,b.y-(onScoot?7:0),{f,skin:'#f0cfb4',hs:'hood',top:'#1c3a8a',legs:'#1c3a8a',shoes:'#fff',stripes:true,shifty:b.state!=='mam',armUp:b.state==='perch'&&b.t<0.4,armFwd:onScoot}); S_(1); rb(sx-6,b.y-58,12,5,2,'#ffd84a'); txt('K',sx,b.y-58,'#1c3a8a','center',3); }
   if(b.sayT>0&&b.say) bubble(sx,b.y-84,b.say);
   else if(b.inv<=0&&b.state!=='intro'&&b.state!=='crash'&&b.state!=='mam'){ const bob=Math.sin(time*8)*3, hy=b.y-(onScoot?70:62)+bob; tri(sx-5,hy,sx+5,hy,sx,hy+7,'#ffd84a'); if(Math.floor(time*3)%2) txt(onScoot?'JUMP ON HIM!':'STOMP!',sx,hy-12,'#ffd84a','center',6,OUT); }
-  S_(); for(let i=0;i<b.max;i++) rb(VW/2-b.max*11+4+i*22,30,16,6,2,i<b.hp?'#e8423a':'rgba(255,255,255,.3)');
+  lifeBar('ANTHO, THE BANGER KING',b.hp,b.max,b.o||(b.o={}));
 }
 
 /* ---- goal: mates at Christ Church ---- */
@@ -2399,16 +2488,16 @@ function winGame3(){
 function showWin3(total,rank){
   dialog(S.inCoppers?'In ya go!':'Not tonight, lads.',`<p>${S.inCoppers?"The bouncer waves you in. Your mates are already on the dance floor in their costumes. Absolute scenes.":"Not enough craic for the bouncer. You walk home along Harcourt Street with a spice bag. Still a good night, in fairness."}</p>
   <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)${S.inCoppers?'':' (you needed 7 to get in)'}</li><li>Rolls left: ${S.rolls} (x100)</li><li>Turnips: ${S.turnips}/5 (x100)</li><li>Pumpkins: ${S.pumps} (x50)</li><li>Coppers: ${S.inCoppers?'in (+500)':'not tonight'}</li><li>Kids made happy: ${S.kidsHappy}</li>${interHTML()}<li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
-    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Back to stage 1',fn(){startStage(1);}},PINT_END,MERCH]);
+    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Back to the start',fn(){showTitle();}},PINT_END,MERCH]);
 }
 
 /* ---- stage 3: extra interactions ---- */
-Object.assign(GREET,{gtour:'Take our picture?',smoker:'Need a light, bud?',tattoo:'Halloween tattoo? €10!',ghost2:'Psst... over here...'});
+Object.assign(GREET,{gtour:'Take our picture?',smoker:'Need a light, buddy?',tattoo:'Halloween tattoo? €10!',ghost2:'Psst... over here...'});
 Object.assign(PROMPT,{kids:'GIVE SWEETS',lads:'HIGH FIVE',gtour:'TAKE A PHOTO',security:'HAVE A CHAT',barista:'GET A TEA €3',chipper:'FISH SUPPER €8',viking:'SAY SKOL!',jarvey:'TIP THE DRIVER €2',smoker:'LIGHT THE SPARKLER',tattoo:'GET INKED €10',ghost2:'TALK TO THE GHOST'});
 Object.assign(VP,{smoker:['m',0.9,0.95],tattoo:['f',1,1],ghost2:['f',1.2,0.85],flat:['m',1,1.05]});
 let keysEv=null, batsEv=null;
 function talk3b(n){
-  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, bud`; return false;} S.money-=c; return true; };
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; return false;} S.money-=c; return true; };
   switch(n.k){
     case 'gtour': n.used=true; n.say='Sláinte! Lovely photo!'; S.flashT=0.3; tone(2200,.05,'square',.1); craic(1); pts(80); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
     case 'smoker': n.used=true; n.say='There ya go. Mind the kids!'; S.sparkT=20; pts(50); pop(P.x,P.y-70,'SPARKLER LIT! TEENS WILL LEG IT','#ffd84a'); return true;
@@ -2479,8 +2568,8 @@ function interList(){ const out=[];
   if(STAGE===3){ out.push({id:'keys',label:'Caught your keys',done:!!S.done.keys}); out.push({id:'bats',label:'Bats',done:!!S.done.bats}); }
   return out; }
 function markDone(n){ if(n&&n.used) S.done[n.k+':'+(n.x0!=null?n.x0:n.x)]=1; }
-function interHTML(){ const L=interList(); if(!L.length) return ''; const d=L.filter(x=>x.done).length;
-  return `<li>Interactions: ${d}/${L.length}</li><li class="inter">${L.map(x=>`<span style="color:${x.done?'#3fcf6a':'#ff6b6b'}">${x.done?'✓':'✗'} ${x.label}</span>`).join(' · ')}</li>`; }
+function interHTML(){ const L=interList(); if(!L.length) return missionsHTML(); const d=L.filter(x=>x.done).length;
+  return missionsHTML()+`<li>Interactions: ${d}/${L.length}</li><li class="inter">${L.map(x=>`<span style="color:${x.done?'#3fcf6a':'#ff6b6b'}">${x.done?'✓':'✗'} ${x.label}</span>`).join(' · ')}</li>`; }
 let TIP={t:0,shown:false,miss:0}; try{ TIP.shown=localStorage.getItem('ddr-talktip')==='1'; }catch(e){}
 function talkTipCheck(){ if(TIP.shown) return; TIP.shown=true; TIP.t=4.5; try{ localStorage.setItem('ddr-talktip','1'); }catch(e){} }
 function updDiscover(dt){ if(TIP.t>0) TIP.t-=dt; if(TIP.miss>0) TIP.miss-=dt;
@@ -2500,17 +2589,590 @@ function npcPrompt(n,sx){
 
 function bub(x,y,c,dot){ c=c||'#3fcf6a'; S_(1); rb(x-5,y-4,10,7,3,c,true); tri(x-2,y+2,x+1,y+2,x-2,y+5,c); for(let k=-1;k<=1;k++) fr(x+k*2.6-0.6,y-1.2,1.3,1.3,dot||'#0d2a14'); }
 
+/* ================= GAME-WIDE STANDARDS (Nov 2026 review) ================= */
+/* ---- speech bubbles: queued per frame, laid out so they never overlap ---- */
+let BUBQ=null;
+function wrap2(t){ ctx.font='8px '+FONTF; if(ctx.measureText(t).width<=250) return [t]; const w=t.split(' '); let best=[t],bd=1e9; for(let i=1;i<w.length;i++){ const a=w.slice(0,i).join(' '), b=w.slice(i).join(' '), d=Math.max(ctx.measureText(a).width,ctx.measureText(b).width); if(d<bd){bd=d;best=[a,b];} } return best; }
+function bubbleRaw(x,y,t,a){ const L=wrap2(t); ctx.font='8px '+FONTF; const w=Math.max(...L.map(l=>ctx.measureText(l).width))+12, h=6+L.length*10; y-=(L.length-1)*10; let bx=Math.round(x-w/2); bx=Math.max(4,Math.min(VW-w-4,bx));
+  ctx.globalAlpha=a==null?0.93:a; S_(); rb(bx,y,w,h,5,'#fff'); tri(x-4,y+h-1,x+4,y+h-1,x,y+h+5,'#fff'); fr(x-3,y+h-3,6,3,'#fff'); L.forEach((l,i)=>txt(l,bx+w/2,y+4+i*10,'#1a1020','center',8)); ctx.globalAlpha=1; }
+function bubble(x,y,t){ if(!t) return; if(BUBQ){ BUBQ.push({x,y,t}); return; } bubbleRaw(x,y,t); }
+function flushBubbles(){ const q=BUBQ; BUBQ=null; if(!q||!q.length) return;
+  ctx.font='8px '+FONTF; const placed=[];
+  for(const b of q){ if(placed.length>=4) break; if(placed.some(p=>p.t===b.t&&Math.abs(p.x-b.x)<40)) continue;
+    const L=wrap2(b.t), w=Math.max(...L.map(q=>ctx.measureText(q).width))+12, bh=6+L.length*10; let l=Math.max(4,Math.min(VW-w-4,Math.round(b.x-w/2))), y=b.y-(L.length-1)*10, tries=0;
+    const hit=()=>placed.some(p=>l<p.l+p.w+3&&l+w+3>p.l&&y<p.y+p.h+4&&y+bh+4>p.y);
+    while(hit()&&tries<6){ y-=22; tries++; if(y<30){ y=b.y; l+= (b.x<VW/2?1:-1)*(w*0.6); l=Math.max(4,Math.min(VW-w-4,l)); } }
+    if(hit()) continue;
+    placed.push({l,y,w,h:bh,t:b.t,x:b.x});
+    const ax=Math.max(l+8,Math.min(l+w-8,b.x)); bubbleRaw(ax,y+(L.length-1)*10,b.t,0.93);
+  }
+}
+/* ---- slim mission/hint bar at the top: one at a time, never covers the action ---- */
+const HINT={q:[],cur:null,t:0,seen:new Set()};
+function mhint(text,key){ key=key||text; if(HINT.seen.has(key)) return; HINT.seen.add(key); HINT.q.push({text,at:time}); }
+function updHint(dt){ if(HINT.t>0){ HINT.t-=dt; if(HINT.t<=0) HINT.cur=null; } while(!HINT.cur&&HINT.q.length){ const h=HINT.q.shift(); if(time-h.at<5){ HINT.cur=h.text; HINT.t=4.2; } } }
+function drawHint(){ if(!HINT.cur) return; const a=Math.min(1,HINT.t*2.5,(4.2-HINT.t)*4);
+  ctx.globalAlpha=0.9*a; S_(); ctx.font='7px '+FONTF; const w=Math.min(VW-16,ctx.measureText(HINT.cur).width+26);
+  const hy=boss?56:27; rb(VW/2-w/2,hy,w,15,6,'rgba(12,8,34,.78)'); ctx.strokeStyle='rgba(255,216,74,.9)'; ctx.lineWidth=1; ctx.strokeRect(VW/2-w/2+0.5,hy+0.5,w-1,14);
+  txt(HINT.cur,VW/2,hy+4,'#ffd84a','center',7); ctx.globalAlpha=1; S_(); }
+/* ---- slow-motion moments (first seagull dive etc.) ---- */
+let TS={k:1,t:0};
+function slowmo(t,k){ TS.k=k||0.4; TS.t=t||0.7; }
+/* ---- Street Fighter style life bar for bosses ---- */
+function lifeBar(name,hp,max,o){ o=o||{}; const w=220, x=VW/2-w/2, y=30, f=Math.max(0,hp/max);
+  if(o.trail==null) o.trail=f; o.trail+=(f-o.trail)*0.04; if(o.trail<f) o.trail=f;
+  S_(); rb(x-3,y-3,w+6,15,4,'rgba(12,8,34,.85)');
+  fr(x,y,w,9,'#3a2030'); fr(x,y,w*o.trail,9,'#e8423a'); fr(x,y,w*f,9,f>0.34?'#ffd84a':'#ff9a3a'); fr(x,y,w*f,2,'rgba(255,255,255,.45)');
+  ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.strokeRect(x-0.5,y-0.5,w+1,10);
+  txt(name,x,y+13,'#fff','left',6,OUT); if(o.right) txt(o.right,x+w,y+13,'#ffd84a','right',6,OUT); }
+/* ---- choices: shown in the middle of the screen over a see-through panel ---- */
+const CHO={el:null,cb:null,open:false};
+function choice(prompt,opts,cb){ if(!CHO.el) CHO.el=document.getElementById('choice'); CHO.cb=cb; CHO.open=true; paused=true; for(const k in input) input[k]=false;
+  CHO.el.innerHTML=`<p class="cq">${prompt}</p>${opts.length>1?`<p class="cp">PICK ONE</p>`:``}`+opts.map((o,i)=>`<button type="button" data-i="${i}"><b>${i+1}</b><span>${o}</span></button>`).join('');
+  CHO.el.hidden=false; CHO.el.querySelectorAll('button').forEach(b=>b.onclick=()=>pickChoice(+b.dataset.i)); }
+function pickChoice(i){ if(!CHO.open) return; CHO.open=false; CHO.el.hidden=true; paused=false; last=performance.now(); const cb=CHO.cb; CHO.cb=null; cb&&cb(i); }
+addEventListener('keydown',e=>{ if(!CHO.open) return; if(e.key==='1'||e.key==='2'||e.key==='3'){ e.preventDefault(); pickChoice(+e.key-1); } });
+/* ---- Action button: says what it will do, bounces when it changes ---- */
+function enemyNear(){ for(const e of enemies){ if(e.state==='ko'||e.state==='dead'||e.state==='flee') continue; if((e.type==='scum'||e.type==='thief')&&Math.abs(e.x-P.x)<80) return true; }
+  if(STAGE===3) for(const t of teens) if(!t.ko&&Math.abs(t.x-P.x)<80) return true; return false; }
+function setAct(label,talkish){ if(label===lastAct) return; lastAct=label; actBtn.textContent=label; actBtn.classList.toggle('talk',!!talkish); actBtn.classList.toggle('fist',label.indexOf('PUNCH')>=0);
+  actBtn.classList.remove('bump'); void actBtn.offsetWidth; actBtn.classList.add('bump'); }
+/* ---- progress saved on the phone ---- */
+const PROG={}; try{ Object.assign(PROG,JSON.parse(localStorage.getItem('ddr-prog')||'{}')); }catch(e){}
+function saveProg(n,total,rank){ const o=PROG[n]||{}; o.done=true; if(!o.total||total>o.total){ o.total=total; o.rank=rank; } PROG[n]=o; try{ localStorage.setItem('ddr-prog',JSON.stringify(PROG)); }catch(e){} }
+/* ---- missions per stage (briefing screen, in-stage hints, score card) ---- */
+const MISSIONS={
+ 1:[['Save your bike from the thieves',()=>S.bikeSaved],['Give a euro to someone who needs it',()=>Object.keys(S.done).some(k=>k.startsWith('homeless:'))],['Stomp 3 seagulls (jump on their heads)',()=>S.gulls>=3],['Beat the Chip Thief at Stephen\'s Green',()=>S.bossBeaten]],
+ 2:[['Help the swans cross the road',()=>S.swans],['Grab a brolly before the rain',()=>S.brolly],['Dodge 3 cyclists',()=>S.dodges>=3],['Beat the Chip Thief: The Sequel',()=>S.bossBeaten]],
+ 3:[['Give the trick-or-treaters a sweet',()=>S.kidsHappy>0],['Find the 5 hidden turnips',()=>S.turnips>=5],['Stomp Antho 3 times',()=>S.bossBeaten],['Get into Coppers with your mates',()=>S.inCoppers]],
+ 4:[['Get past the bouncer at The Dodgy Seagull',()=>S.in1],['Buy your round for the lads',()=>S.roundDone],['Get into Royal Tea (mind the dress code)',()=>S.in2],['Get a bag of chips at the chipper',()=>S.chips],['Get a taxi home',()=>S.taxi]]};
+function missionsHTML(){ const M=MISSIONS[STAGE]; if(!M) return ''; const d=M.filter(m=>m[1]()).length;
+  return `<li>Missions: ${d}/${M.length}</li><li class="inter">${M.map(m=>`<span style="color:${m[1]()?'#3fcf6a':'#ff6b6b'}">${m[1]()?'✓':'✗'} ${m[0]}</span>`).join(' · ')}</li>`; }
+const STAGEINFO={
+ 1:{t:'Stage 1: City centre',route:"Capel St to Stephen's Green",story:"You're meeting your mate in Stephen's Green. Your bike's locked up on Grafton St. You've three chicken fillet rolls and there's no going back.",tips:'Jump on seagulls to stomp them. Wait for the green man.'},
+ 2:{t:'Stage 2: The canal',route:"Grand Canal Dock to Dolphin's Barn",story:"Sunny Saturday on the Grand Canal. Your mate's watching the match in Dolphin's Barn and he's saved you a seat.",tips:"Walk slowly past the swans and they'll follow you. And yes, it'll rain."},
+ 3:{t:'Stage 3: Halloween',route:'Kilmainham to Christ Church',story:"It's Halloween night. Your mates are meeting at Christ Church in costume, then it's straight to Coppers.",tips:"Antho's weak when he crashes his scooter. That's when you stomp him."},
+ 4:{t:'Stage 4: Night out',route:"George's St to the taxi rank",story:"Friday night. The lads are in The Dodgy Seagull, then it's on to Royal Tea. Then chips. Then the hardest part of any night out in Dublin: getting a taxi home.",tips:'Talk to everyone. Your mate will give you a hint if you stand still.'}};
+function showBriefing(n){ state='title'; const I=STAGEINFO[n], M=MISSIONS[n];
+  dialog('',`<div class="bf"><div class="bfl"><p class="bt">${I.t.toUpperCase()}</p><p class="br">${I.route}</p><p class="bstory">${I.story}</p><p class="bh">YOUR MISSIONS</p><ol>${M.map(m=>`<li>${m[0]}</li>`).join('')}</ol><p class="bs">+ a few surprises along the way</p></div>
+    <div class="bfr">${PICKER}<button type="button" class="go" id="bgo">LET'S GO ▶</button><p class="btip">TIP: ${I.tips}</p><button type="button" class="bk" id="bbk">◀ Back</button></div></div>`,[],'brief');
+  wirePicker(); document.getElementById('bgo').onclick=()=>startStage(n); document.getElementById('bbk').onclick=()=>showTitle(); setTimeout(()=>{ const g=document.getElementById('bgo'); g&&g.focus({preventScroll:true}); },40); }
+function showHowTo(){ dialog('How to play',`<ul class="howto">
+  <li><b>◀ ▶</b> Walk</li><li><b>JUMP</b> Jump. Land on a seagull's head to stomp it. Same for scooter lads and bosses.</li>
+  <li><b>ACTION</b> Does whatever fits: punch a scumbag, talk to people, give money, buy stuff. Look at the button, it tells you.</li>
+  <li><b>💬 bubbles</b> over someone mean you can talk to them.</li>
+  <li><b>Seagulls</b> swoop low at you. Jump on them or punch them before they nick your roll.</li>
+  <li><b>Bosses</b> have a life bar at the top. Wait for the moment they're open, then stomp.</li>
+  <li><b>Rolls</b> are your lives. Lose them all and it's game over.</li>
+  <li><b>Craic</b> goes up when you're sound to people.</li></ul>`,[{label:'Got it',fn(){showTitle();}}],'howto'); }
+/* ---- stage-card thumbnails ---- */
+function thumb(cnv,n){ const c=cnv.getContext('2d'), r=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(x,y,w,h);}; c.imageSmoothingEnabled=false;
+  if(n===1){ r(0,0,64,18,'#9fcbe8'); r(0,14,64,4,'#9a9a9a'); r(2,4,12,10,'#b5523b'); r(15,6,11,8,'#e8d9b0'); r(27,2,13,12,'#6b8fb3'); r(41,5,10,9,'#c98a3a'); r(52,3,11,11,'#8a5a44'); for(let i=0;i<7;i++) r(4+i*9,8,2,2,'#ffe9a8'); r(46,0,1,6,'#dde'); r(34,1,4,1,'#fff'); r(12,10,2,4,'#2f5fb3'); r(12,8,2,2,'#f0c8a0'); }
+  else if(n===2){ r(0,0,64,18,'#8fd0f2'); r(0,7,64,3,'#6fae4f'); r(0,10,64,5,'#3c79b8'); r(0,15,64,3,'#a39a86'); for(let i=0;i<64;i+=7) r(i,12,3,1,'#7fbbe8'); r(40,9,6,2,'#fff'); r(44,7,2,3,'#fff'); r(46,7,1,1,'#f2a33a'); r(8,1,6,6,'#5f8f3f'); r(22,3,3,4,'#7a5a3a'); }
+  else if(n===3){ r(0,0,64,18,'#1a1440'); r(0,14,64,4,'#3a2f4a'); r(52,2,5,5,'#f6eebd'); for(let i=0;i<9;i++) r((i*13)%62,(i*5)%10,1,1,'#fff'); r(4,6,12,8,'#4a3f5a'); r(6,8,2,3,'#f2b04a'); r(20,7,14,7,'#2c2440'); r(25,2,3,5,'#2c2440'); r(40,11,5,3,'#e07a1a'); r(30,3,1,1,'#ffd23f'); r(32,1,1,1,'#ff6a3a'); }
+  else { r(0,0,64,18,'#0e1230'); r(0,14,64,4,'#2a2a34'); for(let i=0;i<7;i++) r((i*17)%62,(i*3)%8,1,1,'#fff'); r(2,4,20,10,'#1f4a34'); r(5,6,14,2,'#ffd23f'); r(6,9,4,4,'#f2b04a'); r(13,9,4,4,'#f2b04a'); r(26,3,16,11,'#2a2236'); r(28,5,12,2,'#ff7ad8'); r(30,9,3,4,'#7affd8'); r(46,8,14,6,'#ffd84a'); r(47,9,5,2,'#9fd8ff'); r(55,7,2,1,'#fff'); r(48,14,3,2,'#111'); r(56,14,3,2,'#111'); }
+}
+/* ---- start screen: logo + support on the left, stage cards on the right ---- */
+const STAGE_LIST=[1,2,3,4];
+function showTitle(){
+  state='title';
+  const card=n=>{ const I=STAGEINFO[n], p=PROG[n]||{}, locked=n===4&&!S4_READY, isNew=n===4;
+    return `<button type="button" class="sc${locked?' lk':''}" data-n="${n}">${isNew&&!locked?'<span class="nb">NEW</span>':''}<canvas width="64" height="18"></canvas><span class="st">${n} · ${I.t.split(': ')[1]}</span><span class="sr">${locked?'Coming soon':I.route}</span>${p.done?`<span class="sp">✓ Best: ${p.rank}</span>`:'<span class="sp sp0">Not finished yet</span>'}</button>`; };
+  dialog('',`<div class="t2"><div class="t2l"><img class="logo2" src="${LOGO}" alt="Dodgy Dublin Redemption"><p class="credit2">Created by Matheus Amud</p>
+    <a class="ab pt" href="${PINT_URL}" target="_blank" rel="noopener"><span class="ai">🍺</span><span><b>Buy me a pint</b><i>Support new stages</i></span></a>
+    <a class="ab gr" href="${MERCH.url}" target="_blank" rel="noopener"><span class="ai">🛍️</span><span><b>Get the gear</b><i>Merch that keeps the game going</i></span></a>
+    <button type="button" class="ab ht" id="howto"><span class="ai">❓</span><span><b>How to play</b><i>Quick tips, 20 seconds</i></span></button></div>
+    <div class="t2r"><div class="pk">PICK A STAGE</div><div class="gd">${STAGE_LIST.map(card).join('')}</div></div></div>`,[],'title2');
+  dxEl.querySelectorAll('.sc').forEach(b=>{ const n=+b.dataset.n; thumb(b.querySelector('canvas'),n); if(!b.classList.contains('lk')) b.onclick=()=>showBriefing(n); });
+  document.getElementById('howto').onclick=showHowTo;
+}
+
+/* ---- voice clips: bytes fetched once, decoded on demand, played through Web Audio (no lag) ---- */
+const VBYTES=new Map(), VBUF=new Map(); let VSRC=null, VEND=0, VPRE=false;
+function voiceBusy(){ return (VSRC&&AU.c&&AU.c.currentTime<VEND)||(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused); }
+function voiceStop(){ if(VSRC){ try{ VSRC.stop(); }catch(e){} VSRC=null; VEND=0; } if(VOICE.audio){ try{ VOICE.audio.pause(); }catch(e){} } if(VOICE.ok) try{ speechSynthesis.cancel(); }catch(e){} }
+function voiceBytes(k){ if(VBYTES.has(k)) return VBYTES.get(k); const p=fetch('./voices/'+k+'.mp3').then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }); VBYTES.set(k,p); p.catch(()=>VBYTES.delete(k)); return p; }
+function voiceBuf(k){ if(VBUF.has(k)){ const b=VBUF.get(k); VBUF.delete(k); VBUF.set(k,b); return Promise.resolve(b); }
+  return voiceBytes(k).then(a=>new Promise((res,rej)=>AU.c.decodeAudioData(a.slice(0),res,rej))).then(b=>{ VBUF.set(k,b); while(VBUF.size>36) VBUF.delete(VBUF.keys().next().value); return b; }); }
+function voicePlay(b){ if(!AU.on||!AU.c) return; voiceStop(); if(AU.c.state==='suspended') AU.c.resume(); const s=AU.c.createBufferSource(), g=AU.c.createGain(); g.gain.value=0.95; s.buffer=b; s.connect(g); g.connect(AU.c.destination); s.start(); VSRC=s; VEND=AU.c.currentTime+b.duration; }
+// fetch every clip's bytes in the background (small mp3s, about 2MB in all), so no line waits on the network
+function voicePreload(){ if(VPRE||!VOICE.clips.size||!window.fetch) return; VPRE=true; const ks=[...VOICE.clips].sort((a,b)=>(b.startsWith(CHAR+'-')?1:0)-(a.startsWith(CHAR+'-')?1:0)); let i=0; const next=()=>{ if(i>=ks.length) return; voiceBytes(ks[i++]).catch(()=>{}).finally(next); }; for(let j=0;j<4;j++) next(); }
+setInterval(voicePreload,1500);
+
+/* ---- Stage 1: Underdog Boxing, and the coach at the door ---- */
+Object.assign(GREET,{coach:'Fancy a trial session?'}); Object.assign(PROMPT,{coach:'TRY A ROUND'}); Object.assign(INAME,{coach:'Underdog trial'}); Object.assign(VP,{coach:['m',.96,1.04]});
+function underdog(sx,w){ S_(); box(sx,GROUND-170,w,170,'#a24a32'); fr(sx,GROUND-170,w,6,'#6a2a1a');
+  for(let r=0,y=GROUND-164;y<GROUND-2;r++,y+=7){ fr(sx+2,y,w-4,1,'#c98a6a'); for(let x=sx+(r%2?8:2);x<sx+w-4;x+=16) fr(x,y,1,7,'#c98a6a'); }
+  for(let k=0;k<5;k++) fr(sx+6+((k*37)%(w-20)),GROUND-150+((k*53)%120),12,6,'#8a3a26');
+  box(sx+10,GROUND-162,w-20,34,'#0a0a0a'); txt('UNDERDOG',sx+w/2,GROUND-156,'#fff','center',10); txt('BOXING',sx+w/2,GROUND-141,'#e8423a','center',7);
+  for(let k=0;k<2;k++){ const wx=sx+14+k*(w/2-6); box(wx,GROUND-120,w/2-26,64,'#2a3038'); fr(wx+3,GROUND-117,w/2-32,58,'#c8ccd2');
+    for(let b=0;b<2;b++){ const bx=wx+14+b*26; fr(bx,GROUND-117,1,12,'#333'); rb(bx-6,GROUND-106,13,28,5,'#b8281e'); } }
+  box(sx+w-46,GROUND-50,34,50,'#0a0a0a'); fr(sx+w-42,GROUND-46,26,40,'#3a3a3a'); circ(sx+w-18,GROUND-24,1.6,'#c8a050'); }
+function talkCoach(n){ if(n.k!=='coach') return false; sfx.talk(); n.sayT=2.8; n.used=true; n.say='Not bad! See you Monday.'; P.punchT=0.18; sfx.punch(); craic(2); pts(150); pop(n.x,GROUND-90,'+2 CRAIC','#3fcf6a'); return true; }
+function drawCoach(n,sx){ const o={f:-1,sc:0.9,skin:'#d8a47a',top:'#151515',legs:'#d8a47a',shoes:'#111',happy:true};
+  human(sx,GROUND,o); S_(); ctx.save(); ctx.translate(sx,GROUND); ctx.scale(-0.9,0.9);
+  rb(-7,-18,15,8,3,'#151515'); const hy=-42; ctx.beginPath(); ctx.moveTo(4,hy+3.5); ctx.quadraticCurveTo(8,hy+1.6,12,hy+3.5); ctx.lineWidth=2.4; ctx.strokeStyle='#2a1a10'; ctx.stroke(); ctx.lineWidth=1.5; ctx.strokeStyle=OUT;
+  const g=n.sayT>0&&n.used?Math.sin(time*20)*3:0; circ(10+g,-30,5,'#c8281e'); circ(4,-26,5,'#c8281e'); ctx.restore(); S_(); }
+/* ---- in-stage mission hints (the slim bar at the top) ---- */
+function stageHints(){ const x=P.x;
+  if(STAGE===1){ if(x>60) mhint('MISSION: GET TO YOUR MATE IN STEPHEN\'S GREEN','s1go');
+    for(const e of enemies) if(e.type==='thief'&&Math.abs(e.x-x)<260) mhint('THIEF! PUNCH HIM BEFORE HE GETS YOUR BIKE','thief');
+    for(const c of CROSSINGS) if(c.x-x>0&&c.x-x<200) mhint('RED MAN: WAIT. GREEN MAN: GO','xing');
+    if(x>5200) mhint('UNDERDOG BOXING: SAY HELLO TO THE COACH','ud'); }
+  else if(STAGE===2){ if(swanEv&&swanEv.state==='wait'&&Math.abs(x-swanEv.x0)<280) mhint("THE SWANS WANT TO CROSS. WALK UP TO THEM, THEN GO SLOW",'swans'); }
+  else if(STAGE===3){ if(x>80) mhint('5 TURNIPS ARE HIDDEN ALONG THE WAY. FIND THEM ALL','turnips'); for(const n of npcs) if(n.k==='kids'&&!n.used&&Math.abs(n.x-x)<220) mhint('GIVE THE KIDS A SWEET: PRESS ACTION','kids'); }
+  else if(STAGE===4){ if(x>60) mhint('MISSION: GET INTO THE DODGY SEAGULL','m1'); if(S.in1&&x>IN1.x0+40) mhint('MISSION: BUY YOUR ROUND AT THE BAR','m2'); if(x>IN1.x1+20) mhint('MISSION: GET INTO ROYAL TEA','m3'); if(x>5300) mhint('MISSION: GET A BAG OF CHIPS','m4'); if(x>6320) mhint('MISSION: GET A TAXI HOME','m5'); }
+}
+
+/* ================= STAGE 4: NIGHT OUT IN DUBLIN ================= */
+const S4_READY=true;
+const S4_SECTIONS=[{x:0,name:"GEORGE'S ST"},{x:960,name:'THE DODGY SEAGULL'},{x:2520,name:'CUFFE ST'},{x:3760,name:'ROYAL TEA'},{x:5190,name:'THE CHIPPER'},{x:6300,name:'TAXI RANK'}];
+const S4_CROSSINGS=[{x:3150,w:84}];
+const S4_GAPS=[];
+const S4_BRIDGES=[{x0:-9999,x1:-9998,h:0,k:'none'}];
+const S4_BACK=[];
+const IN1={x0:960,x1:2520}, IN2={x0:3760,x1:5190}, YARD={x0:4760,x1:5190};
+const GATE1=548, GATE2=3448;
+const ZONES4=[[0,900],[IN1.x0,IN1.x1],[IN1.x1,IN2.x0],[IN2.x0,IN2.x1],[IN2.x1,END]];
+function zone4(x){ for(const z of ZONES4) if(x>=z[0]&&x<z[1]) return z; return ZONES4[ZONES4.length-1]; }
+let fade4=null, punters4=[], dancers4=[];
+let buddy4=null, drunks4=[], trig4=[], seq4=[], talkers4=[], flash4=0, dark4=0, gull4=null, tray4=false;
+
+function reset4(){ punters4=[]; dancers4=[]; fade4=null; buddy4={x:P.x-30,face:1,anim:0,say:'',sayT:0,idle:0,cool:2,onG:true}; drunks4=[]; trig4=[]; seq4=[]; talkers4=[]; flash4=0; gull4=null; }
+function inside4(x){ return (x>=IN1.x0&&x<IN1.x1)||(x>=IN2.x0&&x<IN2.x1); }
+function say4(who,text,t,voiceKey){ who.say=text; who.sayT=t||2.4; speak(text,voiceKey||who.k||'buddy',true); }
+function bsay(text,t){ if(!buddy4) return; buddy4.say=text; buddy4.sayT=t||2.6; buddy4.idle=0; speak(text,'buddy4',true); }
+function psay(text,t){ talkers4.push({x:()=>P.x,y:()=>P.y-96,say:text,sayT:t||2.2}); speak(text,'player',true); }
+function seq(steps){ let acc=0; for(const [d,fn] of steps){ acc+=d; seq4.push({t:acc,fn}); } }
+function actorSay(x,y,text,t,who){ const a={x:typeof x==='function'?x:()=>x,y:typeof y==='function'?y:()=>y,say:text,sayT:t||2.4}; talkers4.push(a); if(who) speak(text,who,true); return a; }
+
+Object.assign(GREET,{band4:'Any requests?',barman4:"What're ye having?",lads4:'Your round, buddy!',stag4:'Lads, stop...',selfie4:'Smile, girls!',posh4:'Could I steal a cigarette?',chipper4:'What can I get ye?',antho4:"Leave it. Ma's waiting.",garda4:'Long night, lads?',dance4:'Get up and dance!'});
+Object.assign(PROMPT,{band4:'REQUEST A SONG €2',barman4:'BUY ROUND €20',lads4:'HAND OUT PINTS',stag4:'SLAG HIM',selfie4:'PHOTOBOMB',posh4:'GIVE A SMOKE',chipper4:'CHIPS €6',antho4:'TALK',garda4:'TALK',dance4:'DANCE'});
+Object.assign(INAME,{band4:'Trad band',barman4:'Bought the round',lads4:'The lads',stag4:'Stag party',selfie4:'Photobomb',posh4:'Posh lad',chipper4:'Chips',antho4:'Antho',garda4:'The garda',dance4:'Danced'});
+Object.assign(VP,{buddy4:['m',1,1.04],bouncer:['m',.86,.96],bouncer2:['m',.9,.96],barman4:['m',.98,1],lads4:['m',1,1.04],stag4:['m',1.02,1.04],stagmates:['m',1,1.06],crowd:['m',.95,1.05],selfie4:['f',1.1,1.06],posh4:['m',1.02,.94],barman2:['m',1,.98],staff4:['f',1.04,1],chipper4:['m',.96,1],antho4:['m',1.1,1.06],garda4:['m',.9,.94],driver:['m',.9,.96],taxilad:['m',1.04,1.08],drunk4:['m',.92,.98],punter:['m',.98,1.02],collector:['m',.94,1],dancers4:['f',1.08,1.04]});
+
+function levelDef4(){
+  const L=[];
+  const row=(x,y,n,gap)=>{for(let i=0;i<n;i++)L.push({t:'coin',x:x+i*(gap||24),y});};
+  const arc=(x,y,n,gap)=>{for(let i=0;i<n;i++)L.push({t:'coin',x:x+i*(gap||24),y:y-Math.sin(i/(n-1)*Math.PI)*30});};
+  const plat=(k,x,w,h,top)=>L.push({t:'plat',k,x,w,h,y:top!=null?top:GROUND-h});
+  // George's St
+  row(80,GROUND-20,3); L.push({t:'e4',k:'wheel',x:300});
+  arc(380,GROUND-50,4); L.push({t:'cyc',x:230,k:'scoot'});
+  L.push({t:'drunk',x:250,r:40});
+  L.push({t:'e4',k:'gate1',x:GATE1});
+  // The Dodgy Seagull (inside)
+  L.push({t:'npc',k:'band4',x:1140});
+  row(1220,GROUND-20,3);
+  L.push({t:'punter',x:1300,r:120}); L.push({t:'punter',x:1880,r:110}); L.push({t:'collector',x:2200,r:160});
+  plat('table',1440,40,26); L.push({t:'coin',x:1460,y:GROUND-46});
+  L.push({t:'e4',k:'telly',x:1530});
+  L.push({t:'npc',k:'barman4',x:1720});
+  L.push({t:'e4',k:'smash',x:1930});
+  L.push({t:'npc',k:'stag4',x:2070});
+  plat('table',2160,40,26); row(2166,GROUND-46,2);
+  L.push({t:'npc',k:'lads4',x:2350});
+  L.push({t:'e4',k:'exit1',x:2470});
+  // Cuffe St
+  L.push({t:'e4',k:'rain',x:2600});
+  row(2620,GROUND-20,4);
+  L.push({t:'e4',k:'oldgym',x:2800});
+  L.push({t:'cyc',x:2850,k:'roo'});
+  L.push({t:'drunk',x:3060,r:40});
+  arc(2960,GROUND-50,4);
+  L.push({t:'e4',k:'gate2',x:GATE2});
+  // Royal Tea (inside)
+  L.push({t:'e4',k:'mocktail',x:3930});
+  L.push({t:'e4',k:'yardsign',x:YARD.x0+60});
+  row(4100,GROUND-20,3);
+  L.push({t:'npc',k:'selfie4',x:4330});
+  L.push({t:'npc',k:'dance4',x:4545});
+  plat('sofa',4430,50,18); L.push({t:'coin',x:4455,y:GROUND-40});
+  L.push({t:'npc',k:'posh4',x:4980});
+  L.push({t:'e4',k:'closing',x:5060});
+  // The chipper
+  row(5300,GROUND-20,3);
+  L.push({t:'e4',k:'antho',x:5290});
+  L.push({t:'npc',k:'antho4',x:5545});
+  L.push({t:'npc',k:'chipper4',x:5650});
+  L.push({t:'e4',k:'chipthief',x:5820});
+  L.push({t:'e4',k:'rolls',x:5960});
+  L.push({t:'gullT',x:6000}); L.push({t:'gullT',x:6120});
+  arc(6060,GROUND-50,5);
+  L.push({t:'drunk',x:6230,r:50});
+  // Taxi rank
+  L.push({t:'npc',k:'garda4',x:6520});
+  row(6600,GROUND-20,4);
+  L.push({t:'boss',x:6980});
+  L.push({t:'goal',x:7600});
+  return L;
+}
+function build4(d,fromX){
+  if(d.t==='punter'||d.t==='collector'){ punters4.push({x:d.x,x0:d.x,r:d.r,dir:d.t==='collector'?1:-1,anim:Math.random()*3,k:d.t,bumpT:0}); return true; }
+  if(d.t==='drunk'){ if(d.x>=fromX+40) drunks4.push({x:d.x,x0:d.x,r:d.r,dir:-1,anim:0,hugT:0,said:false}); return true; }
+  if(d.t==='e4'){ trig4.push({k:d.k,x:d.x,done:d.x<fromX&&!/^gate/.test(d.k)}); return true; }
+  if(d.t==='npc'&&d.k==='posh4'){ npcs.push({k:'posh4',x:d.x,x0:d.x,used:false,sayT:0,greeted:false}); return true; }
+  return false;
+}
+
+/* ---- talk ---- */
+function talk4(n){
+  const need=c=>{ if(S.money<c){ n.say=`It's €${c}, buddy`; n.sayT=2.4; return false;} S.money-=c; return true; };
+  sfx.talk(); n.sayT=2.8;
+  switch(n.k){
+    case 'band4': if(!need(2)){ n.say='Ah go on, sing along'; return true; } n.used=true; S.bandT=6; n.say='Wild Rover it is!'; craic(2); pts(120); pop(n.x,GROUND-90,'+2 CRAIC','#3fcf6a'); return true;
+    case 'barman4': if(S.round){ n.say="You've your pints, go on!"; return true; } if(!need(20)) return true; n.used=true; S.round=1; S.pints=5; tray4=true; n.say='Five pints, coming up!'; pts(80); pop(n.x,GROUND-90,'5 PINTS!','#ffd84a'); setTimeout(()=>{ if(STAGE===4) bsay('Bring them over to the lads!'); },1800); return true;
+    case 'lads4': if(S.round!==1){ n.say="Your round! Bar's back there!"; return true; } n.used=true; S.round=2; S.roundDone=true; tray4=false;
+      if(S.pints>=5){ n.say='LEGEND!'; craic(3); pts(300); pop(n.x,GROUND-90,'ALL 5 PINTS! +3 CRAIC','#3fcf6a'); } else { n.say="Where's the rest of them?!"; craic(1); pts(100+S.pints*40); pop(n.x,GROUND-90,S.pints+' OF 5 PINTS. +1 CRAIC','#ffd84a'); } return true;
+    case 'dance4': n.used=true; S.dance=3.2; n.say='YESSS! GO ON!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); seq([[1.4,()=>bsay('Look at the moves on that!',2.2)]]); return true;
+    case 'stag4': n.used=true; n.say='Lads, stop...'; craic(2); pts(120); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); setTimeout(()=>{ if(STAGE===4) actorSay(n.x+50,GROUND-120,'HAHAHA!',1.8,'stagmates'); },900); return true;
+    case 'selfie4': n.used=true; flash4=0.35; sfx.item(); n.say='OMG, who IS that?!'; craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); return true;
+    case 'posh4': n.used=true; S.freeze=6.2; n.say="I don't really smoke. I can give you some coins I have."; n.sayT=2.6;
+      seq([[2.8,()=>psay("It's all right mate, no need for coins.",2.4)],[3.0,()=>{ n.say='...Have you a lighter as well?'; n.sayT=2.6; speak(n.say,'posh4',true); craic(2); pts(150); pop(n.x,GROUND-100,'+2 CRAIC','#3fcf6a'); }]]); return true;
+    case 'chipper4': if(S.chips){ n.say='Enjoy them chips!'; return true; } if(!need(6)) return true; n.used=true; S.chips=true; S.rolls=Math.min(5,S.rolls+1); n.say='Salt and vinegar?'; craic(1); pts(100); pop(n.x,GROUND-90,'CHIPS! +1 ROLL','#3fcf6a'); return true;
+    case 'antho4': n.used=true; n.say="Don't. Don't even mention the bonfire."; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
+    case 'garda4': n.used=true; n.say='Go home, lads. Please.'; craic(1); pts(60); pop(n.x,GROUND-90,'+1 CRAIC','#3fcf6a'); return true;
+  }
+  return false;
+}
+
+/* ---- update ---- */
+function gateBlock(x){ if(P.x>x-14&&P.x<x+6&&P.vx>=0){ P.x=x-14; } }
+function update4(dt,pb,fist){
+  if(S.freeze>0) S.freeze-=dt;
+  for(let i=seq4.length-1;i>=0;i--){ seq4[i].t-=dt; if(seq4[i].t<=0){ const f=seq4[i].fn; seq4.splice(i,1); try{ f(); }catch(e){ console.error(e); } } }
+  for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
+  if(flash4>0) flash4-=dt; if(dark4>0) dark4-=dt; if(S.goalT>0) S.goalT-=dt; if(S.shakeT>0) S.shakeT-=dt; if(S.bandT>0) S.bandT-=dt;
+  // gates: the bouncers
+  if(!S.in1) gateBlock(GATE1);
+  if(!S.in2) gateBlock(GATE2);
+  for(const t of trig4){ if(t.done) continue;
+    if(t.k==='gate1'&&!S.in1&&P.x>t.x-60&&!CHO.open&&!(t.cool>0)){ t.cool=99; S.freeze=0.4; bouncerAsk(t); }
+    else if(t.k==='gate1'&&t.cool>0&&t.cool<99){ t.cool-=dt; }
+    else if(t.k==='gate2'&&!S.in2&&P.x>t.x-60){ t.done=true; doorRT(); }
+    else if(P.x>=t.x&&!/^gate/.test(t.k)){ t.done=true; fire4(t); }
+  }
+  // drunk huggers: harmless, but they hold you up
+  for(const d of drunks4){ d.anim+=dt; if(d.hugT>0){ d.hugT-=dt; continue; } d.x+=d.dir*22*dt; if(d.x<d.x0-d.r) d.dir=1; if(d.x>d.x0+d.r) d.dir=-1;
+    if(Math.abs(d.x-P.x)<14&&P.y>GROUND-20&&P.inv<=0){ d.hugT=1.3; P.knock=(P.x<d.x?-1:1)*220; P.inv=0.5; if(!d.said){ d.said=true; actorSay(()=>d.x,GROUND-104,'I LOVE YOU, MAN!',1.8,'drunk4'); mhint('JUMP OVER THE HUGGERS OR THEY HOLD YOU UP','hug'); } else pop(d.x,GROUND-80,'HUG!','#fff'); } }
+  // Chip Thief cameo
+  if(gull4){ const g=gull4; g.t+=dt; g.f+=dt*10;
+    if(g.state==='in'){ g.x+=(g.tx-g.x)*Math.min(1,dt*3); g.y+=(GROUND-14-g.y)*Math.min(1,dt*3); if(g.t>1.2){ g.state='stare'; g.t=0; } }
+    else if(g.state==='stare'){ if(g.t>2.4){ g.state='off'; g.t=0; } }
+    else if(g.state==='off'){ g.x+=160*dt; g.y-=140*dt; if(g.y<-40) gull4=null; } }
+  fadeUpd4(dt);
+  if(!fade4&&!S.lock){ if(P.x>IN1.x1-28&&P.x<IN1.x1) goRoom(IN1.x1+40); else if(P.x>IN2.x1-28&&P.x<IN2.x1) goRoom(IN2.x1+40); }
+  if(S.dance>0){ S.dance-=dt; S.done.dance=1; S.freeze=Math.max(S.freeze,0.05); P.face=Math.floor(S.dance*4)%2?1:-1; const k=Math.floor(S.dance*2.5); if(P.onG&&k!==S.dk){ S.dk=k; P.vy=-200; P.onG=false; } }
+  updPunters4(dt);
+  // buddy follows you, and says something if you stand still
+  const b=buddy4; if(b){ const tx=P.x-28*P.face; b.face=P.x>b.x?1:-1; const dx=tx-b.x; if(Math.abs(dx)>4){ b.x+=Math.sign(dx)*Math.min(Math.abs(dx)*3,170)*dt; b.anim+=dt; } if(b.x<camX-20) b.x=camX-20;
+    if(b.sayT>0) b.sayT-=dt; if(b.cool>0) b.cool-=dt;
+    const still=Math.abs(P.vx)<1&&P.onG&&!CHO.open&&S.freeze<=0&&!boss; if(still) b.idle+=dt; else b.idle=0;
+    if(b.idle>1.5&&b.cool<=0&&b.sayT<=0){ const h=hint4(); if(h){ bsay(h,2.8); b.cool=7; } b.idle=0; } }
+}
+function hint4(){ const x=P.x;
+  if(!S.in1&&x<GATE1) return x<GATE1-160?"Seagull's just up there, come on!":'Go on, talk to the bouncer.';
+  if(x<IN1.x1){ if(S.round===0) return "Your round, buddy. Bar's that way."; if(S.round===1) return 'Bring them over to the lads! Jump over people.'; return "Right, Royal Tea. Out the door at the end!"; }
+  if(!S.in2&&x<GATE2) return "Royal Tea's just up here.";
+  if(x<IN2.x1) return x<YARD.x0?(S.done.dance?"Have a look around, it's fancy!":'Get on that dance floor!'):'Out the back for a smoke?';
+  if(x<6300) return S.chips?'Taxi rank next. Come on.':'Chips first. Then a taxi.';
+  return 'Talk to every taxi that stops. And jump the splashes!'; }
+function fire4(t){
+  switch(t.k){
+    case 'wheel': bsay("Is that... your bike? Just the wheel left, buddy.",3); break;
+    case 'telly': S.done.telly=1; seq([[0.1,()=>actorSay(t.x-60,GROUND-122,"SIT DOWN, YOU'RE BLOCKING THE MATCH!",2.0,'crowd')],[0.35,()=>actorSay(t.x+70,GROUND-130,'SIT DOWN!',1.4)],[2.0,()=>psay('Sorry, sorry!',1.6)]]); shake=0.12; break;
+    case 'smash': S.goalT=1.6; sfx.hurt&&tone(2400,.08,'square',.12); tone(1800,.12,'triangle',.1,0,.05); seq([[0.15,()=>actorSay(t.x+30,GROUND-120,'WAAAHEY!',1.8,'crowd')]]); shake=0.1; break;
+    case 'exit1': if(!S.roundDone) bsay("You never bought your round. Tight, buddy.",2.6); else bsay("Right, Royal Tea. Let's go!",2.4); break;
+    case 'yardsign': bsay("No drinks out here, it says. He's got a sixteen euro mocktail.",3); break;
+    case 'antho': bsay("Hey, isn't that Antho from Halloween?",2.6); break;
+    case 'rain': S.rainT=11; rainA=0; bsay("Oh Jaysus, it's freezing!",2.6); banner('LASHING RAIN'); craic(-1); pop(P.x,P.y-70,'SOAKED! -1 CRAIC','#6bd6ff'); break;
+    case 'oldgym': bsay('Hey look, this used to be the old boxing gym.',3.2); break;
+    case 'mocktail': S.done.mock=1; seq([[0.2,()=>actorSay(t.x+40,GROUND-110,'A non-alcoholic cocktail, please.',2.4,'posh4')],[2.5,()=>{ S.shakeT=2.2; actorSay(4030,GROUND-118,"That's sixteen euro.",2,'barman2'); }],[2.2,()=>actorSay(t.x+40,GROUND-110,'Lovely.',1.6,'posh4')]]); break;
+    case 'closing': dark4=1.8; S.done.closing=1; banner('CLOSING TIME'); seq([[1.9,()=>actorSay(t.x+40,GROUND-110,"Let's go home, folks!",2.4,'staff4')]]); break;
+    case 'chipthief': if(!S.chips) break; gull4={x:P.x+180,y:40,tx:P.x+46,state:'in',t:0,f:0}; pop(P.x+60,GROUND-110,'THE CHIP THIEF!','#ffd84a'); seq([[1.6,()=>bsay("Don't even think about it.",2.4)]]); break;
+    case 'rolls': bsay('Any of them three chicken fillet rolls left?',2.6); seq([[2.8,()=>psay('Ate them on Grafton Street.',2.2)]]); break;
+  }
+}
+function bouncerAsk(t){
+  speak('How many drinks have ye had?','bouncer',true);
+  setTimeout(()=>{ if(STAGE!==4||state!=='play') return; bannerT=0; choice('<span style="color:#9fd8ff">BOUNCER:</span> How many drinks have ye had?',['"I had 2 drinks only"','"I was at a house party and then came here"'],i=>{
+    if(i===0){ psay('I had 2 drinks only.',1.8); S.freeze=4.4; seq([[2.0,()=>actorSay(GATE1+8,GROUND-112,'...',1.0)],[1.1,()=>{ actorSay(GATE1+8,GROUND-112,"Okay, yeah, go in, it's all right.",2.4,'bouncer'); S.in1=true; t.done=true; craic(1); pts(150); }],[0.6,()=>bsay('Nice one!',1.6)],[1.0,()=>goRoom(IN1.x0+40)]]); }
+    else { psay('I was at a house party and then came here.',2.4); S.freeze=3.2; seq([[2.6,()=>{ actorSay(GATE1+8,GROUND-112,'Not tonight, buddy.',2.2,'bouncer'); P.knock=-260; craic(-1); pop(P.x,P.y-70,'-1 CRAIC','#ff6b6b'); t.cool=3; }],[2.4,()=>bsay('Just say two drinks, ya eejit!',2.4)]]); }
+  }); },900);
+}
+function doorRT(){ S.freeze=8.2; const bx=GATE2+8, by=GROUND-112;
+  seq([[0.2,()=>actorSay(bx,by,'No runners, lads.',1.8,'bouncer2')],[1.9,()=>actorSay(bx,by,'Hang on... you again?',1.8,'bouncer2')],[1.9,()=>actorSay(bx,by,'Not tonight.',1.6,'bouncer2')],[2.0,()=>actorSay(bx,by,'Ha! Ah, come on, get in.',2.4,'bouncer2')],[0.5,()=>{ S.in2=true; craic(1); pts(150); bsay('He got us!',1.6); }],[1.0,()=>goRoom(IN2.x0+40)]]); }
+
+/* ---- taxi rank boss: a patience bar instead of a life bar ---- */
+const STOPX=ARENA+300, PUD=[ARENA+170,ARENA+390];
+function startTaxi(){ S.lock=true; boss={kind:'taxi',t:0,step:0,pat:4,max:4,cars:[],o:{},prompt:null,inv:0,talked:0}; banner('THE TAXI RANK, 3AM');
+  seq([[0.6,()=>{ bannerT=0; HINT.cur=null; HINT.q=[]; choice('<span style="color:#ffd84a">THE TAXI RANK</span><br><br>💦 Taxis splash the puddles: <b>JUMP</b>!<br>💬 A taxi stops? <b>TALK TO THE DRIVER</b> (ACTION).<br>Talk to every single one. Ignore one and you lose patience.',['Got it!'],()=>{ bsay('Right. Just get a taxi. How hard can it be?',3); }); }]]); }
+function car4(kind,opts){ boss.cars.push(Object.assign({kind,x:ARENA+VW+60,vx:kind==='hired'?-430:-240,state:'drive',t:0,splashed:{},light:kind==='free'},opts||{})); }
+const TAXI_SCRIPT=[[2.0,()=>car4('hired')],[3.5,()=>car4('siob')],[8.5,()=>car4('hired')],[1.2,()=>car4('hired')],[2.5,()=>car4('island')],[9.0,()=>car4('hired')],[2.0,()=>car4('mine')],[9.0,()=>car4('hired')],[2.5,()=>car4('free')]];
+const TAXI_ASK={siob:"I'M SIOBHÁN!",island:'ISLANDBRIDGE?',mine:'ARE YOU FREE?',free:'HOME, PLEASE!'};
+function lose4(){ const b=boss; b.pat=Math.max(1,b.pat-1); pop(P.x,P.y-80,'PATIENCE -1','#ff6b6b'); shake=0.12; }
+function updTaxi(dt,pb,fist){ const b=boss; if(b.won) return; b.t+=dt;
+  if(b.step<TAXI_SCRIPT.length){ b.next=(b.next==null?TAXI_SCRIPT[0][0]:b.next)-dt; if(b.next<=0){ TAXI_SCRIPT[b.step][1](); b.step++; b.next=b.step<TAXI_SCRIPT.length?TAXI_SCRIPT[b.step][0]:0; } }
+  b.prompt=null;
+  for(let i=b.cars.length-1;i>=0;i--){ const c=b.cars[i]; c.t+=dt;
+    if(c.state==='drive'){ c.x+=c.vx*dt; if(c.kind!=='hired'&&c.x<=STOPX){ c.x=STOPX; c.state='stop'; c.t=0; stopTaxi(c); } }
+    else if(c.state==='stop'){ if(!c.done) b.prompt={x:c.x,label:TAXI_ASK[c.kind]};
+      if(c.t>c.wait&&!c.busy){ c.state='leave'; c.vx=-300; if(!c.done){ c.done=true; lose4(); actorSay(c.x,GROUND-92,'Suit yourself.',1.8,'driver'); seq([[1.6,()=>bsay('Talk to them, ya eejit!',2)]]); if(c.kind==='free') seq([[3,()=>{ if(boss&&boss.kind==='taxi') car4('free'); }]]); } } }
+    else if(c.state==='leave'){ c.vx-=200*dt; c.x+=c.vx*dt; }
+    if(c.kind==='hired'||c.state==='leave') for(const px of PUD){ if(!c.splashed[px]&&c.x<px+20){ c.splashed[px]=1; splash4(px); } }
+    if(c.x<ARENA-120) b.cars.splice(i,1); }
+  for(const s of (b.spl||[])){ s.t+=dt; if(s.t>0.15&&s.t<0.55&&!s.hit&&Math.abs(P.x-s.x)<34&&P.y>GROUND-26&&P.inv<=0){ s.hit=true; hurt('SOAKED!',s.x+40); } }
+  if(b.spl) b.spl=b.spl.filter(s=>s.t<0.8);
+}
+function splash4(x){ const b=boss; (b.spl=b.spl||[]).push({x,t:0}); sfx.jump&&tone(180,.25,'sawtooth',.06,-120); }
+function stopTaxi(c){ mhint('A TAXI STOPPED: GO TALK TO THE DRIVER (ACTION)','taxiact');
+  if(c.kind==='siob'){ c.wait=6; actorSay(c.x,GROUND-92,'Siobhán?',2.2,'driver'); }
+  else if(c.kind==='island'){ c.wait=6; actorSay(c.x,GROUND-92,'Where to?',1.8,'driver'); }
+  else if(c.kind==='mine'){ c.wait=5; c.lad={x:ARENA-20}; }
+  else if(c.kind==='free'){ c.wait=7; bsay("Light's ON! GO, GO, GO!",2); }
+}
+function talked4(c){ c.done=true; c.busy=true; boss.talked++; craic(1); pts(150); pop(c.x,GROUND-110,'+1 CRAIC','#3fcf6a'); }
+function actOnTaxi(c){ if(c.done) return; const D=c.x, Y=GROUND-92; S.freeze=Math.max(S.freeze,1);
+  if(c.kind==='siob'){ talked4(c); psay("I'm Siobhán!",1.6); seq([[1.7,()=>actorSay(D,Y,"You're not Siobhán.",2,'driver')],[2.0,()=>{ c.busy=false; c.t=c.wait; }]]); }
+  else if(c.kind==='island'){ talked4(c); psay('Islandbridge, please.',1.8); seq([[1.9,()=>actorSay(D,Y,"Ah no, that's too close, I'm not going there.",2.6,'driver')],[2.7,()=>{ c.busy=false; c.t=c.wait; bsay("He's not wrong, it's walkable. But no.",2.4); }]]); }
+  else if(c.kind==='mine'){ talked4(c); psay('Howya, are you free?',1.8); seq([[1.6,()=>actorSay(()=>c.lad.x,GROUND-104,"That's MY taxi!",2,'taxilad')],[2.2,()=>{ c.busy=false; c.t=c.wait; bsay('Ah, come ON!',1.8); }]]); }
+  else if(c.kind==='free'){ c.done=true; boss.won=true; S.taxi=true; S.freeze=9; psay('Home, please!',1.6); sfx.coin(); pts(1000); craic(2); banner('TAXI!');
+    if(boss.talked>=3){ S.allTaxis=true; pts(500); pop(P.x,P.y-100,'TALKED TO EVERY DRIVER! +500','#ffd84a'); }
+    seq([[1.7,()=>actorSay(D,Y,'Hop in, buddy.',1.8,'driver')],[1.6,()=>{ S.hideP=true; if(buddy4) buddy4.x=-9999; c.state='leave'; c.vx=-60; c.light=false; }],[1.8,()=>{ if(state==='play') startHome4(); }]]); }
+}
+function taxiTidy(){}
+
+/* ---- the drop-off: a little scene outside the gaff ---- */
+let home4=null;
+function startHome4(){ state='cut'; home4={t:0,said:{}}; S.lock=false; }
+function cutUpdate4(dt){ const h=home4; if(!h) return; h.t+=dt; const once=(k,t,f)=>{ if(h.t>=t&&!h.said[k]){ h.said[k]=1; f(); } };
+  for(let i=seq4.length-1;i>=0;i--){ seq4.splice(i,1); }
+  for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
+  once('drop',0.9,()=>{ h.drop={say:"That's your mate dropped off. You're next.",t:2.4}; speak("That's your mate dropped off. You're next.",'driver',true); });
+  once('drv',3.6,()=>{ h.drv={say:'There you go, buddy.',t:2.4}; speak('There you go, buddy.','driver',true); });
+  once('me',6.2,()=>{ h.me={say:'Cheers!',t:1.6}; speak('Cheers!','player',true); });
+  for(const k of ['drop','drv','me']) if(h[k]) h[k].t-=dt;
+  if(h.t>9.4&&!h.done){ h.done=true; S.hideP=false; state='play'; home4=null; winGame(); }
+}
+function drawHome4(){ const h=home4; if(!h) return; ctx.setTransform(2,0,0,2,0,0); lights=[]; glowRects=[]; const cam0=camX; camX=0;
+  drawSky4();
+  terrace4(-30,170,11); terrace4(140,190,37); terrace4(330,180,59);
+  S_(); box(222,GROUND-62,30,62,'#2a6a3a'); fr(226,GROUND-58,22,24,'#ffcf7a'); glowRects.push([226,GROUND-58,22,24]); txt('4',237,GROUND-74,'#ffd84a','center',8); L3(237,GROUND-40,80,'#ffd890',1);
+  lamp4(120); lamp4(420);
+  fr(0,GROUND,VW,VH-GROUND,'#3a3e48'); fr(0,GROUND,VW,3,'#5a5e68'); fr(0,GROUND+30,VW,VH,'#22252c'); for(let x=0;x<VW;x+=40) fr(x+(h.t*0)%40,GROUND+46,22,2,'#d8d8d8');
+  const t=h.t, e=Math.min(1,t/2.6), cx=VW+70-(VW+70-300)*(1-Math.pow(1-e,3)) - (t>9?(t-9)*(t-9)*120:0);
+  const out=Math.min(1,Math.max(0,(t-2.9)/0.9)), px=280-out*44, bx=300-Math.min(1,Math.max(0,(t-3.4)/0.9))*92;
+  if(t>2.9){ const sp=P.x, sy=P.y, sf=P.face, si=P.inv, sv=P.vx; P.x=px; P.y=GROUND; P.face=-1; P.inv=0; P.vx=out<1?-60:0; const hp=S.hideP; S.hideP=false; try{ drawPlayer(); }catch(err){} S.hideP=hp; P.x=sp; P.y=sy; P.face=sf; P.inv=si; P.vx=sv; }
+  prius(cx,GROUND+40,{light:t>9});
+  if(h.drv&&h.drv.t>0) bubble(cx,GROUND-70,h.drv.say);
+  if(h.me&&h.me.t>0) bubble(px,GROUND-96,h.me.say);
+  if(h.drop&&h.drop.t>0) bubble(Math.min(cx,VW-60),GROUND-70,h.drop.say);
+  lightPass3();
+  txt('HOME, 4AM',VW/2,14,'#ffd84a','center',8,OUT);
+  const f=t<0.6?1-t/0.6:t>8.6?Math.min(1,(t-8.6)/0.8):0; if(f>0){ ctx.fillStyle=`rgba(0,0,0,${f})`; ctx.fillRect(-10,-10,VW+20,VH+20); }
+  camX=cam0; }
+
+/* ---- rooms: walk through a door and you're on another screen ---- */
+function goRoom(x){ if(fade4) return; fade4={t:0,x,moved:false}; S.freeze=Math.max(S.freeze,0.8); tone(330,.1,'triangle',.07); tone(247,.14,'triangle',.07,0,.1); }
+function fadeUpd4(dt){ if(!fade4) return; fade4.t+=dt; if(!fade4.moved&&fade4.t>=0.35){ fade4.moved=true; P.x=fade4.x; P.y=GROUND; P.vy=0; P.knock=0; camX=zone4(P.x)[0]; if(buddy4) buddy4.x=P.x-30; for(const d of drunks4) d.hugT=0; } if(fade4.t>=0.8) fade4=null; }
+function roomCam4(){ if(S.lock) return; const z=zone4(P.x); camX=Math.max(z[0],Math.min(z[1]-VW,camX)); if(P.x<z[0]+10) P.x=z[0]+10; if(P.x>z[1]-10) P.x=z[1]-10; }
+function drawFade4(){ if(!fade4) return; const t=fade4.t, a=t<0.35?t/0.35:Math.max(0,1-(t-0.35)/0.45); ctx.fillStyle=`rgba(0,0,0,${a})`; ctx.fillRect(-10,-10,VW+20,VH+20); }
+
+/* ---- pub punters: people doing things, in front of you ---- */
+const PUNT_SAY=['Story, buddy?','Mind yourself!','Easy there!','Ah, me shoes!'];
+function updPunters4(dt){ for(const p of punters4){ p.anim+=dt; if(p.bumpT>0) p.bumpT-=dt; if(p.sayT>0) p.sayT-=dt;
+    if(p.k==='collector'){ p.x+=p.dir*40*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; }
+    else { p.st=(p.st||0)-dt; if(p.st<=0){ p.mode=['walk','chat','cheer','walk'][Math.floor(Math.random()*4)]; p.st=1.5+Math.random()*2; if(p.mode==='walk') p.dir=Math.random()<.5?-1:1; }
+      if(p.mode==='walk'){ p.x+=p.dir*28*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; } }
+    if(Math.abs(p.x-P.x)<13&&P.y>GROUND-22&&p.bumpT<=0&&S.freeze<=0){ p.bumpT=1.6; P.knock=(P.x<p.x?-1:1)*180;
+      if(tray4&&S.pints>0){ S.pints--; pop(P.x,P.y-80,'-1 PINT!','#ff6b6b'); tone(1800,.08,'square',.08); p.say='Ah, me shoes!'; speak(p.say,'punter',true); mhint('JUMP OVER PEOPLE, OR YOU SPILL THE PINTS','pints'); }
+      else if(p.k==='collector'){ p.say='Watch the glasses!'; speak(p.say,'collector',true); tone(2200,.06,'square',.08); }
+      else { p.say=PUNT_SAY[Math.floor(Math.random()*3)]; speak(p.say,'punter',false); }
+      p.sayT=1.8; } } }
+function drawPunters4(){ for(const p of punters4){ const sx=p.x-camX; if(sx<-30||sx>VW+30) continue; const h=hash(p.x0,5);
+    if(p.k==='collector'){ human(sx,GROUND,{f:p.dir,pose:'walk',ph:p.anim*10,skin:'#e8b58e',hs:'short',hair:'#7a4a24',top:'#111',legs:'#222',shoes:'#111',armFwd:true}); S_(); for(let k=0;k<5;k++) rb(sx+p.dir*12-3,GROUND-44-k*7,7,8,1.5,'rgba(220,240,255,.8)'); }
+    else { const walk=p.mode==='walk'; human(sx,GROUND,{f:walk?p.dir:(P.x<p.x?-1:1),pose:walk?'walk':'stand',ph:p.anim*10,skin:SKINS[h%4],hs:['short','long','cap'][h%3],cap:'#2a6fd6',hair:HAIRS[h%4],top:['#c83a3a','#e0a020','#7a3ab8','#2e9e4f'][h%4],legs:'#2a2a3a',shoes:'#fff',armUp:p.mode==='cheer'?Math.floor(p.anim*3)%2===0:p.mode==='chat',can:'#2a1a10',happy:true}); }
+    if(p.sayT>0&&p.say) bubble(sx,GROUND-96,p.say); } }
+/* the crowd at the back: grouped round high tables, swaying, cheering, darker so they read as background */
+function crowd4(x0,x1,posh){ const at=(x,f)=>{ const s=x-camX; if(s>-60&&s<VW+60) f(s); };
+  for(let xx=x0+60;xx<x1-40;xx+=110) at(xx,s=>{ if(hash(xx,7)%4===0) return; S_(); box(s-5,GROUND-62,10,4,posh?'#c8a050':'#5a3418'); fr(s-1,GROUND-58,2,26,'#2a1a10');
+    for(let k=0;k<3;k++){ const q=hash(xx,k+11), sw=Math.sin(time*(1.6+k*0.3)+q)*1.6, up=(Math.floor(time*1.2+q%7)%5===0)||(S.goalT>0);
+      human(s-26+k*26+sw,GROUND-32,{sc:.74,f:k===0?1:k===2?-1:(q%2?1:-1),skin:SKINS[q%4],hs:posh?(q%2?'long':'short'):['short','long','cap'][q%3],cap:'#1b3a8f',hair:posh&&q%2?'#f2d06a':HAIRS[q%4],top:posh?['#f4f4f4','#b08aff','#ff9ae0','#1a1a1a'][q%4]:['#8a2a2a','#2a4a8a','#2e6b3a','#6a6a6a'][q%4],legs:posh?'#d8d0c0':'#2a2a3a',shoes:'#ddd',armUp:up,can:posh?null:'#c8a050',cup:posh,happy:up}); } });
+  ctx.fillStyle='rgba(12,6,20,.42)'; const a=Math.max(x0,camX-20)-camX, b=Math.min(x1,camX+VW+20)-camX; if(b>a) ctx.fillRect(a,GROUND-104,b-a,74); }
+/* ---- win ---- */
+function winGame4(){
+  const total=Math.round(S.score + S.money*10 + S.craic*50 + S.rolls*100 + (S.roundDone?400:0) + (S.in2?300:0) + (S.chips?150:0));
+  const rank=total<4500?'Early night, so':total<6500?'Grand night out':total<8500?'Session legend':"King of George's St";
+  saveProg(4,total,rank);
+  if(!CARD.back||CARD.r?.total!==total||CARD.r?.stageN!==4) buildCard({inter:interList(),stageN:4,total,rank,place:'HOME, 4AM',stage:'STAGE 4: NIGHT OUT IN DUBLIN',lines:[S.roundDone?'Bought your round: yes, legend':'Bought your round: no. Tight.',S.in2?'Royal Tea: in':'Royal Tea: not tonight',S.chips?'Chips: secured':'Chips: none, tragic',S.allTaxis?'Talked to every driver: yes':'Talked to every driver: no',`Craic: ${S.craic}/10`]});
+  CARD.back=()=>{ state='win'; showWin4(total,rank); };
+  showWin4(total,rank);
+}
+function showWin4(total,rank){
+  dialog('Home at last.',`<p>The taxi drops you home. You eat the chips in the back seat. Absolute session.</p>
+  <ul><li>Points: ${S.score}</li><li>Money: €${S.money} (x10)</li><li>Craic: ${S.craic}/10 (x50)</li><li>Rolls left: ${S.rolls} (x100)</li><li>Your round: ${S.roundDone?'bought (+400)':'never bought'}</li><li>Royal Tea: ${S.in2?'in (+300)':'no'}</li><li>Chips: ${S.chips?'yes (+150)':'no'}</li><li>Every taxi driver: ${S.allTaxis?'talked to (+500)':'no'}</li>${interHTML()}<li style="color:var(--gold)">Total: ${total}</li><li>Rank: ${rank}</li></ul><p class="credit-end">Dodgy Dublin Redemption, created by Matheus Amud</p>`,
+    [{label:'Play again',fn(){resetRun(); state='play'; closeDialog();}},SHARE,{label:'Back to the start',fn(){showTitle();}},PINT_END,MERCH]);
+}
+
+/* ================= STAGE 4 DRAWING ================= */
+function drawSky4(){
+  const g=ctx.createLinearGradient(0,0,0,GROUND); g.addColorStop(0,'#060a1e'); g.addColorStop(0.6,'#101a3e'); g.addColorStop(1,'#2a2a5a');
+  ctx.fillStyle=g; ctx.fillRect(-10,0,VW+20,VH);
+  for(let i=0;i<60;i++){ const h=hash(i,91); const x=((h%(VW+40)-camX*0.02)%(VW+40)+VW+40)%(VW+40)-20, y=(h>>9)%140+16; const tw=0.5+0.5*Math.sin(time*(1+(h%5)*0.4)+i); ctx.fillStyle=`rgba(255,255,240,${0.25+0.6*tw})`; ctx.fillRect(x,y,h%9===0?2:1,h%9===0?2:1); }
+  const mx=90-camX*0.01, my=40; circ(mx,my,10,'#f6f0d0',true); circ(mx+4,my-2,9,'#101a3e',true);
+  const fo=camX*0.25; ctx.fillStyle='#161838';
+  for(let i=Math.floor(fo/44)-1;i<Math.floor(fo/44)+13;i++){ const h=40+hash(i,1)%50, x=i*44-fo; ctx.fillRect(x,GROUND-60-h,45,h+60); for(let k=0;k<3;k++){ const q=hash(i,k+3); if(q%3===0){ ctx.fillStyle='rgba(255,210,120,.5)'; ctx.fillRect(x+6+(q%30),GROUND-50-h+((q>>6)%50),3,3); ctx.fillStyle='#161838'; } } }
+}
+function win4(x,y,w,h,lit){ fr(x,y,w,h,lit?'#ffd88a':'#1c2236'); ctx.strokeStyle=OUT; ctx.strokeRect(x+.5,y+.5,w-1,h-1); fr(x+w/2-0.5,y,1,h,'rgba(0,0,0,.4)'); fr(x,y+h/2-0.5,w,1,'rgba(0,0,0,.4)'); if(lit) glowRects.push([x,y,w,h]); }
+function terrace4(sx,w,x,col){ S_(); const top=GROUND-150-(hash(x,3)%3)*12; box(sx,top,w,GROUND-top,col||['#6a3a2e','#5a3a34','#4a3a40','#7a4a34'][hash(x,1)%4]);
+  fr(sx,top,w,4,'rgba(255,255,255,.08)'); for(let yy=top+16;yy<GROUND-50;yy+=34) for(let xx=sx+10;xx<sx+w-18;xx+=26) win4(xx,yy,14,22,hash(xx+camX,yy)%3===0);
+  fr(sx,GROUND-44,w,44,'rgba(0,0,0,.25)'); }
+function lamp4(x){ const sx=x-camX; if(sx<-30||sx>VW+30) return; S_(); box(sx-2,GROUND-110,4,110,'#2a2e36'); rb(sx-8,GROUND-118,16,8,3,'#2a2e36'); fr(sx-5,GROUND-111,10,3,'#ffe6a0'); L3(sx,GROUND-106,90,'#ffd890',0.9); }
+function neon(t,x,y,col,size){ ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=8; txt(t,x,y,col,'center',size||8); ctx.restore(); glowRects.push([x-ctx.measureText(t).width/2-4,y-2,ctx.measureText(t).width+8,(size||8)+4]); }
+function spar4(sx){ S_(); box(sx,GROUND-110,130,110,'#e8e8e8'); box(sx,GROUND-110,130,24,'#1f8a3a'); fr(sx,GROUND-86,130,4,'#d8262e'); txt('SPAR',sx+65,GROUND-104,'#fff','center',12); glowRects.push([sx,GROUND-110,130,24]);
+  box(sx+8,GROUND-76,80,60,'#ffeec0'); glowRects.push([sx+8,GROUND-76,80,60]); for(let k=0;k<4;k++) fr(sx+12+k*19,GROUND-70,15,50,['#3a8a3a','#e0a020','#2a6fd6','#d8262e'][k]); box(sx+96,GROUND-80,28,80,'#c8d8e8'); L3(sx+60,GROUND-60,110,'#e0fff0',0.8); }
+function wheel4(x){ const sx=x-camX; if(sx<-30||sx>VW+30) return; S_(); box(sx-2,GROUND-60,4,60,'#2a2a2a'); circ(sx+6,GROUND-14,13,'rgba(0,0,0,0)'); ctx.lineWidth=2.5; ctx.beginPath(); ctx.arc(sx+6,GROUND-14,12,0,7); ctx.strokeStyle='#111'; ctx.stroke(); ctx.lineWidth=0.8; for(let k=0;k<8;k++){ ctx.beginPath(); ctx.moveTo(sx+6,GROUND-14); ctx.lineTo(sx+6+Math.cos(k)*11,GROUND-14+Math.sin(k)*11); ctx.stroke(); } S_(); rb(sx-6,GROUND-22,14,5,2,'#e8b020'); }
+function seagullFront(sx){ S_(); box(sx,GROUND-160,200,160,'#2a2a2a'); box(sx+4,GROUND-150,192,150,'#1f4a34'); box(sx,GROUND-170,200,12,'#173828');
+  box(sx+16,GROUND-146,168,26,'#0f2a1e'); neon('THE DODGY SEAGULL',sx+100,GROUND-139,'#ffd23f',8); ctx.save(); ctx.translate(sx+22,GROUND-133); ctx.scale(.5,.5); gull(0,0,1,time*6,1,false); ctx.restore(); S_();
+  for(const wx of [sx+16,sx+80]){ win4(wx,GROUND-104,52,62,true); for(let k=0;k<3;k++) fr(wx+6+k*16,GROUND-90,10,6,'#c8a050'); }
+  box(sx+148,GROUND-104,40,104,'#5a3a20'); fr(sx+152,GROUND-98,32,40,'#ffcf7a'); glowRects.push([sx+152,GROUND-98,32,40]); circ(sx+180,GROUND-50,1.6,'#ffd84a'); L3(sx+100,GROUND-60,140,'#ffc870',1); }
+function seagullIn(x0,x1){ const a=Math.max(x0,camX-20), b=Math.min(x1,camX+VW+20); if(b<=a) return; const sa=a-camX, w=b-a;
+  S_(); fr(sa,0,w,GROUND,'#3a2014'); for(let xx=Math.floor(a/32)*32;xx<b;xx+=32){ const s=xx-camX; fr(s,40,30,GROUND-40-52,'#7a3a2a'); fr(s,40,30,3,'#a85a3a'); fr(s,GROUND-52,30,52,'#4a2a18'); fr(s+29,40,2,GROUND-40,'#2a140c'); }
+  fr(sa,26,w,14,'#2a140c'); fr(sa,GROUND-56,w,5,'#c8a050');
+  glowRects.push([sa,0,w,GROUND]);
+  const at=(x,f)=>{ const s=x-camX; if(s>-120&&s<VW+120) f(s); };
+  for(let xx=IN1.x0+80;xx<IN1.x1;xx+=180) at(xx,s=>{ fr(s,30,2,10,'#222'); circ(s+1,44,6,'#ffd27a',true); L3(s+1,46,120,'#ffcf7a',1); });
+  at(1080,s=>{ for(let k=0;k<3;k++){ rb(s+k*22,70,8,30,3,'#c8803a'); fr(s+3+k*22,58,2,14,'#4a2a10'); } });
+  at(1530,s=>{ box(s-34,62,68,42,'#111'); fr(s-30,66,60,34,'#2e8b3f'); fr(s-2,66,1,34,'rgba(255,255,255,.6)'); circ(s+8+Math.sin(time*2)*12,84,2,'#fff',true); for(let k=0;k<3;k++){ human(s-22+k*10+Math.sin(time*3+k)*2,88,{f:k%2?1:-1,sc:.26,skin:'#f0c8a8',hs:'short',hair:'#222',top:k%2?'#e8e8e8':'#1f6a3a',legs:'#222',shoes:'#fff'}); } glowRects.push([s-30,66,60,34]); L3(s,84,70,'#9affb0',.8); });
+  at(1720,s=>{ box(s-120,GROUND-150,240,60,'#2a140c'); for(let r=0;r<3;r++) for(let k=0;k<20;k++) rb(s-114+k*12,GROUND-146+r*20,5,15,1.5,['#2e8b3f','#c8a050','#8a2a2a','#3a5aa0','#e8e8e8'][(k+r*3)%5]); fr(s-120,GROUND-36,240,36,'#5a2a12'); fr(s-120,GROUND-40,240,6,'#c8a050'); for(let k=0;k<6;k++){ box(s-100+k*34,GROUND-60,4,22,'#c8a050'); circ(s-98+k*34,GROUND-62,3,'#e8e8e8',true); } });
+  at(2070,s=>{ box(s-14,46,28,30,'#6a3a1a'); ctx.save(); ctx.translate(s,64); S_(); rb(-9,-6,18,22,7,'#8a5a30'); for(const d of [-1,1]){ ctx.beginPath(); ctx.moveTo(d*6,-4); ctx.lineTo(d*18,-22); ctx.lineTo(d*14,-24); ctx.moveTo(d*14,-14); ctx.lineTo(d*22,-16); ctx.strokeStyle='#d8c090'; ctx.lineWidth=2.5; ctx.stroke(); } circ(-3,4,1.6,'#111',true); circ(3,4,1.6,'#111',true); ctx.restore(); S_(); });
+  crowd4(IN1.x0,IN1.x1,false);
+}
+function greenside4(sx){ S_(); const top=GROUND-210; box(sx,top,230,210,'#1a3050'); ctx.save(); ctx.beginPath(); ctx.rect(sx,top,230,210); ctx.clip();
+  for(let yy=top;yy<GROUND;yy+=14) for(let xx=sx;xx<sx+230;xx+=18){ fr(xx+1,yy+1,16,12,hash(xx-camX+999,yy)%5===0?'#ffe8b0':'#22406a'); if(hash(xx-camX+999,yy)%5===0) glowRects.push([xx+1,yy+1,16,12]); }
+  ctx.strokeStyle='#0c1424'; ctx.lineWidth=3; for(let k=-4;k<10;k++){ ctx.beginPath(); ctx.moveTo(sx+k*40,top); ctx.lineTo(sx+k*40+130,GROUND); ctx.moveTo(sx+k*40+130,top); ctx.lineTo(sx+k*40,GROUND); ctx.stroke(); } ctx.restore(); S_();
+  fr(sx,GROUND-30,230,30,'#0c1424'); for(const tx of [sx-10,sx+220]){ circ(tx,GROUND-56,20,'#1e4a28',true); circ(tx+12,GROUND-66,16,'#24582e',true); box(tx-2,GROUND-40,4,40,'#3a2a1a'); } }
+function royalFront(sx){ S_(); box(sx,GROUND-150,200,150,'#1a1420'); box(sx+6,GROUND-140,188,140,'#24182e'); box(sx+20,GROUND-136,160,30,'#120c18'); neon('Royal Tea',sx+100,GROUND-128,'#ff7ad8',12);
+  win4(sx+16,GROUND-96,60,54,true); fr(sx+16,GROUND-96,60,54,'rgba(180,80,220,.35)'); box(sx+140,GROUND-104,44,104,'#0c0810'); fr(sx+146,GROUND-98,32,92,'#ffb0e8'); glowRects.push([sx+146,GROUND-98,32,92]);
+  for(let k=0;k<5;k++) fr(sx+84+k*10,GROUND-8,2,8,'#c8a050'); fr(sx+82,GROUND-12,52,2,'#c8a050'); L3(sx+100,GROUND-60,130,'#ff9ae0',1); }
+function royalIn(x0,x1){ const a=Math.max(x0,camX-20), b=Math.min(x1,camX+VW+20); if(b<=a) return; const sa=a-camX, w=b-a;
+  S_(); fr(sa,0,w,GROUND,'#2a1236'); for(let xx=Math.floor(a/40)*40;xx<b;xx+=40){ const s=xx-camX; fr(s,40,38,GROUND-90,'#3a1a4a'); fr(s+2,44,34,GROUND-98,'#45205a'); fr(s,GROUND-50,40,50,'#1a0a22'); }
+  fr(sa,30,w,10,'#c8a050'); fr(sa,GROUND-54,w,3,'#c8a050'); glowRects.push([sa,0,w,GROUND]);
+  const at=(x,f)=>{ const s=x-camX; if(s>-140&&s<VW+140) f(s); };
+  for(let xx=IN2.x0+90;xx<YARD.x0;xx+=200) at(xx,s=>{ fr(s,34,1,14,'#c8a050'); for(let k=-2;k<=2;k++){ circ(s+k*6,52+Math.abs(k)*2,2.4,'#fff6d8',true); } L3(s,52,120,'#ffe6b0',1); });
+  at(3990,s=>{ box(s-110,GROUND-150,220,70,'#120818'); for(let k=0;k<14;k++){ const c=['#ff7ad8','#7affd8','#ffd84a','#b08aff'][k%4]; rb(s-104+k*15,GROUND-140,7,22,2,c); }
+    const shk=S.shakeT>0, bx=s+40; human(bx,GROUND-40,{f:-1,skin:'#e8c09a',hs:'short',hair:'#1a1a1a',top:'#f4f4f4',legs:'#111',shoes:'#111',armUp:shk&&Math.floor(time*10)%2===0,armFwd:!shk,beard:true});
+    S_(); fr(bx-8,GROUND-72,6,17,'#3a1a2a'); fr(bx+2,GROUND-72,6,17,'#3a1a2a'); fr(bx-3,GROUND-75,6,3,'#c8281e'); fr(bx-1,GROUND-75,2,3,'#ff5a4a'); if(shk){ rb(bx-8,GROUND-100+Math.sin(time*30)*3,6,12,2,'#d8d8e0'); }
+    fr(s-110,GROUND-40,220,40,'#c8a050'); fr(s-110,GROUND-44,220,6,'#f0d080'); neon('COCKTAILS',s,GROUND-74,'#7affd8',7); });
+  at(4330,s=>{ box(s-60,GROUND-160,120,120,'#1e4a28'); for(let k=0;k<40;k++){ const h=hash(k,44); circ(s-54+(h%108),GROUND-154+((h>>7)%108),4,['#ff7ad8','#ffd84a','#fff','#ffb0e8'][h%4],true); } neon('#ROYALTEA',s,GROUND-150,'#ff7ad8',8); });
+  at(4540,s=>{ box(s-40,GROUND-60,80,60,'#120818'); for(const d of [-1,1]){ box(s+d*60-14,GROUND-90,28,90,'#1a3a1a'); circ(s+d*60,GROUND-66,10,'#3fcf6a',true); circ(s+d*60,GROUND-66,4,'#0d2a14',true); circ(s+d*60,GROUND-30,8,'#3fcf6a',true); L3(s+d*60,GROUND-66,60,'#7aff9a',.8); } human(s,GROUND-60,{f:1,sc:.8,skin:'#e8b58e',hs:'cap',cap:'#111',top:'#111',legs:'#111',shoes:'#fff',armUp:Math.floor(time*2)%2===0}); });
+  crowd4(IN2.x0,4440,true); crowd4(4660,YARD.x0,true);
+  // smoking area out the back
+  const ya=Math.max(YARD.x0,camX-20), yb=Math.min(YARD.x1,camX+VW+20); if(yb>ya){ const s0=ya-camX; fr(s0,0,yb-ya,GROUND,'#141826'); for(let xx=Math.floor(ya/24)*24;xx<yb;xx+=24) for(let yy=60;yy<GROUND;yy+=10) fr(xx-camX+((yy/10)%2?12:0),yy,22,8,'#5a2e2a');
+    for(let xx=YARD.x0;xx<YARD.x1;xx+=12) at(xx,s=>{ circ(s,58+Math.sin(xx)*3,1.6,['#ffd84a','#ff7ad8','#7affd8'][(xx/12)%3|0],true); L3(s,58,16,'#ffe0a0',.5); });
+    for(const hx of [4840,5040]) at(hx,s=>{ box(s-2,GROUND-110,4,110,'#888'); rb(s-12,GROUND-122,24,10,3,'#aaa'); fr(s-9,GROUND-112,18,3,'#ff7a3a'); L3(s,GROUND-108,80,'#ff9a50',1); });
+    at(YARD.x0+100,s=>{ S_(); rb(s-70,GROUND-184,140,30,4,'#f4f0e0'); fr(s-66,GROUND-180,132,22,'#1a1a1a'); txt('SMOKING AREA',s,GROUND-177,'#ffd84a','center',7); txt('LEAVE YOUR DRINK INSIDE',s,GROUND-167,'#fff','center',5); });
+    for(const tx of [YARD.x0+80,YARD.x0+330]) at(tx,s=>{ const q=hash(tx,3); for(const d of [-1,1]){ box(s+d*20-5,GROUND-18,10,18,'#2a2a30'); }
+      for(const d of [-1,1]){ const k=(q+d+2)%4; human(s+d*20,GROUND-16,{f:-d,pose:'sit',skin:SKINS[k],hs:k%2?'long':'short',hair:HAIRS[k],top:['#2a2a3a','#7a3ab8','#c8a050','#3a6a8a'][k],legs:'#333',shoes:'#ddd',armFwd:true,happy:true});
+        const cx=s+d*20-d*15, cy=GROUND-44; fr(Math.min(cx,cx-d*6),cy,6,1.6,'#fff'); fr(cx-d*6+(d<0?0:5),cy,1.4,1.6,'#ff7a3a'); ctx.globalAlpha=.35; circ(cx-d*7,cy-6-Math.sin(time*2+d)*3,2.6,'#ccc',true); ctx.globalAlpha=1; }
+      S_(); fr(s-1.5,GROUND-30,3,30,'#888'); fr(s-8,GROUND-2,16,2,'#888'); ell(s,GROUND-31,13,3,'#c8c8c8'); rb(s-3,GROUND-37,6,5,1,'#555'); }); }
+  if(dark4>0){ const on=Math.floor((1.8-dark4)*3.4)%2===0; if(on){ ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(sa,0,w,GROUND); } }
+}
+function chipperFront(sx){ S_(); box(sx,GROUND-150,230,150,'#e8e8e8'); box(sx,GROUND-150,230,30,'#1b3a8f'); neon('THE CHIPPER',sx+115,GROUND-142,'#fff',10);
+  win4(sx+10,GROUND-112,210,80,true); fr(sx+12,GROUND-110,206,76,'#fff6dc'); for(let k=0;k<3;k++){ box(sx+30+k*60,GROUND-108,46,26,'#b8bcc4'); fr(sx+34+k*60,GROUND-104,38,18,['#e0b050','#f0d070','#c87a3a'][k]); }
+  box(sx+170,GROUND-80,40,50,'#ddd'); for(let r=0;r<3;r++) for(let k=0;k<4;k++) rb(sx+174+k*9,GROUND-76+r*16,6,13,1.5,(k+r)%2?'#3fcf6a':'#ff9a20');
+  box(sx,GROUND-32,230,32,'#c8c8c8'); L3(sx+115,GROUND-70,160,'#ffffff',1); }
+function kebab4(sx){ S_(); box(sx,GROUND-130,170,130,'#3a1a1a'); box(sx,GROUND-130,170,26,'#c8281e'); neon('KEBAB & PIZZA',sx+85,GROUND-122,'#ffd84a',8); win4(sx+10,GROUND-96,110,70,true); fr(sx+12,GROUND-94,106,66,'#ffe0b0'); box(sx+130,GROUND-96,32,96,'#222'); L3(sx+70,GROUND-60,120,'#ffb070',1); }
+function rank4(sx){ S_(); box(sx-2,GROUND-120,4,120,'#444'); box(sx-22,GROUND-140,44,22,'#ffd84a'); txt('TAXI',sx,GROUND-134,'#111','center',8); glowRects.push([sx-22,GROUND-140,44,22]);
+  box(sx+60,GROUND-100,120,100,'rgba(160,190,220,.25)'); fr(sx+60,GROUND-104,120,6,'#555'); }
+function shutters4(sx,w,x){ terrace4(sx,w,x); for(let k=0;k<Math.floor(w/70);k++){ box(sx+8+k*70,GROUND-70,60,70,'#5a5e66'); for(let y=GROUND-68;y<GROUND;y+=5) fr(sx+8+k*70,y,60,1,'#45484e'); } }
+function drawBack4(){
+  const at=(x,w,f)=>{ const sx=x-camX; if(sx>VW+40||sx+w<-40) return; f(sx); };
+  const z=zone4(camX+VW/2);
+  if(z[0]===0){ at(-40,220,s=>terrace4(s,220,-40)); at(180,140,s=>spar4(s)); at(320,40,s=>terrace4(s,40,320)); at(GATE1-188,200,s=>seagullFront(s)); at(560,200,s=>terrace4(s,200,560)); at(760,200,s=>terrace4(s,200,760)); }
+  if(z[0]===IN1.x1){ at(2520,180,s=>terrace4(s,180,2520)); at(2700,230,s=>greenside4(s)); at(2930,140,s=>terrace4(s,140,2930)); at(3070,190,s=>terrace4(s,190,3070)); at(GATE2-188,200,s=>royalFront(s)); at(3460,160,s=>terrace4(s,160,3460)); at(3620,160,s=>terrace4(s,160,3620)); }
+  at(5190,140,s=>terrace4(s,140,5190)); at(5330,170,s=>terrace4(s,170,5330)); at(5480,230,s=>chipperFront(s)); at(5710,170,s=>terrace4(s,170,5710)); at(5880,170,s=>kebab4(s)); at(6050,250,s=>shutters4(s,250,6050));
+  at(6300,320,s=>shutters4(s,320,6300)); at(6620,300,s=>terrace4(s,300,6620)); at(6920,260,s=>rank4(s+40)); at(7180,400,s=>shutters4(s,400,7180));
+  if(z===ZONES4[1]){ seagullIn(IN1.x0,IN1.x1); door4(IN1.x0+20,false,'#5a3a20'); door4(IN1.x1-26,true,'#5a3a20'); }
+  if(z===ZONES4[3]){ royalIn(IN2.x0,IN2.x1); door4(IN2.x0+20,false,'#0c0810'); door4(IN2.x1-26,true,'#3a3a40'); }
+  if(!inside4(camX+VW/2)) for(let x=60;x<END;x+=170){ if(inside4(x)||Math.abs(x-GATE1+40)<60||Math.abs(x-GATE2+40)<60) continue; lamp4(x); }
+  wheel4(250);
+}
+function door4(x,exit,col){ const s=x-camX; if(s<-40||s>VW+40) return; S_(); box(s-16,GROUND-74,32,74,col); fr(s-12,GROUND-70,24,66,exit?'#ffe6a0':'#2a1a10'); if(exit){ glowRects.push([s-12,GROUND-70,24,66]); L3(s,GROUND-40,70,'#ffe6a0',1);
+    const b=Math.sin(time*5)*2; rb(s-20,GROUND-98+b,40,14,4,'#3fcf6a'); txt('EXIT ▶',s,GROUND-95+b,'#0d2a14','center',7); glowRects.push([s-20,GROUND-98,40,14]); } }
+function drawFloor4(){ for(const R of [IN1,IN2]){ const a=Math.max(R.x0,camX-20), b=Math.min(R.x1,camX+VW+20); if(b<=a) continue; const s=a-camX, w=b-a, yard=R===IN2;
+    fr(s,GROUND,w,VH-GROUND,R===IN1?'#5a3418':'#1a0e22'); for(let xx=Math.floor(a/24)*24;xx<b;xx+=24){ fr(xx-camX,GROUND,1,VH-GROUND,R===IN1?'#3a2010':'#2a1636'); } fr(s,GROUND,w,2,R===IN1?'#7a4a24':'#c8a050');
+    if(yard){ const ya=Math.max(YARD.x0,a), yb=Math.min(YARD.x1,b); if(yb>ya) fr(ya-camX,GROUND,yb-ya,VH-GROUND,'#3a3a40'); } } }
+function drawNPC4(n,sx){
+  if(n.k==='band4'){ const fast=S.bandT>0, sp=fast?14:6;
+    S_(); box(sx-64,GROUND-8,128,8,'#4a2a14'); fr(sx-64,GROUND-8,128,2,'#7a4a24');
+    box(sx-46,GROUND-150,92,26,'#1a2a1a'); fr(sx-46,GROUND-150,92,3,'#7a4a24'); txt('LIVE TRAD',sx,GROUND-146,'#fff','center',7); txt('TONIGHT',sx,GROUND-136,'#ffd84a','center',6);
+    const fx=sx-42, bob=Math.abs(Math.sin(time*sp))*1.5; human(fx,GROUND-8-bob,{f:1,skin:SKINS[0],hair:HAIRS[1],hs:'short',top:'#2e6b3a',legs:'#222',shoes:'#333',beard:true});
+    S_(); ctx.save(); ctx.translate(fx+6,GROUND-44-bob); ctx.rotate(-0.5); ell(0,0,7,3.2,'#a8501e'); fr(6,-0.8,8,1.6,'#2a1a10'); ctx.restore(); S_(); const bw=Math.sin(time*sp)*5; ctx.beginPath(); ctx.moveTo(fx-2+bw,GROUND-56-bob); ctx.lineTo(fx+16+bw,GROUND-34-bob); ctx.lineWidth=1.2; ctx.strokeStyle='#e8d8b0'; ctx.stroke(); ctx.lineWidth=1.5; ctx.strokeStyle=OUT; circ(fx-2+bw,GROUND-56-bob,2.6,SKINS[0]);
+    box(sx-6,GROUND-26,12,18,'#2a1a10'); human(sx,GROUND-24,{f:1,pose:'sit',skin:SKINS[1],hair:HAIRS[2],hs:'long',top:'#8a2a2a',legs:'#222',shoes:'#333',armFwd:true});
+    S_(); ell(sx+8,GROUND-38,8,6,'#d89a4a'); circ(sx+8,GROUND-38,2,'#2a1a10'); fr(sx+14,GROUND-41,14,2.4,'#5a3418');
+    const dx=sx+44, hit=Math.floor(time*sp)%2; human(dx,GROUND-8,{f:-1,skin:SKINS[2],hair:HAIRS[3],hs:'cap',cap:'#1b3a8f',top:'#2a4a8a',legs:'#222',shoes:'#333',armUp:!!hit});
+    S_(); circ(dx-10,GROUND-38,9,'#f0e0c0'); fr(dx-19,GROUND-39,18,1,'rgba(0,0,0,.15)');
+    for(let k=0;k<(fast?3:1);k++) if(Math.floor(time*3+k)%2) txt('♪',sx-20+k*24+Math.sin(time*2+k)*6,GROUND-100-((time*20+k*13)%24),'#ffd84a','center',8);
+    glowRects.push([sx-64,GROUND-150,128,150]); return true; }
+  if(n.k==='barman4'){ human(sx,GROUND-6,{f:-1,skin:'#e8b58e',hs:'short',hair:'#3a2a1a',top:'#f4f4f4',band:'#111',legs:'#222',shoes:'#111',armFwd:true,cup:n.used,beard:true}); return true; }
+  if(n.k==='lads4'){ box(sx-30,GROUND-26,60,6,'#7a4a24'); box(sx-26,GROUND-20,4,20,'#5a3418'); box(sx+22,GROUND-20,4,20,'#5a3418');
+    for(let k=0;k<3;k++) human(sx-30+k*30,GROUND,{f:k===0?1:-1,pose:'sit',skin:SKINS[k],hair:HAIRS[(k+2)%4],hs:k===1?'cap':'short',cap:'#1b3a8f',top:['#c83a3a','#3a8a3a','#e0a020'][k],legs:'#2a3a6a',shoes:'#fff',armUp:n.used,can:n.used?'#2a1a10':null,happy:n.used});
+    if(n.used) for(let k=0;k<5;k++){ rb(sx-24+k*12,GROUND-38,7,12,1.5,'#2a1a10'); fr(sx-24+k*12,GROUND-38,7,3,'#f4ead0'); } return true; }
+  if(n.k==='stag4'){ for(let k=0;k<4;k++){ const x=sx+24+k*18; human(x,GROUND,{f:-1,sc:.9,skin:SKINS[k%4],hs:'helmet',cap:'#111',top:['#c8281e','#2a6fd6','#e8c020','#2e9e4f'][k],legs:['#c8281e','#2a6fd6','#e8c020','#2e9e4f'][k],shoes:'#fff',armUp:k%2===0}); }
+    human(sx,GROUND,{f:1,skin:'#f0c8a8',hs:'long',hair:'#ffe066',top:'#f4f4f4',legs:'#2a2a3a',shoes:'#111',beard:true,happy:false}); S_(); ctx.save(); ctx.translate(sx,GROUND-28); ctx.rotate(-0.5); fr(-12,0,24,4,'#ff7ad8'); ctx.restore(); S_(); box(sx-6,GROUND-30,10,10,'#fff'); txt('L',sx-1,GROUND-28,'#c8281e','center',6); return true; }
+  if(n.k==='selfie4'){ for(let k=0;k<3;k++) human(sx-16+k*16,GROUND,{f:1,sc:.92,skin:SKINS[(k+1)%4],hs:'long',hair:['#f2d06a','#2a1a10','#c86a2a'][k],top:['#ff9ae0','#b08aff','#f4f4f4'][k],legs:'#1a1a1a',shoes:'#c8a050',armUp:k===2}); S_(); rb(sx+16,GROUND-70,6,10,1.5,'#222'); if(flash4>0){ ctx.fillStyle=`rgba(255,255,255,${flash4*2})`; ctx.fillRect(-10,0,VW+20,VH); } return true; }
+  if(n.k==='posh4'){ human(sx,GROUND,{f:-1,skin:'#f2cfb0',hs:'short',hair:'#c8a060',top:'#f4f4f4',band:'#7ab0e8',legs:'#d8c8a0',shoes:'#7a4a24',armFwd:true,cup:true}); S_(); fr(sx-16,GROUND-40,2,8,'#ff9a50'); return true; }
+  if(n.k==='chipper4'){ human(sx,GROUND-4,{f:-1,skin:'#e8b58e',hs:'hat',cap:'#fff',top:'#fff',legs:'#333',shoes:'#111',armFwd:true}); return true; }
+  if(n.k==='antho4'){ human(sx,GROUND,{f:1,skin:'#f0cfb4',hs:'hood',top:'#1c3a8a',legs:'#1c3a8a',shoes:'#fff',stripes:true,shifty:true}); S_(); rb(sx-2,GROUND-34,14,10,4,'#f4f4f4'); fr(sx-4,GROUND-38,2,12,'#f4f4f4'); return true; }
+  if(n.k==='dance4'){ for(let k=0;k<6;k++){ const c=['#ff7ad8','#7affd8','#ffd84a','#b08aff'][(k+Math.floor(time*4))%4]; ctx.globalAlpha=.55; fr(sx-66+k*22,GROUND+2,20,10,c); ctx.globalAlpha=1; glowRects.push([sx-66+k*22,GROUND+2,20,10]); }
+    for(let k=0;k<3;k++){ const x=sx-46+k*46, hop=Math.abs(Math.sin(time*5+k))*4; human(x,GROUND-hop,{f:k%2?-1:1,skin:SKINS[(k+2)%4],hs:'long',hair:['#f2d06a','#2a1a10','#c86a2a'][k],top:['#ff9ae0','#7affd8','#ffd84a'][k],legs:'#1a1a1a',shoes:'#c8a050',armUp:Math.floor(time*4+k)%2===0,happy:true}); } return true; }
+  if(n.k==='garda4'){ human(sx,GROUND,{f:-1,skin:'#e8b58e',hs:'peaked',top:'#1b2a4a',hiVis:true,legs:'#1b2a4a',shoes:'#111'}); return true; }
+  return false;
+}
+function drawMid4(){
+  for(const d of drunks4){ const sx=d.x-camX; if(sx<-30||sx>VW+30) continue; ctx.save(); ctx.translate(sx,GROUND); ctx.rotate(Math.sin(d.anim*2.2)*0.12); human(0,0,{f:d.dir,pose:d.hugT>0?'stand':'walk',ph:d.anim*8,skin:'#f0b8a0',hs:'short',hair:'#5a3a1a',top:'#6a2a5a',coat:'#3a3a4a',legs:'#2a2a3a',shoes:'#ddd',armUp:d.hugT>0,can:'#d8d8e0',happy:true}); ctx.restore(); }
+  const b=buddy4; if(b&&state!=='title'){ human(b.x-camX,GROUND,{f:b.face,pose:Math.abs(b.x-(P.x-28*P.face))>5?'walk':'stand',ph:b.anim*12,skin:'#d8a882',hs:'short',hair:'#1a1a1a',top:'#2a7ab8',coat:inside4(b.x)?null:'#4a3a2a',legs:'#2a2a40',shoes:'#f4f4f4',zip:true,happy:true}); if(tray4&&false){} }
+  drawPunters4();
+  if(tray4){ const sx=P.x-camX+P.face*10; S_(); fr(sx-12,P.y-50,24,3,'#c8c8c8'); for(let k=0;k<S.pints;k++){ rb(sx-11+k*5,P.y-60,4,10,1,'#2a1a10'); fr(sx-11+k*5,P.y-60,4,2,'#f4ead0'); } }
+  for(const t of trig4){ if(/^gate/.test(t.k)){ const open=t.k==='gate1'?S.in1:S.in2; const sx=t.x+10-camX; if(sx<-30||sx>VW+30) continue; human(sx,GROUND,{f:-1,sc:1.12,skin:t.k==='gate1'?'#c68a5a':'#e8b58e',hs:'short',hair:'#111',top:'#111',legs:'#111',shoes:'#111',armFwd:!open}); S_(); fr(sx-3,GROUND-50,6,2,'#888'); if(!open){ box(sx-20,GROUND-30,4,30,'#c8a050'); fr(sx-20,GROUND-24,-14,2,'#c8281e'); } } }
+  if(gull4){ gull(gull4.x-camX,gull4.y,-1,gull4.state==='stare'?0:gull4.f,2.2,true); if(gull4.state==='stare') bubble(gull4.x-camX,gull4.y-60,'...'); }
+  if(boss&&boss.kind==='taxi') drawTaxiBack();
+}
+function drawFront4(){
+  if(boss&&boss.kind==='taxi') drawTaxiFront();
+  for(const a of talkers4) bubble(a.x()-camX,a.y(),a.say);
+  if(buddy4&&buddy4.sayT>0&&buddy4.say) bubble(buddy4.x-camX,GROUND-100,buddy4.say);
+}
+function prius(sx,y,c){ S_(); rb(sx-40,y-26,80,20,6,'#e8e8ec'); ctx.beginPath(); ctx.moveTo(sx-26,y-26); ctx.lineTo(sx-14,y-40); ctx.lineTo(sx+16,y-40); ctx.lineTo(sx+32,y-26); ctx.closePath(); ctx.fillStyle='#e8e8ec'; ctx.fill(); ctx.stroke();
+  fr(sx-12,y-37,13,10,'#6a8aaa'); fr(sx+3,y-37,12,10,'#6a8aaa'); box(sx-8,y-46,16,6,c.light?'#ffd84a':'#666'); txt('TAXI',sx,y-45,'#111','center',3); if(c.light){ glowRects.push([sx-8,y-46,16,6]); L3(sx,y-44,30,'#ffe080',1); }
+  circ(sx-24,y-6,7,'#111',true); circ(sx+24,y-6,7,'#111',true); circ(sx-24,y-6,3,'#888',true); circ(sx+24,y-6,3,'#888',true); fr(sx-40,y-18,5,4,'#ffefa0'); glowRects.push([sx-42,y-19,6,6]); }
+function drawTaxiBack(){ const b=boss; for(const px of PUD){ const sx=px-camX; ell(sx,GROUND+14,26,4,'rgba(80,120,170,.75)',true); } }
+function drawTaxiFront(){ const b=boss;
+  for(const c of b.cars){ const sx=c.x-camX; if(sx<-80||sx>VW+80) continue; prius(sx,GROUND+40,c); if(c.state==='leave'&&c.kind!=='hired') for(let k=0;k<3;k++) fr(sx+44+k*8,GROUND+30+k,6,1,'rgba(255,255,255,.5)'); if(c.kind==='hired'&&c.state==='drive') for(let k=0;k<4;k++) fr(sx+44+k*10,GROUND+20+k*4,8,1.5,'rgba(255,255,255,.7)');
+    if(c.lad){ c.lad.x+=(c.x-20-c.lad.x)*0.08; human(c.lad.x-camX,GROUND,{f:1,pose:'walk',ph:time*12,skin:'#f0c8a8',hs:'cap',cap:'#c8281e',top:'#222',legs:'#2a3a6a',shoes:'#fff'}); } }
+  for(const s of (b.spl||[])){ const sx=s.x-camX, h=Math.sin(Math.min(1,s.t/0.5)*Math.PI)*48; ctx.globalAlpha=Math.max(0,1-s.t/0.8); for(let k=0;k<9;k++){ const a=-Math.PI/2+(k-4)*0.25; circ(sx+Math.cos(a)*h*0.7,GROUND+10+Math.sin(a)*h,3,'#8ac0ff',true); } ctx.globalAlpha=1; }
+  for(const px of PUD){ const sx=px-camX, near=b.cars.some(c=>(c.kind==='hired'||c.state==='leave')&&!c.splashed[px]&&c.x-px<300&&c.x>px), y=GROUND-58+Math.sin(time*6)*3;
+    if(near){ txt('JUMP!',sx,y-12,Math.floor(time*10)%2?'#ffd84a':'#fff','center',10,OUT); tri(sx-7,y+2,sx+7,y+2,sx,y+10,'#ffd84a'); } else { ctx.globalAlpha=.75; txt('JUMP',sx,y-6,'#8ac0ff','center',7,OUT); tri(sx-5,y+4,sx+5,y+4,sx,y+10,'#8ac0ff'); ctx.globalAlpha=1; } }
+  if(b.prompt&&!b.won){ const sx=b.prompt.x-camX, near=Math.abs(P.x-b.prompt.x)<70; ctx.font='7px '+FONTF; const w=ctx.measureText(b.prompt.label).width+18, y=GROUND-118+Math.sin(time*5)*2; ctx.globalAlpha=near?1:0.6+0.3*Math.sin(time*6); S_(); rb(sx-w/2,y,w,15,5,'#3fcf6a'); tri(sx-3,y+14,sx+3,y+14,sx,y+19,'#3fcf6a'); txt(b.prompt.label,sx,y+4,'#0d2a14','center',7); ctx.globalAlpha=1; }
+  lifeBar('YOUR PATIENCE',b.pat,b.max,Object.assign(b.o,{right:b.pat<=1?'LAST NERVE':''}));
+}
+function drawHUD4(){ if(tray4){ S_(); for(let k=0;k<5;k++){ rb(222+k*5,8,4,10,1,k<S.pints?'#2a1a10':'rgba(255,255,255,.2)'); if(k<S.pints) fr(222+k*5,8,4,2,'#f4ead0'); } } drawFade4(); }
+function taxiLabel(){ const b=boss; if(!b||b.kind!=='taxi'||!b.prompt||b.won) return null; return Math.abs(P.x-b.prompt.x)<70?b.prompt.label:null; }
+function taxiAct(){ const b=boss; if(!b||b.kind!=='taxi') return false; const c=b.cars.find(c=>c.state==='stop'&&!c.done); if(!c||Math.abs(P.x-c.x)>70) return false; actOnTaxi(c); return true; }
+function rain4(dt){ if(S.rainT>0){ S.rainT-=dt; if(S.rainT<=0) S.rainT=0; } rainA+=((S.rainT>0&&!inside4(P.x)?1:0)-rainA)*Math.min(1,dt*2); }
+
 /* ---------------- LOOP ---------------- */
 let last=0;
 function loop(ts){
   const dt=Math.min(0.033,(ts-last)/1000||0); last=ts; time+=dt;
-  if(state==='play'&&!paused){ update(dt); try{ musTick(); }catch(e){} }
-  if(state==='cut'){ try{ cutUpdate3(dt); }catch(e){ console.error(e); } }
+  if(state==='play'&&!paused){ let d2=dt; if(TS.t>0){ TS.t-=dt; d2=dt*TS.k; } update(d2); try{ musTick(); }catch(e){} }
+  if(state==='cut'){ try{ if(STAGE===4) cutUpdate4(dt); else cutUpdate3(dt); }catch(e){ console.error(e); } }
   try{ draw(); }catch(err){ console.error(err); }
   requestAnimationFrame(loop);
 }
 resetRun();
-if(location.hash==='#debug') window.__ddr={get teens(){return teens;},get bangers(){return bangers;},get boss(){return boss;},get cut3(){return cut3;},P,S,CARD,speak,get CHAR(){return CHAR;},VOICE,winGame,showStageIntro,setStage,startStage,resetRun,spawnAt,get camX(){return camX;},get enemies(){return enemies;},get npcs(){return npcs;},get swanEv(){return swanEv;},get state(){return state;}};
+if(location.hash==='#debug') window.__ddr={get teens(){return teens;},get bangers(){return bangers;},get boss(){return boss;},get cut3(){return cut3;},P,S,CARD,speak,get CHAR(){return CHAR;},VOICE,winGame,showStageIntro,setStage,startStage,resetRun,spawnAt,get camX(){return camX;},get enemies(){return enemies;},get npcs(){return npcs;},get swanEv(){return swanEv;},get state(){return state;},get buddy4(){return buddy4;},get trig4(){return trig4;},pickChoice,get CHO(){return CHO;},get talkers4(){return talkers4;},showTitle,showBriefing,input,get punchBuf(){return punchBuf;},set punchBuf(v){punchBuf=v;},get jumpBuf(){return jumpBuf;},set jumpBuf(v){jumpBuf=v;},get rainA(){return rainA;},get camX2(){return camX;},set camX2(v){camX=v;}};
 let started=false;
 function init(){ if(started)return; started=true; showTitle(); requestAnimationFrame(loop); }
 if(document.fonts&&document.fonts.load){ document.fonts.load('8px '+FONTF).then(init,init); setTimeout(init,1800); } else init();
