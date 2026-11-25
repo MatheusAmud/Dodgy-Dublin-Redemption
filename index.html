@@ -241,8 +241,7 @@ function speak(text,who,force){
   if(t===t.toUpperCase()) t=t.charAt(0)+t.slice(1).toLowerCase();
   let key=(who==='player'?CHAR+'-':'')+clipKey(t);
   if(!VOICE.clips.has(key)){ const k2=key.replace(/-buddy(?=-|$)/g,'-buddy'); if(VOICE.clips.has(k2)) key=k2; }
-  if(VOICE.clips.has(key)&&AU.c&&window.fetch){ if(!force&&voiceBusy()) return; voiceStop(); const t0=performance.now();
-    voiceBuf(key).then(b=>{ if(performance.now()-t0>650) return; voicePlay(b); }).catch(()=>{ VOICE.clips.delete(key); speakTTS(t,who,true); }); return; }
+  if(VOICE.clips.has(key)&&AU.c&&window.fetch){ if(voiceBusy()){ if(force) voiceEnq(key,text); return; } voiceSay(key,text); return; }
   if(VOICE.clips.has(key)){ try{ if(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused){ if(!force) return; VOICE.audio.pause(); } if(VOICE.ok) speechSynthesis.cancel();
       const a=new Audio('./voices/'+key+'.mp3'); a.volume=0.95; VOICE.audio=a;
       const fallback=()=>{ if(VOICE.clips.delete(key)) speakTTS(t,who,true); };
@@ -673,7 +672,7 @@ function update(dt){
     if(STAGE===3&&item3(it)) continue;
     const r={tayto:['TAYTO! +50',()=>pts(50)],orange:['CLUB ORANGE! +50',()=>pts(50)],tea:["BARRY'S TEA +1 CRAIC",()=>{pts(30);craic(1);}],leap:['LEAP CARD! +€5',()=>{pts(30);S.money+=5;}],brolly:['BROLLY! +50',()=>{pts(50);S.brolly=true;}]}[it.k];
     r[1](); pop(it.x,it.y-14,r[0],'#ffd84a'); }}
-  for(const n of npcs){ if(n.sayT>0)n.sayT-=dt; if(GREET[n.k]&&!n.greeted&&!n.used&&Math.abs(n.x-P.x)<150){ n.greeted=true; n.say=GREET[n.k]; n.sayT=2.6; speak(n.say,n.k,false); } }
+  for(const n of npcs){ if(n.sayT>0&&!(n.sayT<0.3&&voiceSaying(n.say)))n.sayT-=dt; if(GREET[n.k]&&!n.greeted&&!n.used&&Math.abs(n.x-P.x)<150){ n.greeted=true; n.say=GREET[n.k]; n.sayT=2.6; speak(n.say,n.k,false); } }
   updDiscover(dt);
   for(const x of xings){
     if(x.hold){ x.phase='green'; x.t=5; }
@@ -2687,14 +2686,20 @@ function showTitle(){
   document.getElementById('howto').onclick=showHowTo;
 }
 
-/* ---- voice clips: bytes fetched once, decoded on demand, played through Web Audio (no lag) ---- */
-const VBYTES=new Map(), VBUF=new Map(); let VSRC=null, VEND=0, VPRE=false;
-function voiceBusy(){ return (VSRC&&AU.c&&AU.c.currentTime<VEND)||(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused); }
-function voiceStop(){ if(VSRC){ try{ VSRC.stop(); }catch(e){} VSRC=null; VEND=0; } if(VOICE.audio){ try{ VOICE.audio.pause(); }catch(e){} } if(VOICE.ok) try{ speechSynthesis.cancel(); }catch(e){} }
+/* ---- voice clips: fetched once, decoded on demand, played through Web Audio.
+   One line at a time: a new line waits for the current one to finish (no cutting people off). ---- */
+const VBYTES=new Map(), VBUF=new Map(); let VSRC=null, VEND=0, VPRE=false, VLOAD=0, VTEXT='', VQ=[];
+function voiceBusy(){ return VLOAD>0||(VSRC&&AU.c&&AU.c.currentTime<VEND)||(VOICE.audio&&!VOICE.audio.ended&&!VOICE.audio.paused); }
+function voiceSaying(t){ if(!t) return false; return (VTEXT===t&&voiceBusy())||VQ.some(q=>q.text===t); }
+function voiceStop(){ VQ=[]; VLOAD=0; if(VSRC){ try{ VSRC.onended=null; VSRC.stop(); }catch(e){} VSRC=null; VEND=0; } if(VOICE.audio){ try{ VOICE.audio.pause(); }catch(e){} } if(VOICE.ok) try{ speechSynthesis.cancel(); }catch(e){} }
 function voiceBytes(k){ if(VBYTES.has(k)) return VBYTES.get(k); const p=fetch('./voices/'+k+'.mp3').then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }); VBYTES.set(k,p); p.catch(()=>VBYTES.delete(k)); return p; }
 function voiceBuf(k){ if(VBUF.has(k)){ const b=VBUF.get(k); VBUF.delete(k); VBUF.set(k,b); return Promise.resolve(b); }
   return voiceBytes(k).then(a=>new Promise((res,rej)=>AU.c.decodeAudioData(a.slice(0),res,rej))).then(b=>{ VBUF.set(k,b); while(VBUF.size>36) VBUF.delete(VBUF.keys().next().value); return b; }); }
-function voicePlay(b){ if(!AU.on||!AU.c) return; voiceStop(); if(AU.c.state==='suspended') AU.c.resume(); const s=AU.c.createBufferSource(), g=AU.c.createGain(); g.gain.value=0.95; s.buffer=b; s.connect(g); g.connect(AU.c.destination); s.start(); VSRC=s; VEND=AU.c.currentTime+b.duration; }
+function voiceSay(key,text){ VLOAD++; VTEXT=text; voiceBuf(key).then(b=>{ VLOAD=Math.max(0,VLOAD-1); voicePlay(b,text); }).catch(()=>{ VLOAD=Math.max(0,VLOAD-1); VOICE.clips.delete(key); voiceNext(); }); }
+function voiceEnq(key,text){ if(VQ.some(q=>q.key===key)) return; VQ.push({key,text,at:performance.now()}); if(VQ.length>3) VQ.shift(); }
+function voiceNext(){ while(VQ.length){ const q=VQ.shift(); if(performance.now()-q.at<4000){ voiceSay(q.key,q.text); return; } } VTEXT=''; }
+function voicePlay(b,text){ if(!AU.on||!AU.c) return; if(AU.c.state==='suspended') AU.c.resume(); const s=AU.c.createBufferSource(), g=AU.c.createGain(); g.gain.value=0.95; s.buffer=b; s.connect(g); g.connect(AU.c.destination);
+  s.onended=()=>{ if(VSRC===s){ VSRC=null; VEND=0; } setTimeout(voiceNext,160); }; s.start(); VSRC=s; VTEXT=text||VTEXT; VEND=AU.c.currentTime+b.duration; }
 // fetch every clip's bytes in the background (small mp3s, about 2MB in all), so no line waits on the network
 function voicePreload(){ if(VPRE||!VOICE.clips.size||!window.fetch) return; VPRE=true; const ks=[...VOICE.clips].sort((a,b)=>(b.startsWith(CHAR+'-')?1:0)-(a.startsWith(CHAR+'-')?1:0)); let i=0; const next=()=>{ if(i>=ks.length) return; voiceBytes(ks[i++]).catch(()=>{}).finally(next); }; for(let j=0;j<4;j++) next(); }
 setInterval(voicePreload,1500);
@@ -2840,8 +2845,10 @@ function talk4(n){
 function gateBlock(x){ if(P.x>x-14&&P.x<x+6&&P.vx>=0){ P.x=x-14; } }
 function update4(dt,pb,fist){
   if(S.freeze>0) S.freeze-=dt;
-  for(let i=seq4.length-1;i>=0;i--){ seq4[i].t-=dt; if(seq4[i].t<=0){ const f=seq4[i].fn; seq4.splice(i,1); try{ f(); }catch(e){ console.error(e); } } }
-  for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
+  // a dialogue sequence waits for the line being said before moving on, so nobody gets cut off
+  const hold4=voiceBusy()&&seq4.some(q=>q.t<=dt+0.05); if(hold4&&S.freeze>0) S.freeze+=dt;
+  for(let i=seq4.length-1;i>=0;i--){ if(!hold4) seq4[i].t-=dt; if(seq4[i].t<=0&&!hold4){ const f=seq4[i].fn; seq4.splice(i,1); try{ f(); }catch(e){ console.error(e); } } }
+  for(let i=talkers4.length-1;i>=0;i--){ if(!(talkers4[i].sayT<0.3&&voiceSaying(talkers4[i].say))) talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
   if(flash4>0) flash4-=dt; if(dark4>0) dark4-=dt; if(S.goalT>0) S.goalT-=dt; if(S.shakeT>0) S.shakeT-=dt; if(S.bandT>0) S.bandT-=dt;
   // gates: the bouncers
   if(!S.in1) gateBlock(GATE1);
@@ -2866,7 +2873,7 @@ function update4(dt,pb,fist){
   updPunters4(dt);
   // buddy follows you, and says something if you stand still
   const b=buddy4; if(b){ const tx=P.x-28*P.face; b.face=P.x>b.x?1:-1; const dx=tx-b.x; if(Math.abs(dx)>4){ b.x+=Math.sign(dx)*Math.min(Math.abs(dx)*3,170)*dt; b.anim+=dt; } if(b.x<camX-20) b.x=camX-20;
-    if(b.sayT>0) b.sayT-=dt; if(b.cool>0) b.cool-=dt;
+    if(b.sayT>0&&!(b.sayT<0.3&&voiceSaying(b.say))) b.sayT-=dt; if(b.cool>0) b.cool-=dt;
     const still=Math.abs(P.vx)<1&&P.onG&&!CHO.open&&S.freeze<=0&&!boss; if(still) b.idle+=dt; else b.idle=0;
     if(b.idle>1.5&&b.cool<=0&&b.sayT<=0){ const h=hint4(); if(h){ bsay(h,2.8); b.cool=7; } b.idle=0; } }
 }
@@ -2947,7 +2954,7 @@ let home4=null;
 function startHome4(){ state='cut'; home4={t:0,said:{}}; S.lock=false; }
 function cutUpdate4(dt){ const h=home4; if(!h) return; h.t+=dt; const once=(k,t,f)=>{ if(h.t>=t&&!h.said[k]){ h.said[k]=1; f(); } };
   for(let i=seq4.length-1;i>=0;i--){ seq4.splice(i,1); }
-  for(let i=talkers4.length-1;i>=0;i--){ talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
+  for(let i=talkers4.length-1;i>=0;i--){ if(!(talkers4[i].sayT<0.3&&voiceSaying(talkers4[i].say))) talkers4[i].sayT-=dt; if(talkers4[i].sayT<=0) talkers4.splice(i,1); }
   once('drop',0.9,()=>{ h.drop={say:"That's your mate dropped off. You're next.",t:2.4}; speak("That's your mate dropped off. You're next.",'driver',true); });
   once('drv',3.6,()=>{ h.drv={say:'There you go, buddy.',t:2.4}; speak('There you go, buddy.','driver',true); });
   once('me',6.2,()=>{ h.me={say:'Cheers!',t:1.6}; speak('Cheers!','player',true); });
@@ -2980,7 +2987,7 @@ function drawFade4(){ if(!fade4) return; const t=fade4.t, a=t<0.35?t/0.35:Math.m
 
 /* ---- pub punters: people doing things, in front of you ---- */
 const PUNT_SAY=['Story, buddy?','Mind yourself!','Easy there!','Ah, me shoes!'];
-function updPunters4(dt){ for(const p of punters4){ p.anim+=dt; if(p.bumpT>0) p.bumpT-=dt; if(p.sayT>0) p.sayT-=dt;
+function updPunters4(dt){ for(const p of punters4){ p.anim+=dt; if(p.bumpT>0) p.bumpT-=dt; if(p.sayT>0&&!(p.sayT<0.3&&voiceSaying(p.say))) p.sayT-=dt;
     if(p.k==='collector'){ p.x+=p.dir*40*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; }
     else { p.st=(p.st||0)-dt; if(p.st<=0){ p.mode=['walk','chat','cheer','walk'][Math.floor(Math.random()*4)]; p.st=1.5+Math.random()*2; if(p.mode==='walk') p.dir=Math.random()<.5?-1:1; }
       if(p.mode==='walk'){ p.x+=p.dir*28*dt; if(p.x>p.x0+p.r) p.dir=-1; if(p.x<p.x0-p.r) p.dir=1; } }
